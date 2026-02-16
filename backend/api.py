@@ -58,7 +58,7 @@ def register():
         
         # Validate required fields
         if not data or not data.get('username') or not data.get('email') or not data.get('password'):
-            return jsonify({'error': 'Missing required fields: username, email, password'}), 400
+            return jsonify({'error': 'Faltan campos requeridos: username, email, password'}), 400
         
         username = data['username']
         email = data['email']
@@ -66,10 +66,10 @@ def register():
         
         # Check if user already exists
         if User.query.filter_by(username=username).first():
-            return jsonify({'error': 'Username already exists'}), 409
+            return jsonify({'error': 'Nombre de usuario ya existe'}), 409
         
         if User.query.filter_by(email=email).first():
-            return jsonify({'error': 'Email already exists'}), 409
+            return jsonify({'error': 'Email ya existe'}), 409
         
         # Create new user
         new_user = User(username=username, email=email)
@@ -79,7 +79,7 @@ def register():
         db.session.commit()
         
         return jsonify({
-            'message': 'Account created successfully',
+            'message': 'Cuenta creada exitosamente',
             'user': new_user.to_dict()
         }), 201
         
@@ -94,7 +94,7 @@ def login():
         
         # Validate required fields
         if not data or not data.get('username') or not data.get('password'):
-            return jsonify({'error': 'Missing required fields: username, password'}), 400
+            return jsonify({'error': 'Faltan campos requeridos: username, password'}), 400
         
         username = data['username']
         password = data['password']
@@ -103,10 +103,10 @@ def login():
         user = User.query.filter_by(username=username).first()
         
         if not user or not user.check_password(password):
-            return jsonify({'error': 'Invalid username or password'}), 401
+            return jsonify({'error': 'Campos inválidos: username o password'}), 401
         
         return jsonify({
-            'message': 'Login successful',
+            'message': 'Inicio de sesión exitoso',
             'user': user.to_dict()
         }), 200
         
@@ -120,14 +120,14 @@ def delete_account(user_id):
         user = User.query.get(user_id)
         
         if not user:
-            return jsonify({'error': 'User not found'}), 404
+            return jsonify({'error': 'Usuario no encontrado'}), 404
         
         username = user.username
         db.session.delete(user)
         db.session.commit()
         
         return jsonify({
-            'message': f'Account for user "{username}" deleted successfully'
+            'message': f'La cuenta del usuario "{username}" fue eliminada correctamente'
         }), 200
         
     except Exception as e:
