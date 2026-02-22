@@ -9,8 +9,11 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Import the app and db from api.py
-from api import app, db
+# Import the app and db from the application factory
+from infrastructure.app_factory import create_app
+from infrastructure.db import db
+
+app = create_app()
 
 def init_db():
     """Initialize the database by creating all tables"""

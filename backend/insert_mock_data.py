@@ -9,8 +9,12 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-# Import the app, db, and User model from api.py
-from api import app, db, User
+# Import the app, db, and User model from the new structure
+from infrastructure.app_factory import create_app
+from infrastructure.db import db
+from models.user import User
+
+app = create_app()
 
 def insert_mock_data():
     """Insert mock users into the database"""

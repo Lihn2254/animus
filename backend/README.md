@@ -14,9 +14,49 @@ A REST API built with Flask and PostgreSQL for user account management.
 - Docker and Docker Compose
 - pip (Python package manager)
 
+## Architecture Overview
+
+This backend follows a lightweight MVC architecture:
+
+- **Models**: SQLAlchemy models that represent database tables and encapsulate data rules.
+- **Controllers**: Request handlers with business logic; they validate input, call models, and shape responses.
+- **Routes**: Flask blueprints that bind HTTP endpoints to controllers.
+- **Infrastructure**: App factory, configuration, and shared services (database setup).
+- **Schemas**: Small serialization helpers for consistent API responses.
+- **Middlewares**: Reserved for cross-cutting concerns (logging, auth, rate limiting).
+
+The app is created through an application factory to make initialization consistent for both runtime and scripts.
+
 ## Setup Instructions
 
-### 1. Start PostgreSQL Database
+These steps assume a fresh clone of the repository.
+
+### 1. Clone the repository
+
+```bash
+git clone <your-repo-url>
+cd animus/backend
+```
+
+### 2. Create and activate a virtual environment
+
+```bash
+python -m venv .venv
+```
+
+Windows (PowerShell):
+
+```bash
+./.venv/Scripts/Activate.ps1
+```
+
+macOS/Linux:
+
+```bash
+source .venv/bin/activate
+```
+
+### 3. Start PostgreSQL Database
 
 Start the PostgreSQL container using Docker Compose:
 
@@ -29,13 +69,13 @@ This will start PostgreSQL on port 5432 with the following credentials:
 - **User**: animus_user
 - **Password**: animus_password
 
-### 2. Install Python Dependencies
+### 4. Install Python Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Initialize Database Tables
+### 5. Initialize Database Tables
 
 Run the initialization script to create the database tables:
 
@@ -43,7 +83,7 @@ Run the initialization script to create the database tables:
 python init_db.py
 ```
 
-### 4. Insert Mock Data (Optional)
+### 6. Insert Mock Data (Optional)
 
 Insert sample users for testing:
 
@@ -58,10 +98,10 @@ This will create 5 test users with the following credentials:
 - alice_brown / alicepass321
 - charlie_davis / charlie2024
 
-### 5. Start the API Server
+### 7. Start the API Server
 
 ```bash
-python api.py
+python app.py
 ```
 
 The API will be available at `http://localhost:5000`
@@ -203,7 +243,13 @@ docker-compose down -v
 
 ```
 backend/
-├── api.py                 # Main Flask application
+├── app.py                 # App entry point
+├── controllers/          # Route handlers
+├── infrastructure/       # Config and database setup
+├── middlewares/          # Request/response middleware
+├── models/               # Database models
+├── routes/               # Blueprint routes
+├── schemas/              # Response/request schemas
 ├── init_db.py            # Database initialization script
 ├── insert_mock_data.py   # Mock data insertion script
 ├── docker-compose.yml    # Docker Compose configuration
