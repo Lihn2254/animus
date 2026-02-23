@@ -1,0 +1,52 @@
+========================================
+1. UPDATE ACCOUNT INFO
+========================================
+PUT http://localhost:5000/api/account/1
+
+{
+  "username": "new_username",
+  "email": "newemail@example.com",
+  "password": "newpassword123"
+}
+
+
+========================================
+2. GET ANALYSIS RESULTS
+========================================
+GET http://localhost:5000/api/analysis?keywords=stress,anxiety&sentiment=negative&date_from=2024-01-01&date_to=2026-12-31
+
+(no body)
+
+
+========================================
+3. RUN NEW ANALYSIS
+========================================
+POST http://localhost:5000/api/analysis/run
+
+{
+  "geographical_region": "North America",
+  "start_date": "2024-01-01",
+  "end_date": "2024-12-31",
+  "age_range": "18-35",
+  "topics": ["IT", "Software", "Mental Health"]
+}
+
+
+========================================
+4. REGISTER SUBREDDIT
+========================================
+POST http://localhost:5000/api/subreddits
+
+{
+  "name": "r/mentalhealth",
+  "category": "Mental Health",
+  "is_active": true
+}
+
+
+========================================
+5. GET SUBREDDITS
+========================================
+GET http://localhost:5000/api/subreddits?category=Mental Health&is_active=true&scraped_after=2024-01-01&scraped_before=2026-12-31
+
+(no body)
