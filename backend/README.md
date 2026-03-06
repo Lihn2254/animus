@@ -1,12 +1,14 @@
 # Animus Backend API
 
-A REST API built with Flask and PostgreSQL for user account management.
+A REST API built with Flask and PostgreSQL for user account management and Reddit data analysis.
 
 ## Features
 
 - **User Registration**: Create new user accounts
 - **User Login**: Authenticate existing users
 - **Account Deletion**: Delete user accounts
+- **Reddit Scraping**: Fetch posts from subreddits, search Reddit, and retrieve user activity using the YARS scraping engine
+- **AI Analysis**: Generate personality analyses of Reddit users via Meta AI
 
 ## Prerequisites
 
@@ -22,6 +24,7 @@ This backend follows a lightweight MVC architecture:
 - **Controllers**: Request handlers with business logic; they validate input, call models, and shape responses.
 - **Routes**: Flask blueprints that bind HTTP endpoints to controllers.
 - **Infrastructure**: App factory, configuration, and shared services (database setup).
+- **Services**: Business-logic layer (scraping service, AI analysis service, and the embedded YARS Reddit scraping engine).
 - **Schemas**: Small serialization helpers for consistent API responses.
 - **Middlewares**: Reserved for cross-cutting concerns (logging, auth, rate limiting).
 
@@ -215,6 +218,120 @@ curl -X POST http://localhost:5000/api/login \
 curl -X DELETE http://localhost:5000/api/account/1
 ```
 
+## Scraping Endpoints
+
+These endpoints use the embedded YARS engine to pull data directly from Reddit's public JSON API — no Reddit API credentials required.
+
+### POST /api/scrape/subreddit/\<name\>
+Fetch posts from a registered subreddit.
+
+**Request Body (all optional):**
+```json
+{
+  "limit": 25,
+  "category": "hot",
+  "include_comments": false,
+  "save": true
+}
+```
+
+- `category`: `"hot"` (default), `"top"`, or `"new"`
+- `include_comments`: fetch full comment threads for each post (slower)
+- `save`: persist scraped posts to the database and update `last_scraped`
+
+**Success Response (200):**
+```json
+{
+  "count": 25,
+  "results": [...]
+}
+```
+
+**Error Responses:**
+- 400: Invalid `category` or `limit`
+- 404: Subreddit not registered in the database
+
+---
+
+### POST /api/scrape/search
+Search Reddit globally or within a specific subreddit.
+
+**Request Body:**
+```json
+{
+  "query": "burnout",
+  "subreddit": "cscareerquestions",
+  "limit": 10,
+  "include_comments": false,
+  "save": false
+}
+```
+
+- `query` **(required)**
+- `subreddit`: omit to search all of Reddit
+- `save`: if `true`, upserts results to the database (creates subreddit records on-the-fly when absent)
+
+**Success Response (200):**
+```json
+{
+  "count": 10,
+  "results": [...]
+}
+```
+
+---
+
+### POST /api/scrape/user
+Fetch a Reddit user's post and comment history.
+
+**Request Body:**
+```json
+{
+  "username": "spez",
+  "limit": 30,
+  "save": false
+}
+```
+
+- `username` **(required)**
+- `save`: if `true`, upserts posts/comments to the database (`subreddit_id` is `null` for user-sourced items unless the subreddit is already registered)
+
+**Success Response (200):**
+```json
+{
+  "username": "spez",
+  "count": 30,
+  "results": [...]
+}
+```
+
+---
+
+### POST /api/scrape/analyze/user
+Generate a Meta AI personality analysis of a Reddit user based on their comment history.
+
+**Request Body:**
+```json
+{
+  "username": "spez",
+  "limit": 30
+}
+```
+
+- `username` **(required)**
+
+**Success Response (200):**
+```json
+{
+  "username": "spez",
+  "analysis": "..."
+}
+```
+
+**Error Responses:**
+- 400: Missing `username`
+- 404: No comment history found for the given user
+
 ## Environment Variables
 
 Edit the `.env` file to configure the application:
@@ -245,11 +362,24 @@ docker-compose down -v
 backend/
 ├── app.py                 # App entry point
 ├── controllers/          # Route handlers
+│   ├── auth_controller.py
+│   ├── account_controller.py
+│   ├── subreddit_controller.py
+│   ├── analysis_controller.py
+│   └── scraping_controller.py   # Reddit scraping & AI analysis
 ├── infrastructure/       # Config and database setup
 ├── middlewares/          # Request/response middleware
 ├── models/               # Database models
 ├── routes/               # Blueprint routes
+│   └── scraping_routes.py       # /api/scrape/* endpoints
 ├── schemas/              # Response/request schemas
+├── services/             # Business logic layer
+│   ├── scraping_service.py      # YARS wrapper + DB upsert logic
+│   ├── ai_analysis_service.py   # Meta AI user analysis
+│   └── yars/                    # Embedded YARS Reddit scraping engine
+│       ├── yars.py
+│       ├── sessions.py
+│       └── agents.py
 ├── init_db.py            # Database initialization script
 ├── insert_mock_data.py   # Mock data insertion script
 ├── docker-compose.yml    # Docker Compose configuration

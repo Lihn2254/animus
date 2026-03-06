@@ -3,6 +3,7 @@ from .auth_routes import auth_bp
 from .account_routes import account_bp
 from .analysis_routes import analysis_bp
 from .subreddit_routes import subreddit_bp
+from .scraping_routes import scraping_bp
 
 
 def register_routes(app):
@@ -11,3 +12,4 @@ def register_routes(app):
     app.register_blueprint(account_bp, url_prefix="/api")
     app.register_blueprint(analysis_bp, url_prefix="/api")
     app.register_blueprint(subreddit_bp, url_prefix="/api")
+    app.register_blueprint(scraping_bp, url_prefix="/api")
