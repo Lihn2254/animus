@@ -24,18 +24,24 @@ app = create_app()
 def insert_users():
     print("\n[Users]")
     mock_users = [
-        {'username': 'john_doe',      'email': 'john.doe@example.com',      'password': 'password123'},
-        {'username': 'jane_smith',    'email': 'jane.smith@example.com',    'password': 'securepass456'},
-        {'username': 'bob_wilson',    'email': 'bob.wilson@example.com',    'password': 'mypassword789'},
-        {'username': 'alice_brown',   'email': 'alice.brown@example.com',   'password': 'alicepass321'},
-        {'username': 'charlie_davis', 'email': 'charlie.davis@example.com', 'password': 'charlie2024'},
+        {'username': 'john_doe',      'email': 'john.doe@example.com',      'password': 'password123',  'fullname': 'Universidad Nacional Autónoma de México',      'country': 'México',        'region': 'Ciudad de México'},
+        {'username': 'jane_smith',    'email': 'jane.smith@example.com',    'password': 'securepass456','fullname': 'Instituto Tecnológico y de Estudios Superiores de Monterrey', 'country': 'México', 'region': 'Nuevo León'},
+        {'username': 'bob_wilson',    'email': 'bob.wilson@example.com',    'password': 'mypassword789','fullname': 'Universidad de Guadalajara',                   'country': 'México',        'region': 'Jalisco'},
+        {'username': 'alice_brown',   'email': 'alice.brown@example.com',   'password': 'alicepass321', 'fullname': 'Universidad Autónoma de Nuevo León',           'country': 'México',        'region': 'Nuevo León'},
+        {'username': 'charlie_davis', 'email': 'charlie.davis@example.com', 'password': 'charlie2024',  'fullname': 'Instituto Politécnico Nacional',               'country': 'México',        'region': 'Ciudad de México'},
     ]
 
     for user_data in mock_users:
         if User.query.filter_by(username=user_data['username']).first():
             print(f"  ⚠ User '{user_data['username']}' already exists, skipping...")
             continue
-        user = User(username=user_data['username'], email=user_data['email'])
+        user = User(
+            username=user_data['username'],
+            email=user_data['email'],
+            fullname=user_data['fullname'],
+            country=user_data['country'],
+            region=user_data['region'],
+        )
         user.set_password(user_data['password'])
         db.session.add(user)
         print(f"  ✓ Added user: {user_data['username']}")
