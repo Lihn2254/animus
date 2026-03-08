@@ -5,7 +5,7 @@ export async function login(credentials: string, password: string): Promise<User
   const res = await fetch(`${API_BASE_URL}/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ credentials, password }),
+    body: JSON.stringify({ username: credentials, password }),
   });
 
   if (!res.ok) {
@@ -33,7 +33,7 @@ export async function checkDuplicate(text: string): Promise<boolean> {
 }
 
 export async function register(user: User): Promise<User> {
-  const res = await fetch("http://localhost:8080/api/user/register", {
+  const res = await fetch(`${API_BASE_URL}/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(user),
