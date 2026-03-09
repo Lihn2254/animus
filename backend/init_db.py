@@ -26,9 +26,9 @@ def init_db():
     with app.app_context():
         print("Creating database tables...")
         
-        # Drop all existing tables (use with caution!)
-        # db.drop_all()
-        
+        # Drop all existing tables and recreate with the current schema
+        db.drop_all()
+
         # Create all tables
         db.create_all()
         

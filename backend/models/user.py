@@ -7,9 +7,12 @@ class User(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
+    fullname = db.Column(db.String(100), nullable=False)
     username = db.Column(db.String(50), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
     password_hash = db.Column(db.Text, nullable=False)
+    country = db.Column(db.String(100), nullable=False)
+    region = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def set_password(self, password):
@@ -21,7 +24,10 @@ class User(db.Model):
     def to_dict(self):
         return {
             "id": self.id,
+            "fullname": self.fullname,
             "username": self.username,
             "email": self.email,
+            "country": self.country,
+            "region": self.region,
             "created_at": self.created_at.isoformat(),
         }
