@@ -1,16 +1,22 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { register as registerUser } from "../../services/auth";
+import { User } from "../../types/user";
 
-// 1. Esquema de validación extendido para Registro
+// 1. Esquema de validación
 const signupSchema = z
   .object({
     fullName: z
       .string()
       .min(3, { message: "El nombre debe tener al menos 3 caracteres" }),
+    username: z
+      .string()
+      .min(3, { message: "El nombre de usuario debe tener al menos 3 caracteres" }),
     email: z
       .string()
       .min(1, { message: "El correo es obligatorio" })
@@ -21,10 +27,16 @@ const signupSchema = z
     confirmPassword: z
       .string()
       .min(1, { message: "Debes confirmar tu contraseña" }),
+    country: z
+      .string()
+      .min(1, { message: "El país es obligatorio" }),
+    region: z
+      .string()
+      .min(1, { message: "La región es obligatoria" }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Las contraseñas no coinciden",
-    path: ["confirmPassword"], // El error se marcará en este campo
+    path: ["confirmPassword"],
   });
 
 type SignupFormInputs = z.infer<typeof signupSchema>;
@@ -32,6 +44,12 @@ type SignupFormInputs = z.infer<typeof signupSchema>;
 export default function Singup() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const router = useRouter();
+
+  // Cambiar el nombre de la pestaña al cargar el componente
+  useEffect(() => {
+    document.title = "Registro Animus";
+  }, []);
 
   const {
     register,
@@ -44,16 +62,23 @@ export default function Singup() {
   const onSubmit: SubmitHandler<SignupFormInputs> = async (data) => {
     setServerError(null);
     try {
-      console.log("Datos de registro:", data);
-      // Simulación de registro en API
-      await new Promise((resolve) => setTimeout(resolve, 500));
-      alert("¡Cuenta creada con éxito!");
-    } catch (error) {
-      setServerError(
-        "Hubo un problema al crear tu cuenta. Intenta con otro correo.",
-      );
+      const userData: User = {
+        fullname: data.fullName,
+        username: data.username,
+        email: data.email,
+        password: data.password,
+        country: data.country,
+        region: data.region,
+      };
+      await registerUser(userData);
+      router.push("/");
+    } catch (error: any) {
+      setServerError(error.message || "Hubo un problema al crear tu cuenta. Intenta con otro correo.");
     }
   };
+
+  // Clase común para los inputs (text-gray-900 hace que la fuente sea más oscura al escribir)
+  const inputClassName = `appearance-none block w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-all duration-200 sm:text-sm text-gray-900 `;
 
   return (
     <div className="min-h-dvh flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8 font-sans">
@@ -78,68 +103,109 @@ export default function Singup() {
           <div className="space-y-4">
             {/* Campo Nombre Completo */}
             <div>
-              <label
-                htmlFor="fullName"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
                 Nombre Completo
               </label>
               <div className="mt-1">
                 <input
                   id="fullName"
                   type="text"
-                  className={`appearance-none block w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-all duration-200 sm:text-sm
-                    ${errors.fullName ? "border-red-300 focus:ring-red-200" : "border-gray-300 focus:ring-blue-200 focus:border-blue-500"}`}
+                  className={`${inputClassName} ${errors.fullName ? "border-red-300 focus:ring-red-200" : "border-gray-300 focus:ring-blue-200 focus:border-blue-500"}`}
                   placeholder="Juan Pérez"
                   {...register("fullName")}
                 />
                 {errors.fullName && (
-                  <p className="mt-1 text-xs text-red-600 font-medium">
-                    {errors.fullName.message}
-                  </p>
+                  <p className="mt-1 text-xs text-red-600 font-medium">{errors.fullName.message}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Campo Nombre de Usuario */}
+            <div>
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                Nombre de Usuario
+              </label>
+              <div className="mt-1">
+                <input
+                  id="username"
+                  type="text"
+                  className={`${inputClassName} ${errors.username ? "border-red-300 focus:ring-red-200" : "border-gray-300 focus:ring-blue-200 focus:border-blue-500"}`}
+                  placeholder="juanperez"
+                  {...register("username")}
+                />
+                {errors.username && (
+                  <p className="mt-1 text-xs text-red-600 font-medium">{errors.username.message}</p>
                 )}
               </div>
             </div>
 
             {/* Campo Email */}
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Correo Electrónico
               </label>
               <div className="mt-1">
                 <input
                   id="email"
                   type="email"
-                  className={`appearance-none block w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-all duration-200 sm:text-sm
-                    ${errors.email ? "border-red-300 focus:ring-red-200" : "border-gray-300 focus:ring-blue-200 focus:border-blue-500"}`}
+                  className={`${inputClassName} ${errors.email ? "border-red-300 focus:ring-red-200" : "border-gray-300 focus:ring-blue-200 focus:border-blue-500"}`}
                   placeholder="ejemplo@correo.com"
                   {...register("email")}
                 />
                 {errors.email && (
-                  <p className="mt-1 text-xs text-red-600 font-medium">
-                    {errors.email.message}
-                  </p>
+                  <p className="mt-1 text-xs text-red-600 font-medium">{errors.email.message}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Campo País */}
+            <div>
+              <label htmlFor="country" className="block text-sm font-medium text-gray-700">
+                País
+              </label>
+              <div className="mt-1">
+                <input
+                  id="country"
+                  type="text"
+                  className={`${inputClassName} ${errors.country ? "border-red-300 focus:ring-red-200" : "border-gray-300 focus:ring-blue-200 focus:border-blue-500"}`}
+                  placeholder="México"
+                  {...register("country")}
+                />
+                {errors.country && (
+                  <p className="mt-1 text-xs text-red-600 font-medium">{errors.country.message}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Campo Región */}
+            <div>
+              <label htmlFor="region" className="block text-sm font-medium text-gray-700">
+                Región
+              </label>
+              <div className="mt-1">
+                <input
+                  id="region"
+                  type="text"
+                  className={`${inputClassName} ${errors.region ? "border-red-300 focus:ring-red-200" : "border-gray-300 focus:ring-blue-200 focus:border-blue-500"}`}
+                  placeholder="Ciudad de México"
+                  {...register("region")}
+                />
+                {errors.region && (
+                  <p className="mt-1 text-xs text-red-600 font-medium">{errors.region.message}</p>
                 )}
               </div>
             </div>
 
             {/* Campo Password */}
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Contraseña
               </label>
               <div className="mt-1 relative">
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  className={`appearance-none block w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-all duration-200 sm:text-sm pr-10
-                    ${errors.password ? "border-red-300 focus:ring-red-200" : "border-gray-300 focus:ring-blue-200 focus:border-blue-500"}`}
+                  className={`${inputClassName} pr-10 ${errors.password ? "border-red-300 focus:ring-red-200" : "border-gray-300 focus:ring-blue-200 focus:border-blue-500"}`}
                   placeholder="••••••••"
                   {...register("password")}
                 />
@@ -152,33 +218,25 @@ export default function Singup() {
                 </button>
               </div>
               {errors.password && (
-                <p className="mt-1 text-xs text-red-600 font-medium">
-                  {errors.password.message}
-                </p>
+                <p className="mt-1 text-xs text-red-600 font-medium">{errors.password.message}</p>
               )}
             </div>
 
             {/* Campo Confirmar Password */}
             <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
                 Confirmar Contraseña
               </label>
               <div className="mt-1">
                 <input
                   id="confirmPassword"
                   type={showPassword ? "text" : "password"}
-                  className={`appearance-none block w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-all duration-200 sm:text-sm
-                    ${errors.confirmPassword ? "border-red-300 focus:ring-red-200" : "border-gray-300 focus:ring-blue-200 focus:border-blue-500"}`}
+                  className={`${inputClassName} ${errors.confirmPassword ? "border-red-300 focus:ring-red-200" : "border-gray-300 focus:ring-blue-200 focus:border-blue-500"}`}
                   placeholder="••••••••"
                   {...register("confirmPassword")}
                 />
                 {errors.confirmPassword && (
-                  <p className="mt-1 text-xs text-red-600 font-medium">
-                    {errors.confirmPassword.message}
-                  </p>
+                  <p className="mt-1 text-xs text-red-600 font-medium">{errors.confirmPassword.message}</p>
                 )}
               </div>
             </div>
@@ -200,10 +258,7 @@ export default function Singup() {
 
           <div className="text-center text-sm">
             <span className="text-gray-500">¿Ya tienes cuenta? </span>
-            <a
-              href="/login"
-              className="font-medium text-blue-600 hover:text-blue-500"
-            >
+            <a href="/login" className="font-medium text-blue-600 hover:text-blue-500">
               Inicia sesión aquí
             </a>
           </div>
