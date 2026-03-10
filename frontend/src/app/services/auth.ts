@@ -1,7 +1,7 @@
 import API_BASE_URL from "../api";
 import { User } from "../types/user";
 
-export async function login(credentials: string, password: string): Promise<User> {
+export async function login(credentials: string, password: string): Promise<{message: string, user: User}> {
   const res = await fetch(`${API_BASE_URL}/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
