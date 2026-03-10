@@ -1,7 +1,8 @@
 import API_BASE_URL from "../api";
+import { fetchWithAuth } from "../lib/fetchWithAuth";
 import { User } from "../types/user";
 
-export async function login(credentials: string, password: string): Promise<User> {
+export async function login(credentials: string, password: string): Promise<{message: string, user: User, token: string}> {
   const res = await fetch(`${API_BASE_URL}/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -47,18 +48,13 @@ export async function register(user: User): Promise<User> {
   return res.json();
 }
 
-export async function deleteAccount(user: User): Promise<boolean> {
-  const res = await fetch("http://localhost:8080/api/user/delete", {
+export async function deleteAccount(userId: number): Promise<void> {
+  const res = await fetchWithAuth(`/account/${userId}`, {
     method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(user),
   });
 
   if (!res.ok) {
     const errorData = await res.json();
     throw new Error(errorData.message);
   }
-
-  const wasDeleted: boolean = await res.json();
-  return wasDeleted;
 }
