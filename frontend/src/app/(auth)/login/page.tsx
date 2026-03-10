@@ -4,24 +4,26 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { login } from "../../services/auth";
 
 // 1. Definición del esquema con Zod
 const loginSchema = z.object({
-  email: z
+  username: z
     .string()
-    .min(1, { message: "El correo es obligatorio" })
-    .email({ message: "Formato de correo inválido" }),
-  password: z.string(),
+    .min(1, { message: "El nombre de usuario es obligatorio" }),
+  password: z.string().min(1, { message: "La contraseña es obligatoria" }),
   rememberMe: z.boolean().optional(),
 });
 
 // 2. TypeScript Magic: Inferencia automática del tipo de datos
-// Esto crea un type { email: string; password: string; rememberMe?: boolean }
+// Esto crea un type { username: string; password: string; rememberMe?: boolean }
 type LoginFormInputs = z.infer<typeof loginSchema>;
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const router = useRouter();
 
   // 3. Inicialización del hook con el tipo genérico <LoginFormInputs>
   const {
@@ -39,13 +41,17 @@ export default function Login() {
     try {
       console.log("Datos validados y tipados:", data);
 
-      // Simulación de llamada a API
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const response = await login(data.username, data.password);
+      console.log("Login exitoso:", response);
 
-      // Aquí iría la lógica de redirección
-      // navigate('/dashboard');
-    } catch (error) {
-      setServerError("Ocurrió un error inesperado. Inténtalo de nuevo.");
+      // Guardar usuario y token en localStorage para la sesión
+      localStorage.setItem('user', JSON.stringify(response.user));
+      localStorage.setItem('token', response.token);
+
+      // Redirigir a la app principal
+      router.push('/');
+    } catch (error: any) {
+      setServerError(error.message || "Ocurrió un error inesperado. Inténtalo de nuevo.");
     }
   };
 
@@ -72,28 +78,28 @@ export default function Login() {
             {/* Campo Email */}
             <div>
               <label
-                htmlFor="email"
+                htmlFor="username"
                 className="block text-sm font-medium text-gray-700"
               >
-                Correo Electrónico
+                Nombre de Usuario
               </label>
               <div className="mt-1">
                 <input
-                  id="email"
-                  type="email"
-                  autoComplete="email"
+                  id="username"
+                  type="text"
+                  autoComplete="username"
                   className={`appearance-none block w-full px-3 py-2 border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-0 transition-colors duration-200 sm:text-sm
                     ${
-                      errors.email
+                      errors.username
                         ? "border-red-300 focus:border-red-500 focus:ring-red-200"
                         : "border-gray-300 focus:border-blue-500 focus:ring-blue-200"
                     }`}
-                  placeholder="ejemplo@correo.com"
-                  {...register("email")}
+                  placeholder="ejemplo_usuario"
+                  {...register("username")}
                 />
-                {errors.email && (
+                {errors.username && (
                   <p className="mt-1 text-xs text-red-600 font-medium">
-                    {errors.email.message}
+                    {errors.username.message}
                   </p>
                 )}
               </div>
