@@ -1,6 +1,8 @@
-from flask import request, jsonify
+from datetime import datetime, timedelta, timezone
+from flask import request, jsonify, current_app
 from infrastructure.db import db
 from models.user import User
+import jwt
 
 
 def register():
@@ -72,8 +74,18 @@ def login():
         if not user or not user.check_password(password):
             return jsonify({"error": "Campos inválidos: username o password"}), 401
 
+        token = jwt.encode(
+            {
+                "sub": user.id,
+                "username": user.username,
+                "exp": datetime.now(timezone.utc) + timedelta(hours=24),
+            },
+            current_app.config["SECRET_KEY"],
+            algorithm="HS256",
+        )
+
         return (
-            jsonify({"message": "Inicio de sesión exitoso", "user": user.to_dict()}),
+            jsonify({"message": "Inicio de sesión exitoso", "user": user.to_dict(), "token": token}),
             200,
         )
 

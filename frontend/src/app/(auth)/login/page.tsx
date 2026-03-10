@@ -44,8 +44,9 @@ export default function Login() {
       const response = await login(data.username, data.password);
       console.log("Login exitoso:", response);
 
-      // Guardar usuario en localStorage para la sesión
+      // Guardar usuario y token en localStorage para la sesión
       localStorage.setItem('user', JSON.stringify(response.user));
+      localStorage.setItem('token', response.token);
 
       // Redirigir a la app principal
       router.push('/');
