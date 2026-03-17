@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { register as registerUser } from "../../services/auth";
+import { register as registerUser, login as loginUser } from "../../services/auth";
 import { User } from "../../types/user";
 
 // 1. Esquema de validación
@@ -59,29 +59,38 @@ export default function Singup() {
     resolver: zodResolver(signupSchema),
   });
 
-  const onSubmit: SubmitHandler<SignupFormInputs> = async (data) => {
-    setServerError(null);
-    try {
-      const userData: User = {
-        fullname: data.fullName,
-        username: data.username,
-        email: data.email,
-        password: data.password,
-        country: data.country,
-        region: data.region,
-      };
-      await registerUser(userData);
-      router.push("/");
-    } catch (error: any) {
-      setServerError(error.message || "Hubo un problema al crear tu cuenta. Intenta con otro correo.");
-    }
-  };
+ const onSubmit: SubmitHandler<SignupFormInputs> = async (data) => {
+  setServerError(null);
+  try {
+    const userData: User = {
+      fullname: data.fullName,
+      username: data.username,
+      email: data.email,
+      password: data.password,
+      country: data.country,
+      region: data.region,
+    };
+    
+    const response = await registerUser(userData);
+    console.log("Login exitoso:", response);
+
+    localStorage.setItem("user", JSON.stringify(response.user));
+    localStorage.setItem('token', response.token);
+
+    // 4. Ahora sí, vamos a la página principal. 
+    // Como ya guardamos 'animus_user', la página principal ya no nos va a rebotar.
+    router.push("/");
+    
+  } catch (error: any) {
+    setServerError(error.message || "Hubo un problema al crear tu cuenta. Intenta con otro correo.");
+  }
+};
 
   // Clase común para los inputs (text-gray-900 hace que la fuente sea más oscura al escribir)
   const inputClassName = `appearance-none block w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-all duration-200 sm:text-sm text-gray-900 `;
 
   return (
-    <div className="min-h-dvh flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-dvh flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8 py-10 font-sans">
       <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-2xl shadow-xl border border-gray-100">
         <div className="flex flex-col text-center items-center">
           <Image
@@ -104,7 +113,7 @@ export default function Singup() {
             {/* Campo Nombre Completo */}
             <div>
               <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
-                Nombre Completo
+                Nombre de la institución / organización
               </label>
               <div className="mt-1">
                 <input
@@ -123,7 +132,7 @@ export default function Singup() {
             {/* Campo Nombre de Usuario */}
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                Nombre de Usuario
+                Nombre de usuario
               </label>
               <div className="mt-1">
                 <input
@@ -142,7 +151,7 @@ export default function Singup() {
             {/* Campo Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Correo Electrónico
+                Correo electrónico
               </label>
               <div className="mt-1">
                 <input
@@ -225,7 +234,7 @@ export default function Singup() {
             {/* Campo Confirmar Password */}
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                Confirmar Contraseña
+                Confirmar contraseña
               </label>
               <div className="mt-1">
                 <input

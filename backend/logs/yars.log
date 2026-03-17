@@ -25,3 +25,55 @@
 2026-03-06 15:51:31,872 - INFO - Scraping user data for edu11235, limit: 30
 2026-03-06 15:51:34,521 - INFO - Successfully scraped user data for edu11235
 2026-03-06 15:51:34,535 - INFO - 127.0.0.1 - - [06/Mar/2026 15:51:34] "[35m[1mPOST /api/scrape/analyze/user HTTP/1.1[0m" 500 -
+2026-03-12 11:11:22,803 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.201.7.182:5000
+2026-03-12 11:11:22,804 - INFO - [33mPress CTRL+C to quit[0m
+2026-03-12 11:11:22,807 - INFO -  * Restarting with stat
+2026-03-12 11:11:25,627 - WARNING -  * Debugger is active!
+2026-03-12 11:11:25,634 - INFO -  * Debugger PIN: 388-889-587
+2026-03-12 11:13:25,819 - INFO - 127.0.0.1 - - [12/Mar/2026 11:13:25] "OPTIONS /api/login HTTP/1.1" 200 -
+2026-03-12 11:13:26,840 - INFO - 127.0.0.1 - - [12/Mar/2026 11:13:26] "POST /api/login HTTP/1.1" 200 -
+2026-03-12 11:20:08,830 - INFO - 127.0.0.1 - - [12/Mar/2026 11:20:08] "OPTIONS /api/login HTTP/1.1" 200 -
+2026-03-12 11:20:09,598 - INFO - 127.0.0.1 - - [12/Mar/2026 11:20:09] "POST /api/login HTTP/1.1" 200 -
+2026-03-12 11:20:51,919 - INFO - 127.0.0.1 - - [12/Mar/2026 11:20:51] "OPTIONS /api/login HTTP/1.1" 200 -
+2026-03-12 11:20:52,676 - INFO - 127.0.0.1 - - [12/Mar/2026 11:20:52] "POST /api/login HTTP/1.1" 200 -
+2026-03-12 11:30:10,750 - INFO - 127.0.0.1 - - [12/Mar/2026 11:30:10] "[31m[1mGET /api/scrape/subreddit/teenagers HTTP/1.1[0m" 405 -
+2026-03-12 11:30:18,916 - INFO - 127.0.0.1 - - [12/Mar/2026 11:30:18] "[33mPOST /api/scrape/subreddit/teenagers HTTP/1.1[0m" 404 -
+2026-03-12 11:31:27,187 - INFO - 127.0.0.1 - - [12/Mar/2026 11:31:27] "[33mPOST /api/scrape/subreddit/programming HTTP/1.1[0m" 404 -
+2026-03-12 11:31:31,366 - INFO - 127.0.0.1 - - [12/Mar/2026 11:31:31] "[33mPOST /api/scrape/subreddit/r/programming HTTP/1.1[0m" 404 -
+2026-03-12 11:32:12,243 - INFO - Search request successful
+2026-03-12 11:32:12,248 - INFO - Search returned 10 results
+2026-03-12 11:32:12,256 - INFO - 127.0.0.1 - - [12/Mar/2026 11:32:12] "POST /api/scrape/search HTTP/1.1" 200 -
+2026-03-12 11:48:36,531 - INFO - 127.0.0.1 - - [12/Mar/2026 11:48:36] "OPTIONS /api/login HTTP/1.1" 200 -
+2026-03-12 11:48:37,284 - INFO - 127.0.0.1 - - [12/Mar/2026 11:48:37] "POST /api/login HTTP/1.1" 200 -
+2026-03-12 11:49:24,973 - INFO - 127.0.0.1 - - [12/Mar/2026 11:49:24] "OPTIONS /api/register HTTP/1.1" 200 -
+2026-03-12 11:49:26,052 - INFO - 127.0.0.1 - - [12/Mar/2026 11:49:26] "[35m[1mPOST /api/register HTTP/1.1[0m" 201 -
+2026-03-12 11:50:20,173 - INFO - Search request successful
+2026-03-12 11:50:20,175 - INFO - Search returned 10 results
+2026-03-12 11:50:20,176 - INFO - 127.0.0.1 - - [12/Mar/2026 11:50:20] "POST /api/scrape/search HTTP/1.1" 200 -
+2026-03-12 11:51:02,357 - INFO - 127.0.0.1 - - [12/Mar/2026 11:51:02] "OPTIONS /api/login HTTP/1.1" 200 -
+2026-03-12 11:51:03,174 - INFO - 127.0.0.1 - - [12/Mar/2026 11:51:03] "POST /api/login HTTP/1.1" 200 -
+2026-03-15 18:22:04,050 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.53:5000
+2026-03-15 18:22:04,052 - INFO - [33mPress CTRL+C to quit[0m
+2026-03-15 18:22:04,055 - INFO -  * Restarting with stat
+2026-03-15 18:22:05,667 - WARNING -  * Debugger is active!
+2026-03-15 18:22:05,670 - INFO -  * Debugger PIN: 388-889-587
+2026-03-15 18:40:25,911 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.53:5000
+2026-03-15 18:40:25,913 - INFO - [33mPress CTRL+C to quit[0m
+2026-03-15 18:40:25,916 - INFO -  * Restarting with stat
+2026-03-15 18:40:28,718 - WARNING -  * Debugger is active!
+2026-03-15 18:40:28,724 - INFO -  * Debugger PIN: 388-889-587
+2026-03-15 18:41:35,076 - INFO - 127.0.0.1 - - [15/Mar/2026 18:41:35] "OPTIONS /api/login HTTP/1.1" 200 -
+2026-03-15 18:41:36,024 - INFO - 127.0.0.1 - - [15/Mar/2026 18:41:36] "POST /api/login HTTP/1.1" 200 -
+2026-03-15 18:43:37,624 - INFO - 127.0.0.1 - - [15/Mar/2026 18:43:37] "OPTIONS /api/register HTTP/1.1" 200 -
+2026-03-15 18:43:38,130 - INFO - 127.0.0.1 - - [15/Mar/2026 18:43:38] "[35m[1mPOST /api/register HTTP/1.1[0m" 201 -
+2026-03-15 18:43:38,257 - INFO - 127.0.0.1 - - [15/Mar/2026 18:43:38] "OPTIONS /api/login HTTP/1.1" 200 -
+2026-03-15 18:43:38,778 - INFO - 127.0.0.1 - - [15/Mar/2026 18:43:38] "POST /api/login HTTP/1.1" 200 -
