@@ -71,16 +71,11 @@ export default function Singup() {
       region: data.region,
     };
     
-    // 1. Guardar al usuario en la base de datos (esto ya te funciona)
-    await registerUser(userData);
+    const response = await registerUser(userData);
+    console.log("Login exitoso:", response);
 
-    // 2. NUEVO: Hacer Auto-Login inmediatamente después de registrarse
-    // OJO: Asumiendo que tu login usa email y password, pasamos esos datos
-    const loginResponse: any = await loginUser(data.username, data.password); 
-
-    // 3. NUEVO: Guardar la sesión en el navegador (Igual que en el Login)
-    const activeUser = loginResponse.user || loginResponse;
-    localStorage.setItem("animus_user", JSON.stringify(activeUser));
+    localStorage.setItem("user", JSON.stringify(response.user));
+    localStorage.setItem('token', response.token);
 
     // 4. Ahora sí, vamos a la página principal. 
     // Como ya guardamos 'animus_user', la página principal ya no nos va a rebotar.
@@ -95,7 +90,7 @@ export default function Singup() {
   const inputClassName = `appearance-none block w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-all duration-200 sm:text-sm text-gray-900 `;
 
   return (
-    <div className="min-h-dvh flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="min-h-dvh flex items-center justify-center bg-gray-50 px-4 sm:px-6 lg:px-8 py-10 font-sans">
       <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-2xl shadow-xl border border-gray-100">
         <div className="flex flex-col text-center items-center">
           <Image
@@ -118,7 +113,7 @@ export default function Singup() {
             {/* Campo Nombre Completo */}
             <div>
               <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
-                Nombre Completo
+                Nombre de la institución / organización
               </label>
               <div className="mt-1">
                 <input
@@ -137,7 +132,7 @@ export default function Singup() {
             {/* Campo Nombre de Usuario */}
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                Nombre de Usuario
+                Nombre de usuario
               </label>
               <div className="mt-1">
                 <input
@@ -156,7 +151,7 @@ export default function Singup() {
             {/* Campo Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Correo Electrónico
+                Correo electrónico
               </label>
               <div className="mt-1">
                 <input
@@ -239,7 +234,7 @@ export default function Singup() {
             {/* Campo Confirmar Password */}
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                Confirmar Contraseña
+                Confirmar contraseña
               </label>
               <div className="mt-1">
                 <input
