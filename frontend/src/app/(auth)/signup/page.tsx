@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { register as registerUser } from "../../services/auth";
+import { register as registerUser, login as loginUser } from "../../services/auth";
 import { User } from "../../types/user";
 
 // 1. Esquema de validación
@@ -59,23 +59,37 @@ export default function Singup() {
     resolver: zodResolver(signupSchema),
   });
 
-  const onSubmit: SubmitHandler<SignupFormInputs> = async (data) => {
-    setServerError(null);
-    try {
-      const userData: User = {
-        fullname: data.fullName,
-        username: data.username,
-        email: data.email,
-        password: data.password,
-        country: data.country,
-        region: data.region,
-      };
-      await registerUser(userData);
-      router.push("/");
-    } catch (error: any) {
-      setServerError(error.message || "Hubo un problema al crear tu cuenta. Intenta con otro correo.");
-    }
-  };
+ const onSubmit: SubmitHandler<SignupFormInputs> = async (data) => {
+  setServerError(null);
+  try {
+    const userData: User = {
+      fullname: data.fullName,
+      username: data.username,
+      email: data.email,
+      password: data.password,
+      country: data.country,
+      region: data.region,
+    };
+    
+    // 1. Guardar al usuario en la base de datos (esto ya te funciona)
+    await registerUser(userData);
+
+    // 2. NUEVO: Hacer Auto-Login inmediatamente después de registrarse
+    // OJO: Asumiendo que tu login usa email y password, pasamos esos datos
+    const loginResponse: any = await loginUser(data.username, data.password); 
+
+    // 3. NUEVO: Guardar la sesión en el navegador (Igual que en el Login)
+    const activeUser = loginResponse.user || loginResponse;
+    localStorage.setItem("animus_user", JSON.stringify(activeUser));
+
+    // 4. Ahora sí, vamos a la página principal. 
+    // Como ya guardamos 'animus_user', la página principal ya no nos va a rebotar.
+    router.push("/");
+    
+  } catch (error: any) {
+    setServerError(error.message || "Hubo un problema al crear tu cuenta. Intenta con otro correo.");
+  }
+};
 
   // Clase común para los inputs (text-gray-900 hace que la fuente sea más oscura al escribir)
   const inputClassName = `appearance-none block w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 transition-all duration-200 sm:text-sm text-gray-900 `;
