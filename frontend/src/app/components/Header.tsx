@@ -72,7 +72,7 @@ export default function Header() {
           </button>
           <ul className="w-fit whitespace-nowrap pointer-events-none absolute right-0 top-14 rounded-2xl border border-slate-100 bg-white p-3 text-slate-600 opacity-0 shadow-xl transition group-focus-within:pointer-events-auto group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:opacity-100">
             <li className="w-full rounded-xl px-3 py-2 text-left hover:bg-slate-50">
-              <button>Perfil</button>
+              <Link href="/settings">Perfil</Link>
             </li>
             <li className="w-full rounded-xl px-3 py-2 text-left hover:bg-slate-50">
               <button>Notificaciones</button>
