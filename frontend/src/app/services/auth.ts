@@ -13,7 +13,8 @@ export async function login(credentials: string, password: string): Promise<User
     throw new Error(errorData.message || "Invalid credentials.");
   }
 
-  return res.json();
+  const data = await res.json();
+  return data.user;
 }
 
 export async function checkDuplicate(text: string): Promise<boolean> {
@@ -44,14 +45,15 @@ export async function register(user: User): Promise<User> {
     throw new Error(errorData.message);
   }
 
-  return res.json();
+  const data = await res.json();
+  return data.user;
 }
 
-export async function deleteAccount(user: User): Promise<boolean> {
-  const res = await fetch("http://localhost:8080/api/user/delete", {
+export async function deleteAccount(email: string, password: string): Promise<boolean> {
+  const res = await fetch(`${API_BASE_URL}/account/delete`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(user),
+    body: JSON.stringify({ email, password }),
   });
 
   if (!res.ok) {
@@ -59,6 +61,36 @@ export async function deleteAccount(user: User): Promise<boolean> {
     throw new Error(errorData.message);
   }
 
-  const wasDeleted: boolean = await res.json();
-  return wasDeleted;
+  const data = await res.json();
+  return Boolean(data);
+}
+
+export async function getUser(userId: number): Promise<User> {
+  const res = await fetch(`${API_BASE_URL}/account/${userId}`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.message);
+  }
+
+  return res.json();
+}
+
+export async function updateUser(userId: number, updates: Partial<User>): Promise<User> {
+  const res = await fetch(`${API_BASE_URL}/account/${userId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updates),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.message);
+  }
+
+  const data = await res.json();
+  return data.user;
 }

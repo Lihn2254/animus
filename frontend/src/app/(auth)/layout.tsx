@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Red_Hat_Display, Funnel_Display } from "next/font/google";
 import "@/app/globals.css";
 import Footer from "../components/Footer";
+import { AuthProvider } from "@/app/context/AuthContext";
 
 const redHat = Red_Hat_Display({
   subsets: ["latin"],
@@ -30,9 +31,10 @@ export default function RootLayout({
       <body
         className={`${redHat.variable} ${funnel.variable} antialiased`}
       >
-
-        {children}
-        <Footer/>
+        <AuthProvider>
+          {children}
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );
