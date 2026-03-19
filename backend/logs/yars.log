@@ -77,3 +77,407 @@
 2026-03-15 18:43:38,130 - INFO - 127.0.0.1 - - [15/Mar/2026 18:43:38] "[35m[1mPOST /api/register HTTP/1.1[0m" 201 -
 2026-03-15 18:43:38,257 - INFO - 127.0.0.1 - - [15/Mar/2026 18:43:38] "OPTIONS /api/login HTTP/1.1" 200 -
 2026-03-15 18:43:38,778 - INFO - 127.0.0.1 - - [15/Mar/2026 18:43:38] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 12:34:17,493 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.100.160:5000
+2026-03-18 12:34:17,494 - INFO - [33mPress CTRL+C to quit[0m
+2026-03-18 12:34:17,495 - INFO -  * Restarting with stat
+2026-03-18 12:34:40,737 - WARNING -  * Debugger is active!
+2026-03-18 12:34:40,739 - INFO -  * Debugger PIN: 619-179-641
+2026-03-18 12:50:27,668 - INFO -  * Detected change in 'C:\\Git_Repositories\\animus\\backend\\services\\ai_analysis_service.py', reloading
+2026-03-18 12:50:27,844 - INFO -  * Restarting with stat
+2026-03-18 12:50:51,246 - WARNING -  * Debugger is active!
+2026-03-18 12:50:51,251 - INFO -  * Debugger PIN: 619-179-641
+2026-03-18 12:51:33,953 - INFO -  * Detected change in 'C:\\Git_Repositories\\animus\\backend\\controllers\\analysis_controller.py', reloading
+2026-03-18 12:51:34,105 - INFO -  * Restarting with stat
+2026-03-18 12:51:56,636 - WARNING -  * Debugger is active!
+2026-03-18 12:51:56,638 - INFO -  * Debugger PIN: 619-179-641
+2026-03-18 12:52:38,112 - INFO - 127.0.0.1 - - [18/Mar/2026 12:52:38] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 12:53:39,799 - INFO - 127.0.0.1 - - [18/Mar/2026 12:53:39] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 401 -
+2026-03-18 12:55:05,352 - INFO - 127.0.0.1 - - [18/Mar/2026 12:55:05] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 401 -
+2026-03-18 15:14:22,096 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.68.116:5000
+2026-03-18 15:14:22,097 - INFO - [33mPress CTRL+C to quit[0m
+2026-03-18 15:14:22,099 - INFO -  * Restarting with stat
+2026-03-18 15:14:24,747 - WARNING -  * Debugger is active!
+2026-03-18 15:14:24,749 - INFO -  * Debugger PIN: 619-179-641
+2026-03-18 15:15:03,907 - INFO - 127.0.0.1 - - [18/Mar/2026 15:15:03] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 401 -
+2026-03-18 15:16:49,403 - INFO - 127.0.0.1 - - [18/Mar/2026 15:16:49] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 401 -
+2026-03-18 15:17:58,601 - INFO - 127.0.0.1 - - [18/Mar/2026 15:17:58] "[35m[1mPOST /api/login HTTP/1.1[0m" 500 -
+2026-03-18 15:18:38,216 - INFO - 127.0.0.1 - - [18/Mar/2026 15:18:38] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:19:23,775 - INFO - 127.0.0.1 - - [18/Mar/2026 15:19:23] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 401 -
+2026-03-18 15:22:37,992 - INFO - 127.0.0.1 - - [18/Mar/2026 15:22:37] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 401 -
+2026-03-18 15:22:55,575 - INFO - 127.0.0.1 - - [18/Mar/2026 15:22:55] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:23:03,081 - INFO - 127.0.0.1 - - [18/Mar/2026 15:23:03] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 401 -
+2026-03-18 15:26:52,880 - INFO - 127.0.0.1 - - [18/Mar/2026 15:26:52] "[33mPOST /api/auth/login HTTP/1.1[0m" 404 -
+2026-03-18 15:27:16,546 - INFO - 127.0.0.1 - - [18/Mar/2026 15:27:16] "[35m[1mPOST /api/login HTTP/1.1[0m" 500 -
+2026-03-18 15:27:28,067 - INFO - 127.0.0.1 - - [18/Mar/2026 15:27:28] "[35m[1mPOST /api/login HTTP/1.1[0m" 500 -
+2026-03-18 15:27:53,832 - INFO - 127.0.0.1 - - [18/Mar/2026 15:27:53] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:29:29,889 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.68.116:5000
+2026-03-18 15:29:29,890 - INFO - [33mPress CTRL+C to quit[0m
+2026-03-18 15:29:29,892 - INFO -  * Restarting with stat
+2026-03-18 15:29:32,690 - WARNING -  * Debugger is active!
+2026-03-18 15:29:32,693 - INFO -  * Debugger PIN: 619-179-641
+2026-03-18 15:31:19,269 - INFO -  * Detected change in 'C:\\Git_Repositories\\animus\\backend\\infrastructure\\config.py', reloading
+2026-03-18 15:31:19,643 - INFO -  * Restarting with stat
+2026-03-18 15:31:22,679 - WARNING -  * Debugger is active!
+2026-03-18 15:31:22,681 - INFO -  * Debugger PIN: 619-179-641
+2026-03-18 15:31:45,225 - INFO -  * Detected change in 'C:\\Git_Repositories\\animus\\backend\\infrastructure\\config.py', reloading
+2026-03-18 15:31:45,627 - INFO -  * Restarting with stat
+2026-03-18 15:31:55,113 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.68.116:5000
+2026-03-18 15:31:55,113 - INFO - [33mPress CTRL+C to quit[0m
+2026-03-18 15:31:55,115 - INFO -  * Restarting with stat
+2026-03-18 15:31:57,998 - WARNING -  * Debugger is active!
+2026-03-18 15:31:58,001 - INFO -  * Debugger PIN: 619-179-641
+2026-03-18 15:32:06,001 - INFO - 127.0.0.1 - - [18/Mar/2026 15:32:06] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 401 -
+2026-03-18 15:32:11,060 - INFO - 127.0.0.1 - - [18/Mar/2026 15:32:11] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:32:20,597 - INFO - 127.0.0.1 - - [18/Mar/2026 15:32:20] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 401 -
+2026-03-18 15:32:23,994 - INFO - 127.0.0.1 - - [18/Mar/2026 15:32:23] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 401 -
+2026-03-18 15:32:24,740 - INFO - 127.0.0.1 - - [18/Mar/2026 15:32:24] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 401 -
+2026-03-18 15:32:25,285 - INFO - 127.0.0.1 - - [18/Mar/2026 15:32:25] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 401 -
+2026-03-18 15:32:25,450 - INFO - 127.0.0.1 - - [18/Mar/2026 15:32:25] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 401 -
+2026-03-18 15:33:18,986 - INFO - 127.0.0.1 - - [18/Mar/2026 15:33:18] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 401 -
+2026-03-18 15:34:07,668 - INFO - 127.0.0.1 - - [18/Mar/2026 15:34:07] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 401 -
+2026-03-18 15:34:08,575 - INFO - 127.0.0.1 - - [18/Mar/2026 15:34:08] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 401 -
+2026-03-18 15:34:28,568 - INFO - 127.0.0.1 - - [18/Mar/2026 15:34:28] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 401 -
+2026-03-18 15:34:39,738 - INFO - 127.0.0.1 - - [18/Mar/2026 15:34:39] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 401 -
+2026-03-18 15:35:37,523 - INFO - 127.0.0.1 - - [18/Mar/2026 15:35:37] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:35:40,244 - INFO - 127.0.0.1 - - [18/Mar/2026 15:35:40] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:35:41,266 - INFO - 127.0.0.1 - - [18/Mar/2026 15:35:41] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:35:42,085 - INFO - 127.0.0.1 - - [18/Mar/2026 15:35:42] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:35:43,956 - INFO - 127.0.0.1 - - [18/Mar/2026 15:35:43] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:35:45,789 - INFO - 127.0.0.1 - - [18/Mar/2026 15:35:45] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:35:46,671 - INFO - 127.0.0.1 - - [18/Mar/2026 15:35:46] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:35:47,469 - INFO - 127.0.0.1 - - [18/Mar/2026 15:35:47] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:35:48,280 - INFO - 127.0.0.1 - - [18/Mar/2026 15:35:48] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:35:49,838 - INFO - 127.0.0.1 - - [18/Mar/2026 15:35:49] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:35:50,760 - INFO - 127.0.0.1 - - [18/Mar/2026 15:35:50] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:35:51,752 - INFO - 127.0.0.1 - - [18/Mar/2026 15:35:51] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:35:52,448 - INFO - 127.0.0.1 - - [18/Mar/2026 15:35:52] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:37:02,085 - INFO - 127.0.0.1 - - [18/Mar/2026 15:37:02] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 401 -
+2026-03-18 15:39:13,207 - INFO - 127.0.0.1 - - [18/Mar/2026 15:39:13] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:39:28,151 - INFO - 127.0.0.1 - - [18/Mar/2026 15:39:28] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:39:45,893 - INFO - 127.0.0.1 - - [18/Mar/2026 15:39:45] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 401 -
+2026-03-18 15:40:25,700 - INFO -  * Detected change in 'C:\\Git_Repositories\\animus\\backend\\middlewares\\jwt_required.py', reloading
+2026-03-18 15:40:26,079 - INFO -  * Restarting with stat
+2026-03-18 15:40:29,657 - WARNING -  * Debugger is active!
+2026-03-18 15:40:29,660 - INFO -  * Debugger PIN: 619-179-641
+2026-03-18 15:40:39,986 - INFO -  * Detected change in 'C:\\Git_Repositories\\animus\\backend\\controllers\\auth_controller.py', reloading
+2026-03-18 15:40:40,393 - INFO -  * Restarting with stat
+2026-03-18 15:40:43,879 - WARNING -  * Debugger is active!
+2026-03-18 15:40:43,883 - INFO -  * Debugger PIN: 619-179-641
+2026-03-18 15:40:50,080 - INFO -  * Detected change in 'C:\\Git_Repositories\\animus\\backend\\controllers\\auth_controller.py', reloading
+2026-03-18 15:40:50,440 - INFO -  * Restarting with stat
+2026-03-18 15:40:53,536 - WARNING -  * Debugger is active!
+2026-03-18 15:40:53,538 - INFO -  * Debugger PIN: 619-179-641
+2026-03-18 15:40:56,733 - INFO - 127.0.0.1 - - [18/Mar/2026 15:40:56] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:41:41,385 - INFO - 127.0.0.1 - - [18/Mar/2026 15:41:41] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 401 -
+2026-03-18 15:42:01,184 - INFO -  * Detected change in 'C:\\Git_Repositories\\animus\\backend\\middlewares\\jwt_required.py', reloading
+2026-03-18 15:42:01,535 - INFO -  * Restarting with stat
+2026-03-18 15:42:04,463 - WARNING -  * Debugger is active!
+2026-03-18 15:42:04,466 - INFO -  * Debugger PIN: 619-179-641
+2026-03-18 15:42:05,537 - INFO -  * Detected change in 'C:\\Git_Repositories\\animus\\backend\\controllers\\auth_controller.py', reloading
+2026-03-18 15:42:05,953 - INFO -  * Restarting with stat
+2026-03-18 15:42:09,007 - WARNING -  * Debugger is active!
+2026-03-18 15:42:09,010 - INFO -  * Debugger PIN: 619-179-641
+2026-03-18 15:42:12,217 - INFO -  * Detected change in 'C:\\Git_Repositories\\animus\\backend\\controllers\\auth_controller.py', reloading
+2026-03-18 15:42:12,585 - INFO -  * Restarting with stat
+2026-03-18 15:42:15,546 - WARNING -  * Debugger is active!
+2026-03-18 15:42:15,548 - INFO -  * Debugger PIN: 619-179-641
+2026-03-18 15:42:25,355 - INFO - [DEBUG LOGIN] SECRET_KEY length: 41, first 10 chars: your-secre
+2026-03-18 15:42:25,355 - INFO - [DEBUG LOGIN] Generated token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-03-18 15:42:25,359 - INFO - 127.0.0.1 - - [18/Mar/2026 15:42:25] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:42:33,525 - INFO - [DEBUG] SECRET_KEY length: 41, first 10 chars: your-secre
+2026-03-18 15:42:33,525 - INFO - [DEBUG] Token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-03-18 15:42:33,525 - ERROR - [DEBUG] Invalid token: InvalidSubjectError: Subject must be a string
+2026-03-18 15:42:33,526 - INFO - 127.0.0.1 - - [18/Mar/2026 15:42:33] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 401 -
+2026-03-18 15:42:45,408 - INFO -  * Detected change in 'C:\\Git_Repositories\\animus\\backend\\controllers\\auth_controller.py', reloading
+2026-03-18 15:42:45,803 - INFO -  * Restarting with stat
+2026-03-18 15:42:48,770 - WARNING -  * Debugger is active!
+2026-03-18 15:42:48,772 - INFO -  * Debugger PIN: 619-179-641
+2026-03-18 15:42:50,884 - INFO -  * Detected change in 'C:\\Git_Repositories\\animus\\backend\\controllers\\auth_controller.py', reloading
+2026-03-18 15:42:51,229 - INFO -  * Restarting with stat
+2026-03-18 15:42:54,248 - WARNING -  * Debugger is active!
+2026-03-18 15:42:54,250 - INFO -  * Debugger PIN: 619-179-641
+2026-03-18 15:42:55,320 - INFO -  * Detected change in 'C:\\Git_Repositories\\animus\\backend\\middlewares\\jwt_required.py', reloading
+2026-03-18 15:42:55,817 - INFO -  * Restarting with stat
+2026-03-18 15:42:58,604 - WARNING -  * Debugger is active!
+2026-03-18 15:42:58,607 - INFO -  * Debugger PIN: 619-179-641
+2026-03-18 15:43:08,035 - INFO - [DEBUG LOGIN] SECRET_KEY length: 41, first 10 chars: your-secre
+2026-03-18 15:43:08,035 - INFO - [DEBUG LOGIN] Generated token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-03-18 15:43:08,037 - INFO - 127.0.0.1 - - [18/Mar/2026 15:43:08] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:43:16,448 - INFO - [DEBUG] SECRET_KEY length: 41, first 10 chars: your-secre
+2026-03-18 15:43:16,448 - INFO - [DEBUG] Token: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+2026-03-18 15:43:17,735 - INFO - Search request successful
+2026-03-18 15:43:17,737 - INFO - Search returned 15 results
+2026-03-18 15:43:19,070 - INFO - Post details request successful: https://www.reddit.com/r/technology/comments/1msbuph/apple_ceo_tim_cook_says_the_technology_theyre/.json
+2026-03-18 15:43:19,074 - INFO - Successfully scraped post: Apple CEO Tim Cook Says the Technology They’re Developing Will Be ‘One of the Most Profound Technologies of Our Lifetime’
+2026-03-18 15:43:20,843 - INFO - Post details request successful: https://www.reddit.com/r/interesting/comments/1r828q8/coffee_shop_uses_technology_to_audit_employee/.json
+2026-03-18 15:43:20,852 - INFO - Successfully scraped post: Coffee shop uses technology to audit employee productivity
+2026-03-18 15:43:22,168 - INFO - Post details request successful: https://www.reddit.com/r/NonPoliticalTwitter/comments/1od2hpo/technology_is_getting_out_of_hand/.json
+2026-03-18 15:43:22,176 - INFO - Successfully scraped post: Technology is getting out of hand
+2026-03-18 15:43:23,215 - INFO - Post details request successful: https://www.reddit.com/r/Roadcam/comments/1q8iite/china_when_modern_technology_meets_old/.json
+2026-03-18 15:43:23,219 - INFO - Successfully scraped post: [China] When modern technology meets old infrastructure
+2026-03-18 15:43:24,521 - INFO - Post details request successful: https://www.reddit.com/r/AmazingTechnology/comments/1riourg/china_cars_parking_technology/.json
+2026-03-18 15:43:24,523 - INFO - Successfully scraped post: China cars parking technology
+2026-03-18 15:43:25,717 - INFO - Post details request successful: https://www.reddit.com/r/AskReddit/comments/1b3u4kz/what_kind_of_technology_do_you_think_already/.json
+2026-03-18 15:43:25,722 - INFO - Successfully scraped post: What kind of technology do you think already exists, but the government is keeping a secret? 
+2026-03-18 15:43:26,329 - INFO - Post details request successful: https://www.reddit.com/r/Amazing/comments/1rcr0x8/amazing_technology_introduce_by_china/.json
+2026-03-18 15:43:26,333 - INFO - Successfully scraped post: Amazing technology introduce by china
+2026-03-18 15:43:27,464 - INFO - Post details request successful: https://www.reddit.com/r/pcmasterrace/comments/1rvljdt/dlss_5_finally_a_technology_that_renders_exactly/.json
+2026-03-18 15:43:27,467 - INFO - Successfully scraped post: DLSS 5: Finally, a technology that renders exactly what the developers didn't intend.
+2026-03-18 15:43:28,698 - INFO - Post details request successful: https://www.reddit.com/r/interestingasfuck/comments/1qwl5kj/the_evolution_of_technology_has_made_it_possible/.json
+2026-03-18 15:43:28,704 - INFO - Successfully scraped post: The evolution of technology has made it possible to produce insulin without using animals.
+2026-03-18 15:43:29,845 - INFO - Post details request successful: https://www.reddit.com/r/BeAmazed/comments/1r5diw9/isnt_it_mindblowing_how_people_in_the_past/.json
+2026-03-18 15:43:29,848 - INFO - Successfully scraped post: Isn't it mind-blowing how people in the past travelled across these massive oceans without technology?
+2026-03-18 15:43:31,288 - INFO - Post details request successful: https://www.reddit.com/r/TwoXChromosomes/comments/1rs2fqq/palantir_ceo_thinks_his_ai_technology_will_lessen/.json
+2026-03-18 15:43:31,293 - INFO - Successfully scraped post: Palantir CEO thinks his AI technology "will lessen the power of highly educated, often female voters, who vote mostly democrat"
+2026-03-18 15:43:32,475 - INFO - Post details request successful: https://www.reddit.com/r/videos/comments/1rtui1f/you_are_being_misled_about_renewable_energy/.json
+2026-03-18 15:43:32,480 - INFO - Successfully scraped post: You are being misled about renewable energy technology.
+2026-03-18 15:44:34,350 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.68.116:5000
+2026-03-18 15:44:34,350 - INFO - [33mPress CTRL+C to quit[0m
+2026-03-18 15:44:34,352 - INFO -  * Restarting with stat
+2026-03-18 15:44:37,682 - WARNING -  * Debugger is active!
+2026-03-18 15:44:37,685 - INFO -  * Debugger PIN: 619-179-641
+2026-03-18 15:44:39,778 - INFO -  * Detected change in 'C:\\Git_Repositories\\animus\\backend\\controllers\\auth_controller.py', reloading
+2026-03-18 15:44:40,207 - INFO -  * Restarting with stat
+2026-03-18 15:44:43,316 - WARNING -  * Debugger is active!
+2026-03-18 15:44:43,319 - INFO -  * Debugger PIN: 619-179-641
+2026-03-18 15:49:04,582 - INFO - 127.0.0.1 - - [18/Mar/2026 15:49:04] "POST /api/login HTTP/1.1" 200 -
+2026-03-18 15:50:18,801 - INFO - Search request successful
+2026-03-18 15:50:18,802 - INFO - Search returned 10 results
+2026-03-18 15:50:19,617 - INFO - Post details request successful: https://www.reddit.com/r/EconomyCharts/comments/1rf8tzb/the_software_industry_is_apparently_dying_but_job/.json
+2026-03-18 15:50:19,641 - INFO - Successfully scraped post: The software industry is apparently dying but job postings for software engineers are rapidly rising
+2026-03-18 15:50:20,685 - INFO - Post details request successful: https://www.reddit.com/r/Piracy/comments/1pqz0aq/free_alternatives_to_popular_softwares/.json
+2026-03-18 15:50:20,689 - INFO - Successfully scraped post: Free Alternatives to Popular Softwares
+2026-03-18 15:50:22,076 - INFO - Post details request successful: https://www.reddit.com/r/Piracy/comments/ozmnli/guys_where_do_you_get_ur_software_from/.json
+2026-03-18 15:50:22,080 - INFO - Successfully scraped post: guys where do you get ur software from....?
+2026-03-18 15:50:23,609 - INFO - Post details request successful: https://www.reddit.com/r/Salary/comments/1qkqsrk/29msoftware_engineer_600k/.json
+2026-03-18 15:50:23,612 - INFO - Successfully scraped post: [29m][software engineer] - $600k+
+2026-03-18 15:50:24,739 - INFO - Post details request successful: https://www.reddit.com/r/Piracy/comments/1imtc9w/who_said_cracking_software_was_hard/.json
+2026-03-18 15:50:24,741 - INFO - Successfully scraped post: Who said cracking software was hard?
+2026-03-18 15:50:25,045 - INFO - Post details request successful: https://www.reddit.com/r/careeradvice/comments/1quwsie/is_software_engineering_dying/.json
+2026-03-18 15:50:25,046 - INFO - Successfully scraped post: Is software engineering dying?
+2026-03-18 15:50:26,699 - INFO - Post details request successful: https://www.reddit.com/r/technology/comments/1rdd54l/discord_cuts_ties_with_peter_thielbacked/.json
+2026-03-18 15:50:26,704 - INFO - Successfully scraped post: Discord cuts ties with Peter Thiel-backed verification software after code found in US surveillance
+2026-03-18 15:50:27,956 - INFO - Post details request successful: https://www.reddit.com/r/europe/comments/1r4qnzf/google_criticizes_europes_plan_to_adopt_free/.json
+2026-03-18 15:50:27,962 - INFO - Successfully scraped post: Google criticizes Europe’s plan to adopt free software
+2026-03-18 15:50:29,285 - INFO - Post details request successful: https://www.reddit.com/r/technology/comments/1nrypvu/morgan_stanley_warns_ai_could_sink_42yearold/.json
+2026-03-18 15:50:29,290 - INFO - Successfully scraped post: Morgan Stanley warns AI could sink 42-year-old software giant Adobe
+2026-03-18 15:50:30,927 - INFO - Post details request successful: https://www.reddit.com/r/LivestreamFail/comments/1p4nm2h/j0beats_uk_pokémon_go_streamer_gets_striked/.json
+2026-03-18 15:50:30,931 - INFO - Successfully scraped post: "j0beats" UK Pokémon GO streamer gets striked/ banned from Pokémon GO for 
+"using modified client software or unauthorized third-party software"
+2026-03-18 15:50:31,393 - INFO - Search request successful
+2026-03-18 15:50:31,394 - INFO - Search returned 10 results
+2026-03-18 15:50:32,010 - INFO - Post details request successful: https://www.reddit.com/r/coolguides/comments/ypvl55/12_stages_of_burnout/.json
+2026-03-18 15:50:32,012 - INFO - Successfully scraped post: 12 stages of burnout
+2026-03-18 15:50:32,937 - INFO - Post details request successful: https://www.reddit.com/r/coolguides/comments/1py1sxa/a_cool_guide_to_burnout/.json
+2026-03-18 15:50:32,942 - INFO - Successfully scraped post: A cool guide to Burnout:
+2026-03-18 15:50:33,449 - INFO - Post details request successful: https://www.reddit.com/r/overemployed/comments/1nezomh/the_burnout_recovery_timeline_nobody_talks_about/.json
+2026-03-18 15:50:33,450 - INFO - Successfully scraped post: The burnout recovery timeline nobody talks about (what I wish I'd known)
+2026-03-18 15:50:34,262 - INFO - Post details request successful: https://www.reddit.com/r/womenintech/comments/1rbqvak/what_i_thought_was_severe_burnout_turned_out_to/.json
+2026-03-18 15:50:34,264 - INFO - Successfully scraped post: What I thought was severe burnout turned out to be something else. Something worse.
+2026-03-18 15:50:35,390 - INFO - Post details request successful: https://www.reddit.com/r/YouShouldKnow/comments/635bbc/ysk_the_symptoms_of_burnout_before_it_causes/.json
+2026-03-18 15:50:35,396 - INFO - Successfully scraped post: YSK: The symptoms of burnout before it causes irreparable damage to your career and/or relationships
+2026-03-18 15:50:35,799 - INFO - Post details request successful: https://www.reddit.com/r/mentalhealth/comments/1qw08im/what_are_the_symptoms_of_your_burnout/.json
+2026-03-18 15:50:35,801 - INFO - Successfully scraped post: What are the symptoms of your burnout?
+2026-03-18 15:50:36,783 - INFO - Post details request successful: https://www.reddit.com/r/medicine/comments/zhyhsx/burnout_is_not_real/.json
+2026-03-18 15:50:36,787 - INFO - Successfully scraped post: Burnout is not real
+2026-03-18 15:50:37,542 - INFO - Post details request successful: https://www.reddit.com/r/productivity/comments/1dznw6r/people_who_burned_out_what_did_you_do_to_recover/.json
+2026-03-18 15:50:37,545 - INFO - Successfully scraped post: People who burned out, what did you do to recover?
+2026-03-18 15:50:38,050 - INFO - Post details request successful: https://www.reddit.com/r/coolguides/comments/1r3ngv7/a_cool_guide_to_recognizing_burnout/.json
+2026-03-18 15:50:38,051 - INFO - Successfully scraped post: A cool guide to recognizing burnout
+2026-03-18 15:50:38,367 - INFO - Post details request successful: https://www.reddit.com/r/careeradvice/comments/u5w3p3/ive_dealt_with_burnout_3_times_in_my_life_here/.json
+2026-03-18 15:50:38,368 - INFO - Successfully scraped post: I've dealt with burnout 3 times in my life. Here are various, unsexy ways I've dealt with it
+2026-03-18 15:50:39,138 - INFO - 127.0.0.1 - - [18/Mar/2026 15:50:39] "[35m[1mPOST /api/analysis/run HTTP/1.1[0m" 500 -
+2026-03-18 18:51:51,025 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.2:5000
+2026-03-18 18:51:51,026 - INFO - [33mPress CTRL+C to quit[0m
+2026-03-18 18:51:51,028 - INFO -  * Restarting with stat
+2026-03-18 18:51:54,653 - WARNING -  * Debugger is active!
+2026-03-18 18:51:54,695 - INFO -  * Debugger PIN: 619-179-641
+2026-03-18 19:55:22,010 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.2:5000
+2026-03-18 19:55:22,010 - INFO - [33mPress CTRL+C to quit[0m
+2026-03-18 19:55:22,011 - INFO -  * Restarting with stat
+2026-03-18 19:55:24,819 - WARNING -  * Debugger is active!
+2026-03-18 19:55:24,821 - INFO -  * Debugger PIN: 619-179-641
+2026-03-18 19:55:29,015 - ERROR - 127.0.0.1 - - [18/Mar/2026 19:55:29] code 400, message Bad HTTP/0.9 request type ('Content-Length:')
+2026-03-18 19:55:29,015 - INFO - 127.0.0.1 - - [18/Mar/2026 19:55:29] "[31m[1mContent-Length: 542[0m" 400 -
+2026-03-18 19:55:37,719 - ERROR - 127.0.0.1 - - [18/Mar/2026 19:55:37] code 400, message Bad HTTP/0.9 request type ('Content-Length:')
+2026-03-18 19:55:37,719 - INFO - 127.0.0.1 - - [18/Mar/2026 19:55:37] "[31m[1mContent-Length: 542[0m" 400 -
+2026-03-18 20:01:14,878 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.2:5000
+2026-03-18 20:01:14,878 - INFO - [33mPress CTRL+C to quit[0m
+2026-03-18 20:01:14,880 - INFO -  * Restarting with stat
+2026-03-18 20:01:17,525 - WARNING -  * Debugger is active!
+2026-03-18 20:01:17,527 - INFO -  * Debugger PIN: 619-179-641
+2026-03-18 20:01:22,871 - INFO - Search request successful
+2026-03-18 20:01:22,872 - INFO - Search returned 10 results
+2026-03-18 20:01:23,791 - INFO - Post details request successful: https://www.reddit.com/r/EconomyCharts/comments/1rf8tzb/the_software_industry_is_apparently_dying_but_job/.json
+2026-03-18 20:01:23,793 - INFO - Successfully scraped post: The software industry is apparently dying but job postings for software engineers are rapidly rising
+2026-03-18 20:01:24,812 - INFO - Post details request successful: https://www.reddit.com/r/Piracy/comments/1pqz0aq/free_alternatives_to_popular_softwares/.json
+2026-03-18 20:01:24,816 - INFO - Successfully scraped post: Free Alternatives to Popular Softwares
+2026-03-18 20:01:26,196 - INFO - Post details request successful: https://www.reddit.com/r/Piracy/comments/ozmnli/guys_where_do_you_get_ur_software_from/.json
+2026-03-18 20:01:26,199 - INFO - Successfully scraped post: guys where do you get ur software from....?
+2026-03-18 20:01:27,308 - INFO - Post details request successful: https://www.reddit.com/r/Salary/comments/1qkqsrk/29msoftware_engineer_600k/.json
+2026-03-18 20:01:27,311 - INFO - Successfully scraped post: [29m][software engineer] - $600k+
+2026-03-18 20:01:28,150 - INFO - Post details request successful: https://www.reddit.com/r/Piracy/comments/1imtc9w/who_said_cracking_software_was_hard/.json
+2026-03-18 20:01:28,151 - INFO - Successfully scraped post: Who said cracking software was hard?
+2026-03-18 20:01:28,422 - INFO - Post details request successful: https://www.reddit.com/r/careeradvice/comments/1quwsie/is_software_engineering_dying/.json
+2026-03-18 20:01:28,422 - INFO - Successfully scraped post: Is software engineering dying?
+2026-03-18 20:01:30,512 - INFO - Post details request successful: https://www.reddit.com/r/technology/comments/1rdd54l/discord_cuts_ties_with_peter_thielbacked/.json
+2026-03-18 20:01:30,515 - INFO - Successfully scraped post: Discord cuts ties with Peter Thiel-backed verification software after code found in US surveillance
+2026-03-18 20:01:32,249 - INFO - Post details request successful: https://www.reddit.com/r/europe/comments/1r4qnzf/google_criticizes_europes_plan_to_adopt_free/.json
+2026-03-18 20:01:32,252 - INFO - Successfully scraped post: Google criticizes Europe’s plan to adopt free software
+2026-03-18 20:01:33,567 - INFO - Post details request successful: https://www.reddit.com/r/technology/comments/1nrypvu/morgan_stanley_warns_ai_could_sink_42yearold/.json
+2026-03-18 20:01:33,570 - INFO - Successfully scraped post: Morgan Stanley warns AI could sink 42-year-old software giant Adobe
+2026-03-18 20:01:34,840 - INFO - Post details request successful: https://www.reddit.com/r/LivestreamFail/comments/1p4nm2h/j0beats_uk_pokémon_go_streamer_gets_striked/.json
+2026-03-18 20:01:34,843 - INFO - Successfully scraped post: "j0beats" UK Pokémon GO streamer gets striked/ banned from Pokémon GO for 
+"using modified client software or unauthorized third-party software"
+2026-03-18 20:01:35,146 - INFO - Search request successful
+2026-03-18 20:01:35,146 - INFO - Search returned 10 results
+2026-03-18 20:01:35,765 - INFO - Post details request successful: https://www.reddit.com/r/coolguides/comments/ypvl55/12_stages_of_burnout/.json
+2026-03-18 20:01:35,767 - INFO - Successfully scraped post: 12 stages of burnout
+2026-03-18 20:01:37,028 - INFO - Post details request successful: https://www.reddit.com/r/coolguides/comments/1py1sxa/a_cool_guide_to_burnout/.json
+2026-03-18 20:01:37,031 - INFO - Successfully scraped post: A cool guide to Burnout:
+2026-03-18 20:01:37,463 - INFO - Post details request successful: https://www.reddit.com/r/overemployed/comments/1nezomh/the_burnout_recovery_timeline_nobody_talks_about/.json
+2026-03-18 20:01:37,465 - INFO - Successfully scraped post: The burnout recovery timeline nobody talks about (what I wish I'd known)
+2026-03-18 20:01:38,135 - INFO - Post details request successful: https://www.reddit.com/r/womenintech/comments/1rbqvak/what_i_thought_was_severe_burnout_turned_out_to/.json
+2026-03-18 20:01:38,136 - INFO - Successfully scraped post: What I thought was severe burnout turned out to be something else. Something worse.
+2026-03-18 20:01:39,308 - INFO - Post details request successful: https://www.reddit.com/r/YouShouldKnow/comments/635bbc/ysk_the_symptoms_of_burnout_before_it_causes/.json
+2026-03-18 20:01:39,311 - INFO - Successfully scraped post: YSK: The symptoms of burnout before it causes irreparable damage to your career and/or relationships
+2026-03-18 20:01:39,692 - INFO - Post details request successful: https://www.reddit.com/r/mentalhealth/comments/1qw08im/what_are_the_symptoms_of_your_burnout/.json
+2026-03-18 20:01:39,693 - INFO - Successfully scraped post: What are the symptoms of your burnout?
+2026-03-18 20:01:40,736 - INFO - Post details request successful: https://www.reddit.com/r/medicine/comments/zhyhsx/burnout_is_not_real/.json
+2026-03-18 20:01:40,740 - INFO - Successfully scraped post: Burnout is not real
+2026-03-18 20:01:41,468 - INFO - Post details request successful: https://www.reddit.com/r/productivity/comments/1dznw6r/people_who_burned_out_what_did_you_do_to_recover/.json
+2026-03-18 20:01:41,469 - INFO - Successfully scraped post: People who burned out, what did you do to recover?
+2026-03-18 20:01:41,767 - INFO - Post details request successful: https://www.reddit.com/r/coolguides/comments/1r3ngv7/a_cool_guide_to_recognizing_burnout/.json
+2026-03-18 20:01:41,768 - INFO - Successfully scraped post: A cool guide to recognizing burnout
+2026-03-18 20:01:42,032 - INFO - Post details request successful: https://www.reddit.com/r/careeradvice/comments/u5w3p3/ive_dealt_with_burnout_3_times_in_my_life_here/.json
+2026-03-18 20:01:42,032 - INFO - Successfully scraped post: I've dealt with burnout 3 times in my life. Here are various, unsexy ways I've dealt with it
+2026-03-18 20:01:43,088 - INFO - 127.0.0.1 - - [18/Mar/2026 20:01:43] "[35m[1mPOST /api/analysis/run HTTP/1.1[0m" 500 -
+2026-03-18 20:06:23,051 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.2:5000
+2026-03-18 20:06:23,052 - INFO - [33mPress CTRL+C to quit[0m
+2026-03-18 20:07:54,368 - INFO - Search request successful
+2026-03-18 20:07:54,369 - INFO - Search returned 10 results
+2026-03-18 20:07:55,611 - INFO - Post details request successful: https://www.reddit.com/r/EconomyCharts/comments/1rf8tzb/the_software_industry_is_apparently_dying_but_job/.json
+2026-03-18 20:07:55,614 - INFO - Successfully scraped post: The software industry is apparently dying but job postings for software engineers are rapidly rising
+2026-03-18 20:07:57,055 - INFO - Post details request successful: https://www.reddit.com/r/Piracy/comments/1pqz0aq/free_alternatives_to_popular_softwares/.json
+2026-03-18 20:07:57,060 - INFO - Successfully scraped post: Free Alternatives to Popular Softwares
+2026-03-18 20:07:57,989 - INFO - Post details request successful: https://www.reddit.com/r/Piracy/comments/ozmnli/guys_where_do_you_get_ur_software_from/.json
+2026-03-18 20:07:57,992 - INFO - Successfully scraped post: guys where do you get ur software from....?
+2026-03-18 20:07:59,382 - INFO - Post details request successful: https://www.reddit.com/r/Salary/comments/1qkqsrk/29msoftware_engineer_600k/.json
+2026-03-18 20:07:59,388 - INFO - Successfully scraped post: [29m][software engineer] - $600k+
+2026-03-18 20:08:00,071 - INFO - Post details request successful: https://www.reddit.com/r/Piracy/comments/1imtc9w/who_said_cracking_software_was_hard/.json
+2026-03-18 20:08:00,073 - INFO - Successfully scraped post: Who said cracking software was hard?
+2026-03-18 20:08:00,349 - INFO - Post details request successful: https://www.reddit.com/r/careeradvice/comments/1quwsie/is_software_engineering_dying/.json
+2026-03-18 20:08:00,350 - INFO - Successfully scraped post: Is software engineering dying?
+2026-03-18 20:08:02,377 - INFO - Post details request successful: https://www.reddit.com/r/technology/comments/1rdd54l/discord_cuts_ties_with_peter_thielbacked/.json
+2026-03-18 20:08:02,384 - INFO - Successfully scraped post: Discord cuts ties with Peter Thiel-backed verification software after code found in US surveillance
+2026-03-18 20:08:03,867 - INFO - Post details request successful: https://www.reddit.com/r/europe/comments/1r4qnzf/google_criticizes_europes_plan_to_adopt_free/.json
+2026-03-18 20:08:03,871 - INFO - Successfully scraped post: Google criticizes Europe’s plan to adopt free software
+2026-03-18 20:08:05,145 - INFO - Post details request successful: https://www.reddit.com/r/technology/comments/1nrypvu/morgan_stanley_warns_ai_could_sink_42yearold/.json
+2026-03-18 20:08:05,148 - INFO - Successfully scraped post: Morgan Stanley warns AI could sink 42-year-old software giant Adobe
+2026-03-18 20:08:06,889 - INFO - Post details request successful: https://www.reddit.com/r/LivestreamFail/comments/1p4nm2h/j0beats_uk_pokémon_go_streamer_gets_striked/.json
+2026-03-18 20:08:06,893 - INFO - Successfully scraped post: "j0beats" UK Pokémon GO streamer gets striked/ banned from Pokémon GO for 
+"using modified client software or unauthorized third-party software"
+2026-03-18 20:08:30,613 - INFO - Search request successful
+2026-03-18 20:08:30,614 - INFO - Search returned 10 results
+2026-03-18 20:08:31,202 - INFO - Post details request successful: https://www.reddit.com/r/coolguides/comments/ypvl55/12_stages_of_burnout/.json
+2026-03-18 20:08:31,204 - INFO - Successfully scraped post: 12 stages of burnout
+2026-03-18 20:08:32,102 - INFO - Post details request successful: https://www.reddit.com/r/coolguides/comments/1py1sxa/a_cool_guide_to_burnout/.json
+2026-03-18 20:08:32,105 - INFO - Successfully scraped post: A cool guide to Burnout:
+2026-03-18 20:08:32,477 - INFO - Post details request successful: https://www.reddit.com/r/overemployed/comments/1nezomh/the_burnout_recovery_timeline_nobody_talks_about/.json
+2026-03-18 20:08:32,478 - INFO - Successfully scraped post: The burnout recovery timeline nobody talks about (what I wish I'd known)
+2026-03-18 20:08:33,177 - INFO - Post details request successful: https://www.reddit.com/r/womenintech/comments/1rbqvak/what_i_thought_was_severe_burnout_turned_out_to/.json
+2026-03-18 20:08:33,179 - INFO - Successfully scraped post: What I thought was severe burnout turned out to be something else. Something worse.
+2026-03-18 20:08:34,749 - INFO - Post details request successful: https://www.reddit.com/r/YouShouldKnow/comments/635bbc/ysk_the_symptoms_of_burnout_before_it_causes/.json
+2026-03-18 20:08:34,754 - INFO - Successfully scraped post: YSK: The symptoms of burnout before it causes irreparable damage to your career and/or relationships
+2026-03-18 20:08:35,089 - INFO - Post details request successful: https://www.reddit.com/r/mentalhealth/comments/1qw08im/what_are_the_symptoms_of_your_burnout/.json
+2026-03-18 20:08:35,090 - INFO - Successfully scraped post: What are the symptoms of your burnout?
+2026-03-18 20:08:36,017 - INFO - Post details request successful: https://www.reddit.com/r/medicine/comments/zhyhsx/burnout_is_not_real/.json
+2026-03-18 20:08:36,020 - INFO - Successfully scraped post: Burnout is not real
+2026-03-18 20:08:36,742 - INFO - Post details request successful: https://www.reddit.com/r/productivity/comments/1dznw6r/people_who_burned_out_what_did_you_do_to_recover/.json
+2026-03-18 20:08:36,744 - INFO - Successfully scraped post: People who burned out, what did you do to recover?
+2026-03-18 20:08:37,024 - INFO - Post details request successful: https://www.reddit.com/r/coolguides/comments/1r3ngv7/a_cool_guide_to_recognizing_burnout/.json
+2026-03-18 20:08:37,024 - INFO - Successfully scraped post: A cool guide to recognizing burnout
+2026-03-18 20:08:37,275 - INFO - Post details request successful: https://www.reddit.com/r/careeradvice/comments/u5w3p3/ive_dealt_with_burnout_3_times_in_my_life_here/.json
+2026-03-18 20:08:37,276 - INFO - Successfully scraped post: I've dealt with burnout 3 times in my life. Here are various, unsexy ways I've dealt with it
+2026-03-18 20:09:22,063 - INFO - 127.0.0.1 - - [18/Mar/2026 20:09:22] "[35m[1mPOST /api/analysis/run HTTP/1.1[0m" 500 -
+2026-03-18 20:10:39,999 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.2:5000
+2026-03-18 20:10:40,000 - INFO - [33mPress CTRL+C to quit[0m
+2026-03-18 20:11:16,537 - INFO - Search request successful
+2026-03-18 20:11:16,538 - INFO - Search returned 4 results
+2026-03-18 20:11:17,399 - INFO - Post details request successful: https://www.reddit.com/r/EconomyCharts/comments/1rf8tzb/the_software_industry_is_apparently_dying_but_job/.json
+2026-03-18 20:11:17,402 - INFO - Successfully scraped post: The software industry is apparently dying but job postings for software engineers are rapidly rising
+2026-03-18 20:11:18,396 - INFO - Post details request successful: https://www.reddit.com/r/Piracy/comments/1pqz0aq/free_alternatives_to_popular_softwares/.json
+2026-03-18 20:11:18,398 - INFO - Successfully scraped post: Free Alternatives to Popular Softwares
+2026-03-18 20:11:19,311 - INFO - Post details request successful: https://www.reddit.com/r/Piracy/comments/ozmnli/guys_where_do_you_get_ur_software_from/.json
+2026-03-18 20:11:19,314 - INFO - Successfully scraped post: guys where do you get ur software from....?
+2026-03-18 20:11:20,376 - INFO - Post details request successful: https://www.reddit.com/r/Salary/comments/1qkqsrk/29msoftware_engineer_600k/.json
+2026-03-18 20:11:20,379 - INFO - Successfully scraped post: [29m][software engineer] - $600k+
+2026-03-18 20:11:20,730 - INFO - Search request successful
+2026-03-18 20:11:20,731 - INFO - Search returned 4 results
+2026-03-18 20:11:21,841 - INFO - Post details request successful: https://www.reddit.com/r/coolguides/comments/ypvl55/12_stages_of_burnout/.json
+2026-03-18 20:11:21,842 - INFO - Successfully scraped post: 12 stages of burnout
+2026-03-18 20:11:22,667 - INFO - Post details request successful: https://www.reddit.com/r/coolguides/comments/1py1sxa/a_cool_guide_to_burnout/.json
+2026-03-18 20:11:22,670 - INFO - Successfully scraped post: A cool guide to Burnout:
+2026-03-18 20:11:23,072 - INFO - Post details request successful: https://www.reddit.com/r/overemployed/comments/1nezomh/the_burnout_recovery_timeline_nobody_talks_about/.json
+2026-03-18 20:11:23,073 - INFO - Successfully scraped post: The burnout recovery timeline nobody talks about (what I wish I'd known)
+2026-03-18 20:11:23,716 - INFO - Post details request successful: https://www.reddit.com/r/womenintech/comments/1rbqvak/what_i_thought_was_severe_burnout_turned_out_to/.json
+2026-03-18 20:11:23,718 - INFO - Successfully scraped post: What I thought was severe burnout turned out to be something else. Something worse.
+2026-03-18 20:12:01,921 - INFO - 127.0.0.1 - - [18/Mar/2026 20:12:01] "[35m[1mPOST /api/analysis/run HTTP/1.1[0m" 500 -
+2026-03-18 20:15:39,165 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.2:5000
+2026-03-18 20:15:39,166 - INFO - [33mPress CTRL+C to quit[0m
+2026-03-18 20:15:44,423 - INFO - Search request successful
+2026-03-18 20:15:44,423 - INFO - Search returned 4 results
+2026-03-18 20:15:45,204 - INFO - Post details request successful: https://www.reddit.com/r/EconomyCharts/comments/1rf8tzb/the_software_industry_is_apparently_dying_but_job/.json
+2026-03-18 20:15:45,206 - INFO - Successfully scraped post: The software industry is apparently dying but job postings for software engineers are rapidly rising
+2026-03-18 20:15:46,480 - INFO - Post details request successful: https://www.reddit.com/r/Piracy/comments/1pqz0aq/free_alternatives_to_popular_softwares/.json
+2026-03-18 20:15:46,482 - INFO - Successfully scraped post: Free Alternatives to Popular Softwares
+2026-03-18 20:15:47,631 - INFO - Post details request successful: https://www.reddit.com/r/Piracy/comments/ozmnli/guys_where_do_you_get_ur_software_from/.json
+2026-03-18 20:15:47,635 - INFO - Successfully scraped post: guys where do you get ur software from....?
+2026-03-18 20:15:49,787 - INFO - Post details request successful: https://www.reddit.com/r/Salary/comments/1qkqsrk/29msoftware_engineer_600k/.json
+2026-03-18 20:15:49,791 - INFO - Successfully scraped post: [29m][software engineer] - $600k+
+2026-03-18 20:15:50,024 - INFO - Search request successful
+2026-03-18 20:15:50,025 - INFO - Search returned 4 results
+2026-03-18 20:15:51,529 - INFO - Post details request successful: https://www.reddit.com/r/coolguides/comments/ypvl55/12_stages_of_burnout/.json
+2026-03-18 20:15:51,530 - INFO - Successfully scraped post: 12 stages of burnout
+2026-03-18 20:15:52,485 - INFO - Post details request successful: https://www.reddit.com/r/coolguides/comments/1py1sxa/a_cool_guide_to_burnout/.json
+2026-03-18 20:15:52,488 - INFO - Successfully scraped post: A cool guide to Burnout:
+2026-03-18 20:15:52,871 - INFO - Post details request successful: https://www.reddit.com/r/overemployed/comments/1nezomh/the_burnout_recovery_timeline_nobody_talks_about/.json
+2026-03-18 20:15:52,872 - INFO - Successfully scraped post: The burnout recovery timeline nobody talks about (what I wish I'd known)
+2026-03-18 20:15:53,663 - INFO - Post details request successful: https://www.reddit.com/r/womenintech/comments/1rbqvak/what_i_thought_was_severe_burnout_turned_out_to/.json
+2026-03-18 20:15:53,665 - INFO - Successfully scraped post: What I thought was severe burnout turned out to be something else. Something worse.
+2026-03-18 20:17:08,774 - INFO - AFC is enabled with max remote calls: 10.
+2026-03-18 20:17:17,257 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent "HTTP/1.1 200 OK"
+2026-03-18 20:17:24,091 - INFO - 127.0.0.1 - - [18/Mar/2026 20:17:24] "POST /api/analysis/run HTTP/1.1" 200 -
