@@ -77,6 +77,11 @@ def run_analysis():
       - topics              : list of strings (e.g. ["IT", "Software"])
     """
     try:
+        # Get authenticated user
+        user_id = getattr(request, 'current_user_id', None)
+        if not user_id:
+            return jsonify({"error": "Authentication required"}), 401
+
         data = request.get_json()
         if not data:
             return jsonify({"error": "Se requiere un cuerpo JSON"}), 400
@@ -106,7 +111,7 @@ def run_analysis():
         scraper = ScrapingService()
         aggregated = []
         for topic in topics:
-            results, status = scraper.search(topic, limit=limit, include_comments=True, save=False)
+            results, status = scraper.search(topic, user_id=user_id, limit=limit, include_comments=True, save=False)
             if status != 200:
                 return jsonify({"error": f"Error scraping topic '{topic}'"}), status
             aggregated.extend(results)
@@ -128,22 +133,43 @@ def run_analysis():
         if status != 200:
             return jsonify(analysis_payload), status
 
+        analysis_result_id = None
         if save:
             analysis = analysis_payload.get("analysis", {})
+
+            # Create AnalysisResult first
             result = AnalysisResult(
+                user_id=user_id,
                 sentiment=analysis.get("sentiment"),
                 stress_level=analysis.get("stress_level"),
                 anxiety_level=analysis.get("anxiety_level"),
                 keywords=analysis.get("keywords"),
+                communities=topics,
+                summary=analysis.get("summary"),
+                post_count=len(filtered),
                 model_version=analysis.get("model_version"),
             )
             db.session.add(result)
+            db.session.flush()  # Get the ID
+
+            # Now save raw data linked to this analysis
+            for item in filtered:
+                content_type = item.get("type", "post")
+                scraper._upsert_raw_data(
+                    item,
+                    user_id=user_id,
+                    content_type=content_type,
+                    analysis_result_id=result.id
+                )
+
             db.session.commit()
+            analysis_result_id = result.id
 
         return jsonify({
             "analysis": analysis_payload.get("analysis"),
             "source_count": analysis_payload.get("source_count", 0),
             "saved": save,
+            "analysis_result_id": analysis_result_id,
         }), 200
 
     except Exception as exc:

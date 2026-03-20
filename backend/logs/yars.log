@@ -481,3 +481,114 @@
 2026-03-18 20:17:08,774 - INFO - AFC is enabled with max remote calls: 10.
 2026-03-18 20:17:17,257 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent "HTTP/1.1 200 OK"
 2026-03-18 20:17:24,091 - INFO - 127.0.0.1 - - [18/Mar/2026 20:17:24] "POST /api/analysis/run HTTP/1.1" 200 -
+2026-03-19 18:06:41,354 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.40:5000
+2026-03-19 18:06:41,354 - INFO - [33mPress CTRL+C to quit[0m
+2026-03-19 18:06:41,355 - INFO -  * Restarting with stat
+2026-03-19 18:06:42,839 - WARNING -  * Debugger is active!
+2026-03-19 18:06:42,841 - INFO -  * Debugger PIN: 883-241-189
+2026-03-19 18:08:21,391 - INFO - 127.0.0.1 - - [19/Mar/2026 18:08:21] "[35m[1mPOST /api/login HTTP/1.1[0m" 500 -
+2026-03-19 18:08:35,811 - INFO - 127.0.0.1 - - [19/Mar/2026 18:08:35] "[31m[1mPOST /api/login HTTP/1.1[0m" 400 -
+2026-03-19 18:09:56,428 - INFO - 127.0.0.1 - - [19/Mar/2026 18:09:56] "OPTIONS /api/login HTTP/1.1" 200 -
+2026-03-19 18:09:56,789 - INFO - 127.0.0.1 - - [19/Mar/2026 18:09:56] "POST /api/login HTTP/1.1" 200 -
+2026-03-19 18:10:48,655 - INFO - 127.0.0.1 - - [19/Mar/2026 18:10:48] "[31m[1mPOST /api/analysis/run HTTP/1.1[0m" 400 -
+2026-03-19 18:13:08,151 - INFO - Search request successful
+2026-03-19 18:13:08,152 - INFO - Search returned 15 results
+2026-03-19 18:13:09,008 - INFO - Post details request successful: https://www.reddit.com/r/PublicFreakout/comments/1ghydm5/iranian_woman_and_a_university_student_roams_the/.json
+2026-03-19 18:13:09,012 - INFO - Successfully scraped post: Iranian woman and a university student , roams the university half naked, after having part of her clothes torn by the hijab enforcers and university security.
+2026-03-19 18:13:10,629 - INFO - Post details request successful: https://www.reddit.com/r/lucknow/comments/1n9cuaq/amity_university_lucknow/.json
+2026-03-19 18:13:10,631 - INFO - Successfully scraped post: Amity university lucknow
+2026-03-19 18:13:10,834 - INFO - Post details request successful: https://www.reddit.com/r/HolUp/comments/1171qmp/classic_british_university_experience/.json
+2026-03-19 18:13:10,834 - INFO - Successfully scraped post: Classic British University Experience
+2026-03-19 18:13:11,313 - INFO - Post details request successful: https://www.reddit.com/r/sunraybee/comments/xhi2v5/chandigarh_university/.json
+2026-03-19 18:13:11,314 - INFO - Successfully scraped post: Chandigarh University
+2026-03-19 18:13:11,544 - INFO - Post details request successful: https://www.reddit.com/r/campuscuties_/comments/1res8z4/kerrigan_huynh_lubbock_christian_university/.json
+2026-03-19 18:13:11,544 - INFO - Successfully scraped post: Kerrigan Huynh- Lubbock Christian University
+2026-03-19 18:13:11,756 - INFO - Post details request successful: https://www.reddit.com/r/Tinder/comments/d0hame/the_university_provides/.json
+2026-03-19 18:13:11,756 - INFO - Successfully scraped post: The University Provides
+2026-03-19 18:13:13,192 - INFO - Post details request successful: https://www.reddit.com/r/interesting/comments/1r8qao6/police_discover_a_very_odd_fraternity_hazing_at/.json
+2026-03-19 18:13:13,195 - INFO - Successfully scraped post: Police discover a very odd fraternity hazing at the University of Iowa
+2026-03-19 18:13:14,552 - INFO - Post details request successful: https://www.reddit.com/r/mildyinteresting/comments/1r9fd6h/police_discover_a_very_odd_fraternity_hazing_at/.json
+2026-03-19 18:13:14,555 - INFO - Successfully scraped post: Police discover a very odd fraternity hazing at the University of Iowa
+2026-03-19 18:13:16,042 - INFO - Post details request successful: https://www.reddit.com/r/news/comments/1plwsnf/active_shooter_situation_at_brown_university/.json
+2026-03-19 18:13:16,044 - INFO - Successfully scraped post: Active shooter situation at Brown University
+2026-03-19 18:13:17,805 - INFO - Post details request successful: https://www.reddit.com/r/cartoons/comments/1rkyb5z/favorite_animated_movie_that_is_universally_hated/.json
+2026-03-19 18:13:17,807 - INFO - Successfully scraped post: Favorite animated movie that is universally hated
+2026-03-19 18:13:19,619 - INFO - Post details request successful: https://www.reddit.com/r/interesting/comments/1puvk8j/a_study_on_adhd_by_university_of_central_florida/.json
+2026-03-19 18:13:19,622 - INFO - Successfully scraped post: A study on ADHD by University of Central Florida
+2026-03-19 18:13:21,414 - INFO - Post details request successful: https://www.reddit.com/r/news/comments/1pq9d50/brown_university_shooting_suspect_found_dead_fox/.json
+2026-03-19 18:13:21,417 - INFO - Successfully scraped post: Brown University shooting suspect found dead, Fox News reports
+2026-03-19 18:13:23,010 - INFO - Post details request successful: https://www.reddit.com/r/MapPorn/comments/1pfu4wn/free_universities/.json
+2026-03-19 18:13:23,012 - INFO - Successfully scraped post: Free Universities
+2026-03-19 18:13:24,305 - INFO - Post details request successful: https://www.reddit.com/r/whatisit/comments/1qql82t/weird_folding_shelf_thing_in_most_stalls_at_my/.json
+2026-03-19 18:13:24,307 - INFO - Successfully scraped post: Weird folding shelf thing? In most stalls at my university
+2026-03-19 18:13:25,493 - INFO - Post details request successful: https://www.reddit.com/r/MadeMeSmile/comments/1pimf9w/olivia_earned_a_full_ride_scholarship_to_brown/.json
+2026-03-19 18:13:25,495 - INFO - Successfully scraped post: Olivia earned a full ride scholarship to Brown University \U0001f393
+2026-03-19 18:13:25,999 - INFO - Search request successful
+2026-03-19 18:13:25,999 - INFO - Search returned 15 results
+2026-03-19 18:13:26,722 - INFO - Post details request successful: https://www.reddit.com/r/EconomyCharts/comments/1rf8tzb/the_software_industry_is_apparently_dying_but_job/.json
+2026-03-19 18:13:26,724 - INFO - Successfully scraped post: The software industry is apparently dying but job postings for software engineers are rapidly rising
+2026-03-19 18:13:27,713 - INFO - Post details request successful: https://www.reddit.com/r/LivestreamFail/comments/1qz9p9t/piratesoftware_gets_called_a_ferret_fuer_and/.json
+2026-03-19 18:13:27,715 - INFO - Successfully scraped post: PirateSoftware gets called a Ferret Fu**er and wants them banned
+2026-03-19 18:13:29,009 - INFO - Post details request successful: https://www.reddit.com/r/Piracy/comments/1pqz0aq/free_alternatives_to_popular_softwares/.json
+2026-03-19 18:13:29,011 - INFO - Successfully scraped post: Free Alternatives to Popular Softwares
+2026-03-19 18:13:30,221 - INFO - Post details request successful: https://www.reddit.com/r/Piracy/comments/ozmnli/guys_where_do_you_get_ur_software_from/.json
+2026-03-19 18:13:30,264 - INFO - Successfully scraped post: guys where do you get ur software from....?
+2026-03-19 18:13:31,094 - INFO - Post details request successful: https://www.reddit.com/r/vibecoding/comments/1riean8/why_software_engineers_arent_going_anywhere/.json
+2026-03-19 18:13:31,095 - INFO - Successfully scraped post: Why software engineers aren't going anywhere.
+2026-03-19 18:13:33,004 - INFO - Post details request successful: https://www.reddit.com/r/technology/comments/1rdd54l/discord_cuts_ties_with_peter_thielbacked/.json
+2026-03-19 18:13:33,007 - INFO - Successfully scraped post: Discord cuts ties with Peter Thiel-backed verification software after code found in US surveillance
+2026-03-19 18:13:34,485 - INFO - Post details request successful: https://www.reddit.com/r/europe/comments/1r4qnzf/google_criticizes_europes_plan_to_adopt_free/.json
+2026-03-19 18:13:34,488 - INFO - Successfully scraped post: Google criticizes Europe’s plan to adopt free software
+2026-03-19 18:13:36,080 - INFO - Post details request successful: https://www.reddit.com/r/technology/comments/1nrypvu/morgan_stanley_warns_ai_could_sink_42yearold/.json
+2026-03-19 18:13:36,082 - INFO - Successfully scraped post: Morgan Stanley warns AI could sink 42-year-old software giant Adobe
+2026-03-19 18:13:37,100 - INFO - Post details request successful: https://www.reddit.com/r/LivestreamFail/comments/1p4nm2h/j0beats_uk_pokémon_go_streamer_gets_striked/.json
+2026-03-19 18:13:37,102 - INFO - Successfully scraped post: "j0beats" UK Pokémon GO streamer gets striked/ banned from Pokémon GO for 
+"using modified client software or unauthorized third-party software"
+2026-03-19 18:13:38,429 - INFO - Post details request successful: https://www.reddit.com/r/infuriatingbutawesome/comments/1ooe4yc/boy_gets_his_software_updated/.json
+2026-03-19 18:13:38,431 - INFO - Successfully scraped post: Boy gets his software updated
+2026-03-19 18:13:40,106 - INFO - Post details request successful: https://www.reddit.com/r/ProgrammerHumor/comments/1p67xiv/nomoresoftwareengineersbythefirsthalfof2026/.json
+2026-03-19 18:13:40,108 - INFO - Successfully scraped post: noMoreSoftwareEngineersbyTheFirstHalfOf2026
+2026-03-19 18:13:41,180 - INFO - Post details request successful: https://www.reddit.com/r/gaming/comments/1rghlr2/sonys_bluepoint_pitched_bloodborne_remake_before/.json
+2026-03-19 18:13:41,183 - INFO - Successfully scraped post: Sony’s Bluepoint Pitched ‘Bloodborne’ Remake Before Closure | Sony didn't turn it down, FromSoftware did
+2026-03-19 18:13:42,681 - INFO - Post details request successful: https://www.reddit.com/r/technology/comments/1qz7rcz/vibe_coding_is_killing_open_source_software/.json
+2026-03-19 18:13:42,684 - INFO - Successfully scraped post: Vibe Coding Is Killing Open Source Software, Researchers Argue
+2026-03-19 18:13:43,939 - INFO - Post details request successful: https://www.reddit.com/r/ProgrammerHumor/comments/1of3l3e/vibecodingisthefutureexceptifyouarewritingsoftware/.json
+2026-03-19 18:13:43,941 - INFO - Successfully scraped post: vibeCodingIsTheFutureExceptIfYouAreWritingSoftware
+2026-03-19 18:13:45,253 - INFO - Post details request successful: https://www.reddit.com/r/memes/comments/1nhafc1/they_are_removing_sideloadingrightfully/.json
+2026-03-19 18:13:45,256 - INFO - Successfully scraped post: They are removing sideloading(rightfully installing software) now
+2026-03-19 18:13:45,631 - INFO - AFC is enabled with max remote calls: 10.
+2026-03-19 18:13:52,162 - INFO - HTTP Request: POST https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent "HTTP/1.1 200 OK"
+2026-03-19 18:13:52,167 - INFO - 127.0.0.1 - - [19/Mar/2026 18:13:52] "POST /api/analysis/run HTTP/1.1" 200 -
+2026-03-19 18:21:46,229 - INFO -  * Detected change in 'F:\\Git_Repositories\\animus\\backend\\models\\analysis_result.py', reloading
+2026-03-19 18:21:46,364 - INFO -  * Restarting with stat
+2026-03-19 18:21:47,937 - WARNING -  * Debugger is active!
+2026-03-19 18:21:47,941 - INFO -  * Debugger PIN: 883-241-189
+2026-03-19 18:22:54,600 - INFO -  * Detected change in 'F:\\Git_Repositories\\animus\\backend\\models\\analysis_result.py', reloading
+2026-03-19 18:22:54,744 - INFO -  * Restarting with stat
+2026-03-19 18:22:56,250 - WARNING -  * Debugger is active!
+2026-03-19 18:22:56,253 - INFO -  * Debugger PIN: 883-241-189
+2026-03-19 18:25:14,744 - INFO -  * Detected change in 'F:\\Git_Repositories\\animus\\backend\\models\\analysis_result.py', reloading
+2026-03-19 18:25:14,899 - INFO -  * Restarting with stat
+2026-03-19 22:17:04,688 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.40:5000
+2026-03-19 22:17:04,689 - INFO - [33mPress CTRL+C to quit[0m
+2026-03-19 22:17:04,690 - INFO -  * Restarting with stat
+2026-03-19 22:17:06,078 - WARNING -  * Debugger is active!
+2026-03-19 22:17:06,081 - INFO -  * Debugger PIN: 883-241-189
+2026-03-19 22:17:39,388 - INFO - 127.0.0.1 - - [19/Mar/2026 22:17:39] "[31m[1mGET /api/login HTTP/1.1[0m" 405 -
+2026-03-19 22:17:43,415 - INFO - 127.0.0.1 - - [19/Mar/2026 22:17:43] "[31m[1mPOST /api/login HTTP/1.1[0m" 400 -
+2026-03-19 22:17:52,279 - INFO - 127.0.0.1 - - [19/Mar/2026 22:17:52] "[31m[1mPOST /api/login HTTP/1.1[0m" 401 -
+2026-03-19 22:19:02,090 - INFO -  * Detected change in 'F:\\Git_Repositories\\animus\\backend\\insert_mock_data.py', reloading
+2026-03-19 22:19:02,227 - INFO -  * Restarting with stat
+2026-03-19 22:19:03,717 - WARNING -  * Debugger is active!
+2026-03-19 22:19:03,720 - INFO -  * Debugger PIN: 883-241-189
+2026-03-19 22:19:20,712 - INFO -  * Detected change in 'F:\\Git_Repositories\\animus\\backend\\insert_mock_data.py', reloading
+2026-03-19 22:19:20,874 - INFO -  * Restarting with stat
+2026-03-19 22:19:22,356 - WARNING -  * Debugger is active!
+2026-03-19 22:19:22,358 - INFO -  * Debugger PIN: 883-241-189
+2026-03-19 22:19:56,835 - INFO - 127.0.0.1 - - [19/Mar/2026 22:19:56] "POST /api/login HTTP/1.1" 200 -

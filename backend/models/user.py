@@ -15,6 +15,11 @@ class User(db.Model):
     region = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
+    # Relationships
+    analysis_results = db.relationship("AnalysisResult", back_populates="user", cascade="all, delete-orphan")
+    scraped_data = db.relationship("RawRedditData", back_populates="user", cascade="all, delete-orphan")
+
+
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
