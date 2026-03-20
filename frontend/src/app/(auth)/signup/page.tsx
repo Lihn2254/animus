@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { register as registerUser } from "../../services/auth";
+import { useAuth } from "@/app/context/AuthContext";
 import { User } from "../../types/user";
 
 // 1. Esquema de validación
@@ -45,6 +45,7 @@ export default function Singup() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const router = useRouter();
+  const { register: authRegister } = useAuth();
 
   // Cambiar el nombre de la pestaña al cargar el componente
   useEffect(() => {
@@ -70,7 +71,7 @@ export default function Singup() {
         country: data.country,
         region: data.region,
       };
-      await registerUser(userData);
+      await authRegister(userData);
       router.push("/");
     } catch (error: any) {
       setServerError(error.message || "Hubo un problema al crear tu cuenta. Intenta con otro correo.");

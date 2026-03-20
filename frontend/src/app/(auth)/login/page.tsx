@@ -4,6 +4,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/context/AuthContext";
 
 // 1. Definición del esquema con Zod
 const loginSchema = z.object({
@@ -22,6 +24,8 @@ type LoginFormInputs = z.infer<typeof loginSchema>;
 export default function Login() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const { login } = useAuth();
+  const router = useRouter();
 
   // 3. Inicialización del hook con el tipo genérico <LoginFormInputs>
   const {
@@ -37,15 +41,10 @@ export default function Login() {
     setServerError(null);
 
     try {
-      console.log("Datos validados y tipados:", data);
-
-      // Simulación de llamada a API
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      // Aquí iría la lógica de redirección
-      // navigate('/dashboard');
-    } catch (error) {
-      setServerError("Ocurrió un error inesperado. Inténtalo de nuevo.");
+      await login(data.email, data.password);
+      router.push("/");
+    } catch (error: any) {
+      setServerError(error?.message || "Ocurrió un error inesperado. Inténtalo de nuevo.");
     }
   };
 

@@ -28,10 +28,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${redHat.variable} ${funnel.variable} antialiased`}
-      >
+    <html lang="es">
+      <body className={`${redHat.variable} ${funnel.variable} antialiased`}>
         <AuthProvider>
           <RequireAuth>
             <div className="min-h-screen bg-[radial-gradient(circle_at_top,#f4f1ff,#fdf8f1_35%,#f8fbff_70%)] text-slate-900">
