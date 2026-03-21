@@ -19,7 +19,7 @@ def jwt_required(f):
                 current_app.config["SECRET_KEY"],
                 algorithms=["HS256"],
             )
-            request.current_user_id = payload["sub"]
+            request.current_user_id = int(payload["sub"])
         except jwt.ExpiredSignatureError:
             return jsonify({"error": "Token expirado"}), 401
         except jwt.InvalidTokenError:

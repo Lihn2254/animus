@@ -54,11 +54,11 @@ def register():
 
         token = jwt.encode(
             {
-                "sub": new_user.id,
+                "sub": str(new_user.id),
                 "username": new_user.username,
                 "exp": datetime.now(timezone.utc) + timedelta(hours=24)
-            }, 
-            current_app.config["SECRET_KEY"], 
+            },
+            current_app.config["SECRET_KEY"],
             algorithm="HS256")
 
         return (
@@ -97,7 +97,7 @@ def login():
 
         token = jwt.encode(
             {
-                "sub": user.id,
+                "sub": str(user.id),
                 "username": user.username,
                 "exp": datetime.now(timezone.utc) + timedelta(hours=24),
             },

@@ -8,6 +8,11 @@ _ai_service = AIAnalysisService()
 
 
 def scrape_subreddit(name):
+    # Get authenticated user ID
+    user_id = getattr(request, 'current_user_id', None)
+    if not user_id:
+        return jsonify({"error": "Authentication required"}), 401
+
     body = request.get_json(silent=True) or {}
 
     limit = body.get("limit", 25)
@@ -25,6 +30,7 @@ def scrape_subreddit(name):
 
     data, status = _scraper.fetch_subreddit_posts(
         name,
+        user_id=user_id,
         limit=limit,
         category=category,
         include_comments=include_comments,
@@ -38,7 +44,10 @@ def scrape_subreddit(name):
 
 
 def search_reddit():
-    body = request.get_json(silent=True) or {}
+    # Get authenticated user ID (optional for search)
+    user_id = getattr(request, 'current_user_id', None)
+
+    body = request.get_json(silent=True) or{}
 
     query = body.get("query", "").strip()
     if not query:
@@ -55,6 +64,7 @@ def search_reddit():
 
     data, status = _scraper.search(
         query,
+        user_id=user_id,
         subreddit_name=subreddit,
         limit=limit,
         include_comments=include_comments,
@@ -65,6 +75,11 @@ def search_reddit():
 
 
 def fetch_user():
+    # Get authenticated user ID
+    user_id = getattr(request, 'current_user_id', None)
+    if not user_id:
+        return jsonify({"error": "Authentication required"}), 401
+
     body = request.get_json(silent=True) or {}
 
     username = body.get("username", "").strip()
@@ -78,7 +93,7 @@ def fetch_user():
     except (TypeError, ValueError):
         return jsonify({"error": "limit must be an integer"}), 400
 
-    data, status = _scraper.fetch_user_data(username, limit=limit, save=save)
+    data, status = _scraper.fetch_user_data(username, user_id=user_id, limit=limit, save=save)
     return jsonify({"username": username, "count": len(data), "results": data}), status
 
 

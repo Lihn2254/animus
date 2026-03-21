@@ -559,7 +559,7 @@ export default function Reportes() {
             </div>
             <p className="mt-3 text-sm text-white/70 leading-relaxed">
               {mode === "subreddit"
-                ? "Recupera y analiza los posts más recientes del subreddit indicado. Ideal para comunidades específicas de salud mental."
+                ? "Recupera y analiza los posts más recientes del subreddit indicado. Ideal para comunidades específicas."
                 : "Realiza una búsqueda global en Reddit usando los términos indicados. Útil para rastrear temas transversales entre comunidades."}
             </p>
           </div>
@@ -675,35 +675,28 @@ export default function Reportes() {
               </div>
             </div>
 
-            {/* Sort by */}
-            <div className="flex flex-col gap-3">
-              <label className="text-sm font-medium text-slate-700">
-                Ordenar por
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {SORT_OPTIONS.map((opt) => (
-                  <button
-                    key={opt}
-                    onClick={() => setSortBy(opt)}
-                    className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
-                      sortBy === opt
-                        ? "border-blue-300 bg-blue-50 text-blue-700"
-                        : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"
-                    }`}
-                  >
-                    {opt}
-                  </button>
-                ))}
-              </div>
-            </div>
-
             <div className="h-px bg-slate-100" />
 
             {/* Submit */}
             <div className="flex items-center justify-between gap-4">
-              <p className="text-sm text-slate-400">
-                Los resultados estarán disponibles en segundos
-              </p>
+              <div className="flex flex-row gap-4 items-center">
+                <svg
+                  className="h-10 w-10 text-yellow-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                  />
+                </svg>
+                <p className="text-sm text-slate-400">
+                El tiempo de procesamiento depende de las características del análisis
+              </p></div>
+              
               <button
                 onClick={handleSubmit}
                 disabled={!currentInput}
