@@ -74,7 +74,11 @@ def run_analysis():
       - start_date          : ISO date string
       - end_date            : ISO date string
       - age_range           : string  (e.g. "18-35")
-      - topics              : list of strings (e.g. ["IT", "Software"])
+      - topics (opt.)       : list of strings (e.g. ["IT", "Software"])
+      - communities (opt.)  : list of strings (e.g. ["taquerosprogramadores", "programming"])
+      - save                : bool
+      - post_count          : int
+      - include_comments    : bool
     """
     try:
         # Get authenticated user
@@ -86,8 +90,9 @@ def run_analysis():
         if not data:
             return jsonify({"error": "Se requiere un cuerpo JSON"}), 400
 
-        required_fields = ["geographical_region", "start_date", "end_date", "age_range", "topics"]
-        missing = [f for f in required_fields if not data.get(f)]
+        #Check if mandatory fields are present
+        required_fields = ["geographical_region", "start_date", "end_date", "age_range", "save", "post_count", "include_comments"]
+        missing = [f for f in required_fields if f not in data]
         if missing:
             return jsonify({"error": f"Faltan campos requeridos: {', '.join(missing)}"}), 400
 
@@ -98,20 +103,47 @@ def run_analysis():
         except ValueError:
             return jsonify({"error": "Formato de fechas inválido. Use ISO 8601 (YYYY-MM-DD)"}), 400
 
-        if not isinstance(data["topics"], list) or not data["topics"]:
-            return jsonify({"error": "El campo topics debe ser una lista no vacía"}), 400
+        #Validate, parse and store topics in an array
+        # if not isinstance(data["topics"], list) or not data["topics"]:
+        #     return jsonify({"error": "El campo topics debe ser una lista no vacía"}), 400
 
-        topics = [t.strip() for t in data["topics"] if isinstance(t, str) and t.strip()]
-        if not topics:
-            return jsonify({"error": "El campo topics debe contener al menos un string válido"}), 400
+        # topics = [t.strip() for t in data["topics"] if isinstance(t, str) and t.strip()]
+        # if not topics:
+        #     return jsonify({"error": "El campo topics debe contener al menos un string válido"}), 400
 
+        if "topics" in data:
+            topics = [t.strip() for t in data["topics"] if isinstance(t, str) and t.strip()]
+        else:
+            topics = []
+
+        #Validate, parse and store communities in an array
+        # if not isinstance(data["communities"], list) or not data["communities"]:
+        #     return jsonify({"error": "El campo communities debe ser una lista no vacía"}), 400
+
+        if "communities" in data:
+            communities = [c.strip() for c in data["communities"] if isinstance(c, str) and c.strip()]
+        else:
+            communities = []
+
+        if not communities and not topics:
+            return jsonify({"error": "Por lo menos uno de los dos campos: topics y communities, debe contener datos válidos."}), 400
+
+        #Parse parameters
+        include_comments = _parse_bool(data.get("include_comments", True))
         save = _parse_bool(data.get("save", False))
-        limit = _parse_limit(data.get("limit", 15))
+        post_count = _parse_post_count(data.get("post_count", 15))
 
         scraper = ScrapingService()
         aggregated = []
+
         for topic in topics:
-            results, status = scraper.search(topic, user_id=user_id, limit=limit, include_comments=True, save=False)
+            #If specific communities are included in the request for scraping, then scrape that community (subreddit)
+            if communities:
+                for community in communities:
+                    results, status = scraper.search(topic, user_id=user_id, subreddit_name=community, limit=post_count, include_comments=include_comments, save=save)
+            else:
+                results, status = scraper.search(topic, user_id=user_id, limit=post_count, include_comments=include_comments, save=save)
+
             if status != 200:
                 return jsonify({"error": f"Error scraping topic '{topic}'"}), status
             aggregated.extend(results)
@@ -123,10 +155,10 @@ def run_analysis():
         ai_service = AIAnalysisService()
         context = {
             "geographical_region": data["geographical_region"],
-            "age_range": data["age_range"],
-            "topics": topics,
             "start_date": data["start_date"],
             "end_date": data["end_date"],
+            "age_range": data["age_range"],
+            "topics": topics,
         }
 
         analysis_payload, status = ai_service.analyze_sentiment(filtered, context)
@@ -137,37 +169,29 @@ def run_analysis():
         if save:
             analysis = analysis_payload.get("analysis", {})
 
-            # Create AnalysisResult first
+            # Create AnalysisResult
             result = AnalysisResult(
                 user_id=user_id,
+                geographical_region=data["geographical_region"],
+                start_date=start_date.date(),
+                end_date=end_date.date(),
+                age_range=data["age_range"],
+                topics=topics,
+                communities=communities,
+                post_count=len(filtered),
                 sentiment=analysis.get("sentiment"),
                 stress_level=analysis.get("stress_level"),
                 anxiety_level=analysis.get("anxiety_level"),
                 keywords=analysis.get("keywords"),
-                communities=topics,
                 summary=analysis.get("summary"),
-                post_count=len(filtered),
                 model_version=analysis.get("model_version"),
             )
             db.session.add(result)
-            db.session.flush()  # Get the ID
-
-            # Now save raw data linked to this analysis
-            for item in filtered:
-                content_type = item.get("type", "post")
-                scraper._upsert_raw_data(
-                    item,
-                    user_id=user_id,
-                    content_type=content_type,
-                    analysis_result_id=result.id
-                )
-
             db.session.commit()
             analysis_result_id = result.id
 
         return jsonify({
             "analysis": analysis_payload.get("analysis"),
-            "source_count": analysis_payload.get("source_count", 0),
             "saved": save,
             "analysis_result_id": analysis_result_id,
         }), 200
@@ -184,7 +208,7 @@ def _parse_bool(value):
     return False
 
 
-def _parse_limit(value, default=15, minimum=1, maximum=50):
+def _parse_post_count(value, default=15, minimum=1, maximum=50):
     try:
         parsed = int(value)
     except (TypeError, ValueError):

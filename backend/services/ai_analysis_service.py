@@ -24,7 +24,7 @@ _SENTIMENT_PROMPT = """You are an AI assistant specialized in sentiment analysis
 
 Analyze the provided Reddit posts and comments and return a single JSON object with this schema and constraints:
 {{
-    "sentiment": "positive" | "negative" | "neutral",
+    "sentiment": "positivo" | "negativo" | "neutral",
     "stress_level": number,  // 0.0 to 1.0
     "anxiety_level": number, // 0.0 to 1.0
     "keywords": ["string", ...],
@@ -33,6 +33,7 @@ Analyze the provided Reddit posts and comments and return a single JSON object w
 }}
 
 Rules:
+- Write all values of the JSON object in Spanish. The fields' names must remain in English.
 - Output JSON only. No extra text.
 - Ensure numeric values are within 0.0 to 1.0.
 - Provide 5-12 concise keywords.
@@ -90,7 +91,8 @@ class AIAnalysisService:
         if normalized is None:
             return {"error": "AI response missing required fields."}, 502
 
-        return {"analysis": normalized, "source_count": len(formatted_items)}, 200
+        normalized["analyzed_posts"] = len(formatted_items)
+        return {"analysis": normalized}, 200
 
     def _format_items(self, items, max_items=50, max_item_chars=700, max_comments=15):
         formatted = []

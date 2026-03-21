@@ -1,7 +1,7 @@
 import sys
+from dotenv import load_dotenv
 from infrastructure.app_factory import create_app
 from infrastructure.db import db
-from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
@@ -24,7 +24,6 @@ def init_db():
         print("\nCreated tables:")
         print("  - users")
         print("  - analysis_results")
-        print("  - raw_reddit_data")
 
 if __name__ == '__main__':
     try:
