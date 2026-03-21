@@ -20,7 +20,6 @@ class RawRedditData(db.Model):
     # Core content fields
     title = db.Column(db.String(500), nullable=True)  # Only for posts
     content = db.Column(db.Text, nullable=True)  # selftext for posts, body for comments
-    author = db.Column(db.String(100), nullable=True)
     subreddit = db.Column(db.String(100), nullable=True)
 
     # URLs and links
@@ -51,7 +50,6 @@ class RawRedditData(db.Model):
             "content_type": self.content_type,
             "title": self.title,
             "content": self.content,
-            "author": self.author,
             "subreddit": self.subreddit,
             "permalink": self.permalink,
             "url": self.url,
