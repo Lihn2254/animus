@@ -4,10 +4,19 @@ import { createContext, useContext, useEffect, useState, ReactNode } from "react
 import { useRouter } from "next/navigation";
 import { User } from "../types/user";
 
+export function getInitials(fullname: string) {
+  if (!fullname) return "";
+  const parts = fullname.trim().split(" ");
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
 interface AuthContextType {
   user: User | null;
   token: string | null;
+  loading: boolean;
   logout: () => void;
+  updateUser: (updates: Partial<User>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -15,22 +24,36 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
-  const [isReady, setIsReady] = useState(false);
+  const [loading, setLoading] = useState(true);
+
   const router = useRouter();
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    const storedToken = localStorage.getItem("token");
+    if (typeof window !== "undefined") {
+      const storedUser = localStorage.getItem("user");
+      const storedToken = localStorage.getItem("token");
 
-    if (storedUser && storedToken) {
-      setUser(JSON.parse(storedUser));
-      setToken(storedToken);
-    } else {
-      router.replace("/login");
+      try {
+        const parsedUser =
+          storedUser && storedUser !== "undefined" && storedUser !== "null"
+            ? JSON.parse(storedUser)
+            : null;
+        const parsedToken =
+          storedToken && storedToken !== "undefined" && storedToken !== "null"
+            ? storedToken
+            : null;
+
+        setUser(parsedUser);
+        setToken(parsedToken);
+      } catch {
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        setUser(null);
+        setToken(null);
+      }
     }
-
-    setIsReady(true);
-  }, [router]);
+    setLoading(false);
+  }, []);
 
   const logout = () => {
     localStorage.removeItem("user");
@@ -40,13 +63,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push("/login");
   };
 
-  if (!isReady) {
-    return <div>Cargando...</div>;
-  }
+  const updateUser = (updates: Partial<User>) => {
+    if (!user) return;
+    const updatedUser = { ...user, ...updates };
+    setUser(updatedUser);
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+  };
 
   return (
-    <AuthContext.Provider value={{ user, token, logout }}>
-      {user ? children : null}
+    <AuthContext.Provider value={{ user, token, loading, logout, updateUser }}>
+      {children}
     </AuthContext.Provider>
   );
 }

@@ -1,20 +1,17 @@
 from __future__ import annotations
-from .sessions import RandomUserAgentSession
-import os
 import time
 import random
-import logging
+# import logging
 import requests
 from urllib3.util.retry import Retry
 from requests.adapters import HTTPAdapter
+from .sessions import RandomUserAgentSession
 
-os.makedirs("logs", exist_ok=True)
-
-logging.basicConfig(
-    filename="logs/yars.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-)
+# logging.basicConfig(
+#     filename="logs/yars.log",
+#     level=logging.INFO,
+#     format="%(asctime)s - %(levelname)s - %(message)s",
+# )
 
 
 class YARS:
@@ -45,10 +42,10 @@ class YARS:
         try:
             response = self.session.get(url, params=params, timeout=self.timeout)
             response.raise_for_status()
-            logging.info("Search request successful")
-        except Exception as e:
+            # logging.info("Search request successful")
+        except Exception:
             if response.status_code != 200:
-                logging.info("Search request unsuccessful due to: %s", e)
+                # logging.info("Search request unsuccessful due to: %s", e)
                 return []
 
         data = response.json()
@@ -69,7 +66,7 @@ class YARS:
                     "external_id": post_data.get("id", ""),
                 }
             )
-        logging.info("Search returned %d results", len(results))
+        # logging.info("Search returned %d results", len(results))
         return results
 
     def search_reddit(self, query, limit=10, after=None, before=None):
@@ -88,9 +85,9 @@ class YARS:
         try:
             response = self.session.get(url, timeout=self.timeout)
             response.raise_for_status()
-            logging.info("Post details request successful: %s", url)
-        except Exception as e:
-            logging.info("Post details request unsuccessful: %s", e)
+            # logging.info("Post details request successful: %s", url)
+        except Exception:
+            # logging.info("Post details request unsuccessful: %s", e)
             if response.status_code != 200:
                 return None
 
@@ -103,7 +100,7 @@ class YARS:
         body = main_post.get("selftext", "")
 
         comments = self._extract_comments(post_data[1]["data"]["children"])
-        logging.info("Successfully scraped post: %s", title)
+        # logging.info("Successfully scraped post: %s", title)
         return {"title": title, "body": body, "comments": comments}
 
     def _extract_comments(self, comments):
@@ -126,7 +123,7 @@ class YARS:
         return extracted_comments
 
     def scrape_user_data(self, username, limit=10):
-        logging.info("Scraping user data for %s, limit: %d", username, limit)
+        # logging.info("Scraping user data for %s, limit: %d", username, limit)
         base_url = f"https://www.reddit.com/user/{username}/.json"
         params = {"limit": limit, "after": None}
         all_items = []
@@ -136,8 +133,8 @@ class YARS:
             try:
                 response = self.session.get(base_url, params=params, timeout=self.timeout)
                 response.raise_for_status()
-            except Exception as e:
-                logging.info("User data request unsuccessful: %s", e)
+            except Exception:
+                # logging.info("User data request unsuccessful: %s", e)
                 break
 
             try:
@@ -191,14 +188,14 @@ class YARS:
 
             time.sleep(random.uniform(1, 2))
 
-        logging.info("Successfully scraped user data for %s", username)
+        # logging.info("Successfully scraped user data for %s", username)
         return all_items
 
     def fetch_subreddit_posts(self, subreddit, limit=10, category="hot", time_filter="all"):
-        logging.info(
-            "Fetching subreddit posts for %s, limit: %d, category: %s",
-            subreddit, limit, category,
-        )
+        # logging.info(
+        #     "Fetching subreddit posts for %s, limit: %d, category: %s",
+        #     subreddit, limit, category,
+        # )
         if category not in ["hot", "top", "new", "userhot", "usertop", "usernew"]:
             raise ValueError("Category must be 'hot', 'top', or 'new'")
 
@@ -220,8 +217,8 @@ class YARS:
             try:
                 response = self.session.get(url, params=params, timeout=self.timeout)
                 response.raise_for_status()
-            except Exception as e:
-                logging.info("Subreddit posts request unsuccessful: %s", e)
+            except Exception:
+                # logging.info("Subreddit posts request unsuccessful: %s", e)
                 break
 
             data = response.json()
@@ -259,5 +256,5 @@ class YARS:
 
             time.sleep(random.uniform(1, 2))
 
-        logging.info("Successfully fetched %d posts from r/%s", total_fetched, subreddit)
+        # logging.info("Successfully fetched %d posts from r/%s", total_fetched, subreddit)
         return all_posts

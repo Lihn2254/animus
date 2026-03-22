@@ -5,8 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { register as registerUser, login as loginUser } from "../../services/auth";
-import { useAuth } from "@/app/context/AuthContext";
+import { register as registerUser } from "../../services/auth";
 import { User } from "../../types/user";
 
 // 1. Esquema de validación
@@ -46,7 +45,6 @@ export default function Singup() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const router = useRouter();
-  const { register: authRegister } = useAuth();
 
   // Cambiar el nombre de la pestaña al cargar el componente
   useEffect(() => {
@@ -72,19 +70,19 @@ export default function Singup() {
       country: data.country,
       region: data.region,
     };
-    
+
     const response = await registerUser(userData);
-    console.log("Login exitoso:", response);
 
     localStorage.setItem("user", JSON.stringify(response.user));
     localStorage.setItem('token', response.token);
 
-    // 4. Ahora sí, vamos a la página principal. 
+    // 4. Ahora sí, vamos a la página principal.
     // Como ya guardamos 'animus_user', la página principal ya no nos va a rebotar.
     router.push("/");
-    
-  } catch (error: any) {
-    setServerError(error.message || "Hubo un problema al crear tu cuenta. Intenta con otro correo.");
+
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : "Hubo un problema al crear tu cuenta. Intenta con otro correo.";
+    setServerError(errorMessage);
   }
 };
 
