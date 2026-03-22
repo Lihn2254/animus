@@ -6,6 +6,7 @@ import { z } from "zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { register as registerUser, login as loginUser } from "../../services/auth";
+import { useAuth } from "@/app/context/AuthContext";
 import { User } from "../../types/user";
 
 // 1. Esquema de validación
@@ -45,6 +46,7 @@ export default function Singup() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const router = useRouter();
+  const { register: authRegister } = useAuth();
 
   // Cambiar el nombre de la pestaña al cargar el componente
   useEffect(() => {

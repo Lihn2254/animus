@@ -81,19 +81,20 @@ def login():
     try:
         data = request.get_json()
 
-        if not data or not data.get("username") or not data.get("password"):
+        if not data or (not data.get("username") and not data.get("email")) or not data.get("password"):
             return (
-                jsonify({"error": "Faltan campos requeridos: username, password"}),
+                jsonify({"error": "Faltan campos requeridos: username/email, password"}),
                 400,
             )
 
-        username = data["username"]
+        credential = data.get("username") or data.get("email")
         password = data["password"]
 
-        user = User.query.filter_by(username=username).first()
+        # Aceptar login por username o por email
+        user = User.query.filter((User.username == credential) | (User.email == credential)).first()
 
         if not user or not user.check_password(password):
-            return jsonify({"error": "Campos inválidos: username o password"}), 401
+            return jsonify({"error": "Campos inválidos: usuario/email o password"}), 401
 
         token = jwt.encode(
             {

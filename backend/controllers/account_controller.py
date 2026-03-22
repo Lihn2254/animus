@@ -21,6 +21,49 @@ def delete_account(user_id):
         return jsonify({"error": str(exc)}), 500
 
 
+def get_account(user_id):
+    try:
+        user = User.query.get(user_id)
+
+        if not user:
+            return jsonify({"error": "Usuario no encontrado"}), 404
+
+        return jsonify(user.to_dict()), 200
+
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+
+def delete_account_by_credentials():
+    try:
+        data = request.get_json()
+        if not data or not data.get("email") or not data.get("password"):
+            return (
+                jsonify({"error": "Faltan campos requeridos: email, password"}),
+                400,
+            )
+
+        email = data["email"]
+        password = data["password"]
+
+        user = User.query.filter_by(email=email).first()
+        if not user or not user.check_password(password):
+            return jsonify({"error": "Credenciales inválidas"}), 401
+
+        username = user.username
+        db.session.delete(user)
+        db.session.commit()
+
+        return (
+            jsonify({"message": f'La cuenta de "{username}" fue eliminada correctamente'}),
+            200,
+        )
+
+    except Exception as exc:
+        db.session.rollback()
+        return jsonify({"error": str(exc)}), 500
+
+
 def update_account(user_id):
     try:
         user = User.query.get(user_id)
@@ -32,9 +75,15 @@ def update_account(user_id):
         if not data:
             return jsonify({"error": "No se proporcionaron datos para actualizar"}), 400
 
-        allowed_fields = {"username", "email", "password"}
+        allowed_fields = {"fullname", "username", "email", "password", "country", "region"}
         if not any(field in data for field in allowed_fields):
-            return jsonify({"error": "Se debe proporcionar al menos un campo válido: username, email, password"}), 400
+            return jsonify({"error": "Se debe proporcionar al menos un campo válido: fullname, username, email, password, country, region"}), 400
+
+        if "fullname" in data:
+            new_fullname = data["fullname"].strip()
+            if not new_fullname:
+                return jsonify({"error": "El nombre completo no puede estar vacío"}), 400
+            user.fullname = new_fullname
 
         if "username" in data:
             new_username = data["username"].strip()
@@ -53,6 +102,18 @@ def update_account(user_id):
             if existing and existing.id != user_id:
                 return jsonify({"error": "El email ya está en uso"}), 409
             user.email = new_email
+
+        if "country" in data:
+            new_country = data["country"].strip()
+            if not new_country:
+                return jsonify({"error": "El país no puede estar vacío"}), 400
+            user.country = new_country
+
+        if "region" in data:
+            new_region = data["region"].strip()
+            if not new_region:
+                return jsonify({"error": "La región no puede estar vacía"}), 400
+            user.region = new_region
 
         if "password" in data:
             new_password = data["password"]

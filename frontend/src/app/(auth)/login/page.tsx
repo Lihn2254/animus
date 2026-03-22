@@ -6,6 +6,7 @@ import { z } from "zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { login } from "../../services/auth";
+import { useAuth } from "@/app/context/AuthContext";
 
 // 1. Definición del esquema con Zod
 const loginSchema = z.object({
@@ -23,6 +24,7 @@ type LoginFormInputs = z.infer<typeof loginSchema>;
 export default function Login() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const { login } = useAuth();
   const router = useRouter();
 
   // 3. Inicialización del hook con el tipo genérico <LoginFormInputs>
