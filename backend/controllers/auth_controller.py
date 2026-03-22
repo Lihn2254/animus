@@ -1,6 +1,8 @@
-from flask import request, jsonify
+from datetime import datetime, timedelta, timezone
+from flask import request, jsonify, current_app
 from infrastructure.db import db
 from models.user import User
+import jwt
 
 
 def register():
@@ -18,7 +20,9 @@ def register():
         ):
             return (
                 jsonify(
-                    {"error": "Faltan campos requeridos: fullname, username, email, password, country, region"}
+                    {
+                        "error": "Faltan campos requeridos: fullname, username, email, password, country, region"
+                    }
                 ),
                 400,
             )
@@ -36,15 +40,34 @@ def register():
         if User.query.filter_by(email=email).first():
             return jsonify({"error": "Email ya existe"}), 409
 
-        new_user = User(fullname=fullname, username=username, email=email, country=country, region=region)
+        new_user = User(
+            fullname=fullname,
+            username=username,
+            email=email,
+            country=country,
+            region=region,
+        )
         new_user.set_password(password)
 
         db.session.add(new_user)
         db.session.commit()
 
+        token = jwt.encode(
+            {
+                "sub": str(new_user.id),
+                "username": new_user.username,
+                "exp": datetime.now(timezone.utc) + timedelta(hours=24)
+            },
+            current_app.config["SECRET_KEY"],
+            algorithm="HS256")
+
         return (
             jsonify(
-                {"message": "Cuenta creada exitosamente", "user": new_user.to_dict()}
+                {
+                    "message": "Cuenta creada exitosamente", 
+                    "user": new_user.to_dict(),
+                    "token": token
+                }
             ),
             201,
         )
@@ -73,8 +96,24 @@ def login():
         if not user or not user.check_password(password):
             return jsonify({"error": "Campos inválidos: usuario/email o password"}), 401
 
+        token = jwt.encode(
+            {
+                "sub": str(user.id),
+                "username": user.username,
+                "exp": datetime.now(timezone.utc) + timedelta(hours=24),
+            },
+            current_app.config["SECRET_KEY"],
+            algorithm="HS256",
+        )
+
         return (
-            jsonify({"message": "Inicio de sesión exitoso", "user": user.to_dict()}),
+            jsonify(
+                {
+                    "message": "Inicio de sesión exitoso",
+                    "user": user.to_dict(),
+                    "token": token,
+                }
+            ),
             200,
         )
 

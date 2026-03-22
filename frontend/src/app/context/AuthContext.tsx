@@ -1,94 +1,58 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { login as loginApi, register as registerApi } from "@/app/services/auth";
-import type { User } from "@/app/types/user";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { User } from "../types/user";
 
-export type AuthUser = User & { id: number; password: string };
-
-type AuthContextType = {
-  user: AuthUser | null;
-  loading: boolean;
-  login: (credential: string, password: string) => Promise<AuthUser>;
-  register: (user: User) => Promise<AuthUser>;
+interface AuthContextType {
+  user: User | null;
+  token: string | null;
   logout: () => void;
-  updateUser: (partial: Partial<AuthUser>) => void;
-};
+}
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | null>(null);
 
-const STORAGE_KEY = "animus_auth";
-
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored) as AuthUser;
-        setUser(parsed);
-      } catch {
-        window.localStorage.removeItem(STORAGE_KEY);
-      }
-    }
-    setLoading(false);
-  }, []);
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [isReady, setIsReady] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
 
-    if (user) {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+    if (storedUser && storedToken) {
+      setUser(JSON.parse(storedUser));
+      setToken(storedToken);
     } else {
-      window.localStorage.removeItem(STORAGE_KEY);
+      router.replace("/login");
     }
-  }, [user]);
 
-  const login = async (credential: string, password: string) => {
-    const apiUser = await loginApi(credential, password);
-    const authUser: AuthUser = { ...apiUser, id: apiUser.id ?? 0, password };
-    setUser(authUser);
-    return authUser;
-  };
-
-  const register = async (data: User) => {
-    const apiUser = await registerApi(data);
-    const authUser: AuthUser = { ...apiUser, id: apiUser.id ?? 0, password: data.password };
-    setUser(authUser);
-    return authUser;
-  };
+    setIsReady(true);
+  }, [router]);
 
   const logout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
     setUser(null);
+    setToken(null);
+    router.push("/login");
   };
 
-  const updateUser = (partial: Partial<AuthUser>) => {
-    setUser((prev) => (prev ? { ...prev, ...partial } : prev));
-  };
-
-  const value = useMemo(
-    () => ({ user, loading, login, register, logout, updateUser }),
-    [user, loading]
-  );
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}
-
-export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) {
-    throw new Error("useAuth must be used within an AuthProvider");
+  if (!isReady) {
+    return <div>Cargando...</div>;
   }
-  return ctx;
+
+  return (
+    <AuthContext.Provider value={{ user, token, logout }}>
+      {user ? children : null}
+    </AuthContext.Provider>
+  );
 }
 
-export function getInitials(fullname: string) {
-  if (!fullname) return "";
-  const parts = fullname.trim().split(" ");
-  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+export function useAuth(): AuthContextType {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth debe usarse dentro de AuthProvider");
+  return ctx;
 }

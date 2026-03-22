@@ -22,13 +22,13 @@ export default function Header() {
     { key: "general", label: "General", href: "/" },
     { key: "tendencias", label: "Tendencias", href: "/tendencias" },
     { key: "planificacion", label: "Planificación", href: "/planificacion" },
-    { key: "reportes", label: "Reportes", href: "/reportes" },
+    { key: "reports", label: "Reportes", href: "/reports" },
   ];
 
   // Map pathname to nav key
   const getActiveKey = () => {
     if (pathname === "/") return "general";
-    if (pathname.startsWith("/reportes")) return "reportes";
+    if (pathname.startsWith("/reports")) return "reports";
     if (pathname.startsWith("/planificacion")) return "planificacion";
     if (pathname.startsWith("/tendencias")) return "tendencias";
     return "general";
