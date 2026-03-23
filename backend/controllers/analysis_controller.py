@@ -188,12 +188,14 @@ def run_analysis():
             )
             db.session.add(result)
             db.session.commit()
+            db.session.refresh(result)
             analysis_result_id = result.id
 
         return jsonify({
+            "message": "Análisis finalizado correctamente",
             "analysis": analysis_payload.get("analysis"),
             "saved": save,
-            "analysis_result_id": analysis_result_id,
+            "id": analysis_result_id,
         }), 200
 
     except Exception as exc:
