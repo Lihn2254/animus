@@ -6,7 +6,6 @@ import { z } from "zod";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { login } from "../../services/auth";
-import { useAuth } from "@/app/context/AuthContext";
 
 // 1. Definición del esquema con Zod
 const loginSchema = z.object({
@@ -24,7 +23,6 @@ type LoginFormInputs = z.infer<typeof loginSchema>;
 export default function Login() {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [serverError, setServerError] = useState<string | null>(null);
-  const { login } = useAuth();
   const router = useRouter();
 
   // 3. Inicialización del hook con el tipo genérico <LoginFormInputs>
@@ -41,10 +39,7 @@ export default function Login() {
     setServerError(null);
 
     try {
-      console.log("Datos validados y tipados:", data);
-
       const response = await login(data.username, data.password);
-      console.log("Login exitoso:", response);
 
       // Guardar usuario y token en localStorage para la sesión
       localStorage.setItem('user', JSON.stringify(response.user));
@@ -52,8 +47,9 @@ export default function Login() {
 
       // Redirigir a la app principal
       router.push('/');
-    } catch (error: any) {
-      setServerError(error.message || "Ocurrió un error inesperado. Inténtalo de nuevo.");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Ocurrió un error inesperado. Inténtalo de nuevo.";
+      setServerError(errorMessage);
     }
   };
 
@@ -90,13 +86,13 @@ export default function Login() {
                   id="username"
                   type="text"
                   autoComplete="username"
-                  className={`appearance-none block w-full px-3 py-2 border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-0 transition-colors duration-200 sm:text-sm
+                  className={`appearance-none block text-gray-600 w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-0 transition-colors duration-200 sm:text-sm
                     ${
                       errors.username
                         ? "border-red-300 focus:border-red-500 focus:ring-red-200"
                         : "border-gray-300 focus:border-blue-500 focus:ring-blue-200"
                     }`}
-                  placeholder="ejemplo_usuario"
+                  placeholder="Nombre de usuario"
                   {...register("username")}
                 />
                 {errors.username && (
@@ -120,13 +116,13 @@ export default function Login() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   autoComplete="current-password"
-                  className={`appearance-none block w-full px-3 py-2 border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-0 transition-colors duration-200 sm:text-sm pr-10
+                  className={`appearance-none text-gray-600 block w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-0 transition-colors duration-200 sm:text-sm pr-10
                     ${
                       errors.password
                         ? "border-red-300 focus:border-red-500 focus:ring-red-200"
                         : "border-gray-300 focus:border-blue-500 focus:ring-blue-200"
                     }`}
-                  placeholder="••••••••"
+                  placeholder="Contraseña"
                   {...register("password")}
                 />
 

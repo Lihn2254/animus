@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { HiOutlineTrash } from "react-icons/hi";
 import { useAuth } from "@/app/context/AuthContext";
-import { deleteAccount, getUser, updateUser } from "@/app/services/auth";
 import { User } from "@/app/types/user";
+import { getUser, updateUser, deleteAccount } from "@/app/services/userAccount";
 
 type SettingsFormInputs = {
   fullname: string;
@@ -62,8 +62,9 @@ export default function SettingsPage() {
           region: fetched.region,
           newPassword: "",
         });
-      } catch (error: any) {
-        setServerError(error?.message || "No se pudo cargar el perfil");
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : "No se pudo cargar el perfil";
+        setServerError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -95,20 +96,23 @@ export default function SettingsPage() {
     if (!confirmed) return;
 
     try {
-      const updated = await updateUser(user.id ?? 0, updates);
-      updateAuthUser({ ...updated, password: updates.password ?? user.password });
-      setOriginalProfile(updated);
+      const res = await updateUser(user.id ?? 0, updates);
+      const updatedUser = res.user;
+
+      updateAuthUser({ ...updatedUser, password: updates.password ?? user.password });
+      setOriginalProfile(updatedUser);
       reset({
-        fullname: updated.fullname,
-        username: updated.username,
-        email: updated.email,
-        country: updated.country,
-        region: updated.region,
+        fullname: updatedUser.fullname,
+        username: updatedUser.username,
+        email: updatedUser.email,
+        country: updatedUser.country,
+        region: updatedUser.region,
         newPassword: "",
       });
       setSuccessMessage("Perfil actualizado correctamente.");
-    } catch (error: any) {
-      setServerError(error?.message || "Error al actualizar el perfil.");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Error al actualizar el perfil.";
+      setServerError(errorMessage);
     }
   };
 
@@ -127,8 +131,9 @@ export default function SettingsPage() {
       await deleteAccount(user.email, user.password);
       logout();
       router.push("/login");
-    } catch (error: any) {
-      setServerError(error?.message || "No se pudo eliminar la cuenta.");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "No se pudo eliminar la cuenta.";
+      setServerError(errorMessage);
     }
   };
 

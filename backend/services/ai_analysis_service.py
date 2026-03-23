@@ -33,8 +33,12 @@ Analyze the provided Reddit posts and comments and return a single JSON object w
 }}
 
 Rules:
-- Write all values of the JSON object in Spanish. The fields' names must remain in English.
+- None of the values can be null.
+- All fields must have a value.
+- If uncertain about the sentiment value (e.g. due to the lack of sufficient data) write "neutral"
+- Write all string values of the JSON object in Spanish. The fields' names must remain in English.
 - Output JSON only. No extra text.
+- All numeric fields must have a value. If uncertain about the value (e.g. due to a neutral sentiment or too little data) write 0.0.
 - Ensure numeric values are within 0.0 to 1.0.
 - Provide 5-12 concise keywords.
 
@@ -182,7 +186,7 @@ class AIAnalysisService:
         if not isinstance(summary, str) or not summary.strip():
             summary = None
 
-        if sentiment not in {"positive", "negative", "neutral"}:
+        if sentiment not in {"positivo", "negativo", "neutral"}:
             sentiment = None
 
         if all(value is None for value in [sentiment, stress_level, anxiety_level, keywords, summary]):

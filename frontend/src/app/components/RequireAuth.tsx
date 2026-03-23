@@ -9,17 +9,17 @@ export default function RequireAuth({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, loading } = useAuth();
+  const { user, token, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!loading && (!user || !token)) {
       router.replace("/login");
     }
-  }, [loading, user, router]);
+  }, [loading, user, token, router]);
 
   // While we load the auth state, avoid flashing content.
-  if (loading || !user) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="rounded-2xl bg-white px-6 py-8 shadow-lg">
@@ -27,6 +27,10 @@ export default function RequireAuth({
         </div>
       </div>
     );
+  }
+
+  if (!user || !token) {
+    return null;
   }
 
   return <>{children}</>;

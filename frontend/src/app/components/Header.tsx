@@ -10,8 +10,8 @@ export default function Header() {
   const router = useRouter();
   const { user, logout } = useAuth();
 
-  const initials = user ? getInitials(user.fullname || user.username) : "UA";
-  const displayName = user ? user.fullname || user.username : "Admin";
+  const initials = user ? getInitials(user.fullname || user.username) : "U";
+  const displayName = user ? user.fullname || user.username : "Usuario";
 
   const handleLogout = () => {
     logout();
