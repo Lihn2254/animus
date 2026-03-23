@@ -1,11 +1,25 @@
 "use client";
 
 import { runAnalysis } from "@/app/services/analysis";
-import { AnalysisRequest, AnalysisResult } from "@/app/types/analysis";
+import {
+  AnalysisOverview,
+  AnalysisRequest,
+  AnalysisResult,
+} from "@/app/types/analysis";
 import { useState } from "react";
 
 type AnalysisMode = "communities" | "topics" | "combined";
 type PageState = "form" | "loading" | "results";
+
+type SubmittedParams = {
+  region: string;
+  startDate: string;
+  endDate: string;
+  ageRange: string;
+  topics: string[];
+  communities: string[];
+  includeComments: boolean;
+};
 
 export default function Reports() {
   const previousMonth = new Date();
@@ -25,6 +39,16 @@ export default function Reports() {
   const [postCount, setPostCount] = useState(50);
   const [includeComments, setIncludeComments] = useState(false);
 
+  // Datos devueltos por la API
+  const [analysisOverview, setAnalysisOverview] =
+    useState<AnalysisOverview | null>(null);
+  const [analysisMessage, setAnalysisMessage] = useState("");
+  const [analysisGeneratedAt, setAnalysisGeneratedAt] = useState<Date | null>(
+    null,
+  );
+  const [submittedParams, setSubmittedParams] =
+    useState<SubmittedParams | null>(null);
+
   const formatDateOnly = (d: Date) => {
     const y = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, "0");
@@ -38,23 +62,15 @@ export default function Reports() {
       .map((item) => item.trim())
       .filter(Boolean);
 
+  const normalizeCommunities = (value: string): string[] =>
+    parseCsvList(value).map((item) => item.replace(/^r\//i, ""));
+
   const handleSubmit = async () => {
     const parsedTopics = parseCsvList(topics);
-    const parsedCommunities = parseCsvList(communities);
+    const parsedCommunities = normalizeCommunities(communities);
 
-    const selectedTopics =
-      mode === "communities"
-        ? []
-        : mode === "topics"
-          ? parsedTopics
-          : parsedTopics;
-
-    const selectedCommunities =
-      mode === "topics"
-        ? []
-        : mode === "communities"
-          ? parsedCommunities
-          : parsedCommunities;
+    const selectedTopics = mode === "communities" ? [] : parsedTopics;
+    const selectedCommunities = mode === "topics" ? [] : parsedCommunities;
 
     if (selectedTopics.length === 0 && selectedCommunities.length === 0) {
       alert(
@@ -82,15 +98,26 @@ export default function Reports() {
       include_comments: includeComments,
     };
 
+    setSubmittedParams({
+      region: analysisRequest.geographical_region,
+      startDate: analysisRequest.start_date,
+      endDate: analysisRequest.end_date,
+      ageRange: analysisRequest.age_range,
+      topics: selectedTopics,
+      communities: selectedCommunities,
+      includeComments,
+    });
+
     try {
       const res = await runAnalysis(analysisRequest);
-      const _analysisResult: AnalysisResult = res.analysisResult;
-      const _message = res.message;
+      setAnalysisOverview(res);
+      setAnalysisMessage(res.message ?? "");
+      setAnalysisGeneratedAt(new Date());
+      setPageState("results");
     } catch (error) {
       console.log(error);
       alert("Ocurrió un error. El análisis no pudo ser ejecutado.");
-    } finally {
-      setPageState("results");
+      setPageState("form");
     }
   };
 
@@ -99,6 +126,10 @@ export default function Reports() {
     setCommunities("");
     setTopics("");
     setSaveToProfile(false);
+    setAnalysisOverview(null);
+    setAnalysisMessage("");
+    setAnalysisGeneratedAt(null);
+    setSubmittedParams(null);
   };
 
   const renderHintCard = () => {
@@ -165,216 +196,238 @@ export default function Reports() {
   }
 
   /* ───────────────────────── RESULTS ───────────────────────── */
-  // if (pageState === "results") {
-  //   return (
-  //     <>
-  //       Results header + action bar
-  //       <div className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)]">
-  //         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-  //           <div>
-  //             <p className="text-sm text-slate-400">Resultado del análisis</p>
-  //             <h2 className="mt-1 text-2xl font-semibold text-slate-900">
-  //               {resultLabel}
-  //             </h2>
-  //             <p className="mt-1 text-sm text-slate-400">
-  //               Generado el 7 de marzo de 2026 · 14:32 &nbsp;·&nbsp; 1,240
-  //               posts
-  //             </p>
-  //           </div>
+  if (pageState === "results") {
+    const analysis = analysisOverview?.analysis ?? null;
+    const sentiment = analysis?.sentiment ?? "sin resultado";
+    const sentimentLabel =
+      sentiment.charAt(0).toUpperCase() + sentiment.slice(1);
+    const stressPct =
+      typeof analysis?.stress_level === "number"
+        ? `${Math.round(analysis.stress_level * 100)}%`
+        : "N/D";
+    const anxietyPct =
+      typeof analysis?.anxiety_level === "number"
+        ? `${Math.round(analysis.anxiety_level * 100)}%`
+        : "N/D";
+    const analyzedPosts = analysis?.analyzed_posts ?? 0;
+    const keywordList = analysis?.keywords ?? [];
+    const sentimentToneClass =
+      sentiment.toLowerCase() === "positive"
+        ? "bg-emerald-100 text-emerald-700"
+        : sentiment.toLowerCase() === "negative"
+          ? "bg-rose-100 text-rose-700"
+          : "bg-amber-100 text-amber-700";
 
-  //           <div className="flex flex-wrap items-center gap-3">
-  //             {/* Save to profile toggle */}
-  //             <button
-  //               onClick={() => setSaveToProfile(!saveToProfile)}
-  //               className={`flex items-center gap-2.5 rounded-full border px-4 py-2.5 text-sm font-medium shadow-sm transition ${
-  //                 saveToProfile
-  //                   ? "border-blue-300 bg-blue-50 text-blue-700"
-  //                   : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
-  //               }`}
-  //             >
-  //               <div
-  //                 className={`relative h-5 w-9 rounded-full transition-colors ${
-  //                   saveToProfile ? "bg-blue-500" : "bg-slate-200"
-  //                 }`}
-  //               >
-  //                 <div
-  //                   className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${
-  //                     saveToProfile ? "translate-x-4" : "translate-x-0.5"
-  //                   }`}
-  //                 />
-  //               </div>
-  //               Guardar en perfil
-  //             </button>
+    return (
+      <>
+        <section className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)]">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <p className="text-slate-400">Resultado del análisis</p>
+              <h2 className="mt-1 text-2xl font-semibold text-slate-900">
+                {sentimentLabel}
+              </h2>
+              <p className="mt-1 text-sm text-slate-400">
+                {analysisGeneratedAt
+                  ? `Generado el ${analysisGeneratedAt.toLocaleDateString("es-MX")} · ${analysisGeneratedAt.toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" })}`
+                  : "Generado recientemente"}
+                {` · ${analyzedPosts} posts analizados`}
+              </p>
+              {analysisMessage && (
+                <p className="mt-2 text-sm text-blue-600">{analysisMessage}</p>
+              )}
+            </div>
 
-  //             {/* Export JSON */}
-  //             <button className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50">
-  //               <svg
-  //                 className="h-4 w-4"
-  //                 fill="none"
-  //                 viewBox="0 0 24 24"
-  //                 stroke="currentColor"
-  //                 strokeWidth={1.7}
-  //               >
-  //                 <path
-  //                   strokeLinecap="round"
-  //                   strokeLinejoin="round"
-  //                   d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5"
-  //                 />
-  //               </svg>
-  //               Exportar JSON
-  //             </button>
+            <div className="flex flex-wrap items-center gap-3">
+              <span
+                className={`rounded-full px-4 py-2 text-sm font-semibold ${sentimentToneClass}`}
+              >
+                Sentimiento: {sentimentLabel}
+              </span>
+              <span className="rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700">
+                Guardado en BD: {analysisOverview?.saved ? "Sí" : "No"}
+              </span>
+              {analysisOverview?.saved && analysisOverview.id && (
+                <span className="rounded-full bg-blue-100 px-4 py-2 text-sm font-medium text-blue-700">
+                  ID: {analysisOverview.id}
+                </span>
+              )}
+              <button
+                onClick={handleNewAnalysis}
+                className="flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-slate-700"
+              >
+                <svg
+                  className="h-4 w-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 4.5v15m7.5-7.5h-15"
+                  />
+                </svg>
+                Nuevo análisis
+              </button>
+            </div>
+          </div>
+        </section>
 
-  //             {/* Export PDF */}
-  //             <button className="flex items-center gap-2 rounded-full border border-rose-200 bg-rose-50 px-4 py-2.5 text-sm font-medium text-rose-700 shadow-sm transition hover:bg-rose-100">
-  //               <svg
-  //                 className="h-4 w-4"
-  //                 fill="none"
-  //                 viewBox="0 0 24 24"
-  //                 stroke="currentColor"
-  //                 strokeWidth={1.7}
-  //               >
-  //                 <path
-  //                   strokeLinecap="round"
-  //                   strokeLinejoin="round"
-  //                   d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
-  //                 />
-  //               </svg>
-  //               Exportar PDF
-  //             </button>
+        {!analysis ? (
+          <section className="rounded-3xl border border-amber-200 bg-amber-50 p-6 text-amber-800 shadow-[0_12px_30px_rgba(180,83,9,0.08)]">
+            <h3 className="text-lg font-semibold">No hay datos de análisis</h3>
+            <p className="mt-2 text-sm">
+              La respuesta no incluyó el objeto de análisis. Ejecuta nuevamente
+              el análisis para obtener resultados detallados.
+            </p>
+          </section>
+        ) : (
+          <>
+            <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+              <div className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)]">
+                <p className="text-sm text-slate-500">Sentimiento</p>
+                <p className="mt-4 text-3xl font-semibold text-slate-900">
+                  {sentimentLabel}
+                </p>
+                <p className="mt-2 text-sm text-slate-400">
+                  Clasificación general
+                </p>
+              </div>
+              <div className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)]">
+                <p className="text-sm text-slate-500">Nivel de estrés</p>
+                <p className="mt-4 text-3xl font-semibold text-slate-900">
+                  {stressPct}
+                </p>
+                <p className="mt-2 text-sm text-slate-400">
+                  Escala normalizada
+                </p>
+              </div>
+              <div className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)]">
+                <p className="text-sm text-slate-500">Nivel de ansiedad</p>
+                <p className="mt-4 text-3xl font-semibold text-slate-900">
+                  {anxietyPct}
+                </p>
+                <p className="mt-2 text-sm text-slate-400">
+                  Escala normalizada
+                </p>
+              </div>
+              <div className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)]">
+                <p className="text-sm text-slate-500">Posts analizados</p>
+                <p className="mt-4 text-3xl font-semibold text-slate-900">
+                  {analyzedPosts}
+                </p>
+                <p className="mt-2 text-sm text-slate-400">Muestra procesada</p>
+              </div>
+            </section>
 
-  //             {/* New analysis */}
-  //             <button
-  //               onClick={handleNewAnalysis}
-  //               className="flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-slate-700"
-  //             >
-  //               <svg
-  //                 className="h-4 w-4"
-  //                 fill="none"
-  //                 viewBox="0 0 24 24"
-  //                 stroke="currentColor"
-  //                 strokeWidth={2}
-  //               >
-  //                 <path
-  //                   strokeLinecap="round"
-  //                   strokeLinejoin="round"
-  //                   d="M12 4.5v15m7.5-7.5h-15"
-  //                 />
-  //               </svg>
-  //               Nuevo análisis
-  //             </button>
-  //           </div>
-  //         </div>
-  //       </div>
+            <section className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+              <div className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)]">
+                <h3 className="text-2xl font-semibold">Palabras clave</h3>
+                <p className="pt-1 text-slate-400">Detectadas por el modelo</p>
+                <div className="mt-6 flex flex-wrap gap-2">
+                  {keywordList.length > 0 ? (
+                    keywordList.map((keyword) => (
+                      <span
+                        key={keyword}
+                        className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-700"
+                      >
+                        {keyword}
+                      </span>
+                    ))
+                  ) : (
+                    <p className="text-sm text-slate-500">
+                      No se detectaron palabras clave.
+                    </p>
+                  )}
+                </div>
+              </div>
 
-  //       {/* KPI cards */}
-  //       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-  //         {mockKpis.map((kpi) => (
-  //           <div
-  //             key={kpi.label}
-  //             className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)]"
-  //           >
-  //             <p className="text-sm text-slate-500">{kpi.label}</p>
-  //             <p className="mt-4 text-3xl font-semibold text-slate-900">
-  //               {kpi.value}
-  //             </p>
-  //             <p className="mt-2 text-sm text-slate-400">{kpi.note}</p>
-  //           </div>
-  //         ))}
-  //       </section>
+              <div className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)]">
+                <h3 className="text-2xl font-semibold">Resumen</h3>
+                <p className="pt-1 text-slate-400">Síntesis del análisis</p>
+                <div className="mt-4 rounded-2xl bg-slate-900 p-4 text-white">
+                  <p className="leading-relaxed text-white/85">
+                    {analysis.summary ||
+                      "No se recibió un resumen del análisis."}
+                  </p>
+                </div>
+                <div className="flex items-center mt-6">
+                  <p className="text-sm text-slate-400 pr-1">
+                    Modelo:
+                  </p>
+                  <p className="text-sm text-slate-600 font-bold">
+                    {analysis.model_version || "N/D"}
+                  </p>
+                </div>
+              </div>
+            </section>
 
-  //       {/* Activity chart + Sentiment breakdown */}
-  //       <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-  //         <div className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)]">
-  //           <div className="flex items-center justify-between pb-6">
-  //             <div>
-  //               <p className="text-slate-400">Actividad de la última semana</p>
-  //               <h3 className="text-2xl font-semibold">Volumen de posts</h3>
-  //             </div>
-  //             <div className="flex items-center gap-2 text-sm text-slate-500">
-  //               <span className="h-3 w-3 rounded-full bg-blue-400" />
-  //               Posts totales
-  //             </div>
-  //           </div>
-  //           <div className="mt-8 grid grid-cols-7 items-end gap-3">
-  //             {mockActivity.map((item) => (
-  //               <div key={item.day} className="flex flex-col items-center gap-2">
-  //                 <div className="relative flex h-36 w-full items-end">
-  //                   <div
-  //                     className="w-full rounded-2xl bg-linear-to-t from-blue-700 to-blue-400"
-  //                     style={{ height: `${item.value}%` }}
-  //                   />
-  //                   <div className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs font-medium text-slate-500">
-  //                     {item.value}
-  //                   </div>
-  //                 </div>
-  //                 <span className="text-xs text-slate-500">{item.day}</span>
-  //               </div>
-  //             ))}
-  //           </div>
-  //         </div>
+            <section className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)]">
+              <h3 className="text-2xl font-semibold">Parámetros usados</h3>
+              <p className="pt-1 text-slate-400">Configuración enviada por el usuario</p>
 
-  //         <div className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)]">
-  //           <p className="text-slate-400">Análisis de sentimiento</p>
-  //           <h3 className="mt-1 text-2xl font-semibold">
-  //             Distribución general
-  //           </h3>
-  //           <div className="mt-6 flex flex-col gap-5">
-  //             {mockSentiment.map((item) => (
-  //               <div key={item.label} className="flex items-center gap-3">
-  //                 <div className="h-10 w-10 shrink-0 rounded-2xl bg-slate-100" />
-  //                 <div className="flex-1">
-  //                   <div className="flex items-center justify-between text-sm">
-  //                     <span className="font-medium text-slate-700">
-  //                       {item.label}
-  //                     </span>
-  //                     <span className="text-slate-500">{item.value}%</span>
-  //                   </div>
-  //                   <div className="mt-2 h-2 w-full rounded-full bg-slate-100">
-  //                     <div
-  //                       className={`h-2 rounded-full ${item.color}`}
-  //                       style={{ width: `${item.value}%` }}
-  //                     />
-  //                   </div>
-  //                 </div>
-  //               </div>
-  //             ))}
-  //           </div>
-  //           <div className="mt-6 rounded-2xl bg-slate-900 p-4 text-white">
-  //             <p className="font-medium">Síntesis del análisis</p>
-  //             <p className="mt-2 text-sm text-white/70">
-  //               Predomina el sentimiento negativo asociado a presión laboral y
-  //               cambios en el mercado tecnológico.
-  //             </p>
-  //           </div>
-  //         </div>
-  //       </section>
+              <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                  <p className="text-xs uppercase tracking-wide text-slate-400">Región</p>
+                  <p className="mt-1 text-sm font-medium text-slate-700">
+                    {submittedParams?.region || "N/D"}
+                  </p>
+                </div>
 
-  //       {/* Themes + Recent posts */}
-  //       <section className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-  //         <div className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)]">
-  //           <h3 className="text-2xl font-semibold">Temas identificados</h3>
-  //           <p className="pt-1 text-slate-400">por frecuencia de aparición</p>
-  //           <div className="mt-6 space-y-3">
-  //             {mockThemes.map((t) => (
-  //               <div
-  //                 key={t.theme}
-  //                 className="rounded-2xl border border-slate-100 bg-white px-4 py-3"
-  //               >
-  //                 <div className="flex items-center justify-between">
-  //                   <p className="font-medium text-slate-800">{t.theme}</p>
-  //                   <span className="rounded-full bg-slate-100 px-2 py-1 text-sm font-semibold text-slate-600">
-  //                     {t.share}
-  //                   </span>
-  //                 </div>
-  //                 <p className="mt-1 text-sm text-slate-500">{t.detail}</p>
-  //               </div>
-  //             ))}
-  //           </div>
-  //         </div>
-  //       </section>
-  //     </>
-  //   );
-  // }
+                <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                  <p className="text-xs uppercase tracking-wide text-slate-400">Rango de edad</p>
+                  <p className="mt-1 text-sm font-medium text-slate-700">
+                    {submittedParams?.ageRange || "N/D"}
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                  <p className="text-xs uppercase tracking-wide text-slate-400">Fecha de inicio</p>
+                  <p className="mt-1 text-sm font-medium text-slate-700">
+                    {submittedParams?.startDate || "N/D"}
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+                  <p className="text-xs uppercase tracking-wide text-slate-400">Fecha de fin</p>
+                  <p className="mt-1 text-sm font-medium text-slate-700">
+                    {submittedParams?.endDate || "N/D"}
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:col-span-2">
+                  <p className="text-xs uppercase tracking-wide text-slate-400">Topics</p>
+                  <p className="mt-1 text-sm font-medium text-slate-700">
+                    {submittedParams?.topics.length
+                      ? submittedParams.topics.join(", ")
+                      : "No especificado"}
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:col-span-2">
+                  <p className="text-xs uppercase tracking-wide text-slate-400">Communities</p>
+                  <p className="mt-1 text-sm font-medium text-slate-700">
+                    {submittedParams?.communities.length
+                      ? submittedParams.communities.map((community) => `r/${community}`).join(", ")
+                      : "No especificado"}
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:col-span-2">
+                  <p className="text-xs uppercase tracking-wide text-slate-400">Comentarios incluidos</p>
+                  <p className="mt-1 text-sm font-medium text-slate-700">
+                    {submittedParams?.includeComments ? "Sí" : "No"}
+                  </p>
+                </div>
+              </div>
+            </section>
+          </>
+        )}
+      </>
+    );
+  }
 
   /* ───────────────────────── FORM ───────────────────────── */
   return (
@@ -718,7 +771,7 @@ export default function Reports() {
                 </div>
               </div>
             </div>
-            
+
             <div className="h-px bg-slate-100" />
 
             {/* Checkboxes */}

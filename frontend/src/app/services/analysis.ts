@@ -1,7 +1,7 @@
 import { fetchWithAuth } from "../lib/fetchWithAuth";
-import { AnalysisRequest, AnalysisResult } from "../types/analysis";
+import { AnalysisOverview, AnalysisRequest } from "../types/analysis";
 
-export async function runAnalysis(req: AnalysisRequest): Promise<{message: string, analysisResult: AnalysisResult}> {
+export async function runAnalysis(req: AnalysisRequest): Promise<AnalysisOverview> {
     const res = await fetchWithAuth('/analysis/run', {
         method: "POST",
         headers: { "Content-Type": "application/json" },

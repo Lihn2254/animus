@@ -1,13 +1,14 @@
 import { includes } from "zod/v4-mini";
 
-export type AnalysisResult = {
+export type AnalysisOverview = {
   id: number;
-  analysis: Analysis;
+  analysis: AnalysisResult;
+  message: string;
   saved: boolean;
 }
 
-type Analysis = {
-  analyzed_post: number;
+export type AnalysisResult = {
+  analyzed_posts: number;
   anxiety_level: number;
   keywords: string[];
   model_version: string,
