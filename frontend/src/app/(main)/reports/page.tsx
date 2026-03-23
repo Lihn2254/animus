@@ -212,9 +212,9 @@ export default function Reports() {
     const analyzedPosts = analysis?.analyzed_posts ?? 0;
     const keywordList = analysis?.keywords ?? [];
     const sentimentToneClass =
-      sentiment.toLowerCase() === "positive"
+      sentiment.toLowerCase() === "positivo"
         ? "bg-emerald-100 text-emerald-700"
-        : sentiment.toLowerCase() === "negative"
+        : sentiment.toLowerCase() === "negativo"
           ? "bg-rose-100 text-rose-700"
           : "bg-amber-100 text-amber-700";
 
@@ -398,7 +398,7 @@ export default function Reports() {
                 </div>
 
                 <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:col-span-2">
-                  <p className="text-xs uppercase tracking-wide text-slate-400">Topics</p>
+                  <p className="text-xs uppercase tracking-wide text-slate-400">Temas</p>
                   <p className="mt-1 text-sm font-medium text-slate-700">
                     {submittedParams?.topics.length
                       ? submittedParams.topics.join(", ")
@@ -407,7 +407,7 @@ export default function Reports() {
                 </div>
 
                 <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 sm:col-span-2">
-                  <p className="text-xs uppercase tracking-wide text-slate-400">Communities</p>
+                  <p className="text-xs uppercase tracking-wide text-slate-400">Comunidades</p>
                   <p className="mt-1 text-sm font-medium text-slate-700">
                     {submittedParams?.communities.length
                       ? submittedParams.communities.map((community) => `r/${community}`).join(", ")
