@@ -1,15 +1,20 @@
 "use client";
 
+import ExportAnalysisActions from "@/app/components/ExportAnalysisActions";
 import { runAnalysis } from "@/app/services/analysis";
 import {
   AnalysisOverview,
   AnalysisRequest,
-  AnalysisResult,
 } from "@/app/types/analysis";
 import { useState } from "react";
 
 type AnalysisMode = "communities" | "topics" | "combined";
 type PageState = "form" | "loading" | "results";
+
+const normalizeSentiment = (value: string | null | undefined) =>
+  (value ?? "")
+    .trim()
+    .toLowerCase();
 
 type SubmittedParams = {
   region: string;
@@ -199,6 +204,7 @@ export default function Reports() {
   if (pageState === "results") {
     const analysis = analysisOverview?.analysis ?? null;
     const sentiment = analysis?.sentiment ?? "sin resultado";
+    const sentimentNormalized = normalizeSentiment(sentiment);
     const sentimentLabel =
       sentiment.charAt(0).toUpperCase() + sentiment.slice(1);
     const stressPct =
@@ -212,11 +218,23 @@ export default function Reports() {
     const analyzedPosts = analysis?.analyzed_posts ?? 0;
     const keywordList = analysis?.keywords ?? [];
     const sentimentToneClass =
-      sentiment.toLowerCase() === "positivo"
+      sentimentNormalized === "positivo" || sentimentNormalized === "positive"
         ? "bg-emerald-100 text-emerald-700"
-        : sentiment.toLowerCase() === "negativo"
+        : sentimentNormalized === "negativo" || sentimentNormalized === "negative"
           ? "bg-rose-100 text-rose-700"
           : "bg-amber-100 text-amber-700";
+    const sentimentCardClass =
+      sentimentNormalized === "positivo" || sentimentNormalized === "positive"
+        ? "border-emerald-200 bg-emerald-50/80"
+        : sentimentNormalized === "negativo" || sentimentNormalized === "negative"
+          ? "border-rose-200 bg-rose-50/80"
+          : "border-amber-200 bg-amber-50/80";
+    const sentimentValueClass =
+      sentimentNormalized === "positivo" || sentimentNormalized === "positive"
+        ? "text-emerald-700"
+        : sentimentNormalized === "negativo" || sentimentNormalized === "negative"
+          ? "text-rose-700"
+          : "text-amber-700";
 
     return (
       <>
@@ -252,26 +270,36 @@ export default function Reports() {
                   ID: {analysisOverview.id}
                 </span>
               )}
-              <button
-                onClick={handleNewAnalysis}
-                className="flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-slate-700"
-              >
-                <svg
-                  className="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 4.5v15m7.5-7.5h-15"
-                  />
-                </svg>
-                Nuevo análisis
-              </button>
             </div>
+          </div>
+
+          <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-5">
+            <ExportAnalysisActions
+              analysisOverview={analysisOverview}
+              analysisGeneratedAt={analysisGeneratedAt}
+              submittedParams={submittedParams}
+              analysisMessage={analysisMessage}
+            />
+
+            <button
+              onClick={handleNewAnalysis}
+              className="flex items-center gap-2 rounded-full bg-slate-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-slate-700"
+            >
+              <svg
+                className="h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+              Nuevo análisis
+            </button>
           </div>
         </section>
 
@@ -286,9 +314,9 @@ export default function Reports() {
         ) : (
           <>
             <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-              <div className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)]">
+              <div className={`rounded-3xl border p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)] ${sentimentCardClass}`}>
                 <p className="text-sm text-slate-500">Sentimiento</p>
-                <p className="mt-4 text-3xl font-semibold text-slate-900">
+                <p className={`mt-4 text-3xl font-semibold ${sentimentValueClass}`}>
                   {sentimentLabel}
                 </p>
                 <p className="mt-2 text-sm text-slate-400">
