@@ -1,7 +1,8 @@
 import json
-import os
+from pathlib import Path
 
 from google import genai
+from dotenv import dotenv_values
 
 from services.yars import YARS
 
@@ -53,9 +54,13 @@ Reddit content:
 class AIAnalysisService:
     def __init__(self):
         self._yars = YARS()
-        api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+        env_path = Path(__file__).resolve().parent.parent / ".env"
+        env_values = dotenv_values(env_path)
+        api_key = env_values.get("GEMINI_API_KEY") or env_values.get("GOOGLE_API_KEY")
+        if not api_key:
+            raise ValueError("Missing GEMINI_API_KEY in backend/.env")
         self._ai = genai.Client(api_key=api_key)
-        self._model_name = os.getenv("GEMINI_MODEL", "gemini-3-flash-preview")
+        self._model_name = env_values.get("GEMINI_MODEL") or "gemini-3-flash-preview"
 
     def analyze_user(self, username, limit=30):
         """Scrape a user's comment history and return a Meta AI personality analysis."""

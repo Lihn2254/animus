@@ -68,9 +68,12 @@ Create a `.env` file in the `backend/` directory with the following content:
 DATABASE_URL=postgresql://admin:Eva01@localhost:5432/animus_db
 FLASK_ENV=development
 SECRET_KEY=your-secret-key-change-this-in-production
+GEMINI_API_KEY=your-gemini-api-key
+GEMINI_MODEL=gemini-3-flash-preview
 ```
 
 **Note**: The `.env` file is git-ignored. Never commit credentials to version control.
+`GEMINI_API_KEY` is required for AI analysis endpoints.
 
 ### 5. Initialize the Database
 
@@ -121,6 +124,8 @@ You should receive a JSON response with API information and available endpoints.
 | `DATABASE_URL` | PostgreSQL connection string                   | `postgresql://admin:Eva01@localhost:5432/animus_db` |
 | `FLASK_ENV`    | Flask environment (development/production)     | `development`                                       |
 | `SECRET_KEY`   | Secret key for JWT token signing               | `dev-secret-key`                                    |
+| `GEMINI_API_KEY` | Gemini API key for AI analysis services      | *(required, no default)*                            |
+| `GEMINI_MODEL` | Gemini model name used by AI analysis service  | `gemini-3-flash-preview`                            |
 
 ---
 
