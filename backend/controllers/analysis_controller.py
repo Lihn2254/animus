@@ -76,6 +76,7 @@ def run_analysis():
       - age_range           : string  (e.g. "18-35")
       - topics (opt.)       : list of strings (e.g. ["IT", "Software"])
       - communities (opt.)  : list of strings (e.g. ["taquerosprogramadores", "programming"])
+      - model               : string
       - save                : bool
       - post_count          : int
       - include_comments    : bool
@@ -91,7 +92,7 @@ def run_analysis():
             return jsonify({"error": "Se requiere un cuerpo JSON"}), 400
 
         #Check if mandatory fields are present
-        required_fields = ["geographical_region", "start_date", "end_date", "age_range", "save", "post_count", "include_comments"]
+        required_fields = ["geographical_region", "start_date", "end_date", "age_range", "model", "save", "post_count", "include_comments"]
         missing = [f for f in required_fields if f not in data]
         if missing:
             return jsonify({"error": f"Faltan campos requeridos: {', '.join(missing)}"}), 400
@@ -104,22 +105,12 @@ def run_analysis():
             return jsonify({"error": "Formato de fechas inválido. Use ISO 8601 (YYYY-MM-DD)"}), 400
 
         #Validate, parse and store topics in an array
-        # if not isinstance(data["topics"], list) or not data["topics"]:
-        #     return jsonify({"error": "El campo topics debe ser una lista no vacía"}), 400
-
-        # topics = [t.strip() for t in data["topics"] if isinstance(t, str) and t.strip()]
-        # if not topics:
-        #     return jsonify({"error": "El campo topics debe contener al menos un string válido"}), 400
-
         if "topics" in data:
             topics = [t.strip() for t in data["topics"] if isinstance(t, str) and t.strip()]
         else:
             topics = []
 
         #Validate, parse and store communities in an array
-        # if not isinstance(data["communities"], list) or not data["communities"]:
-        #     return jsonify({"error": "El campo communities debe ser una lista no vacía"}), 400
-
         if "communities" in data:
             communities = [c.strip() for c in data["communities"] if isinstance(c, str) and c.strip()]
         else:
@@ -148,8 +139,8 @@ def run_analysis():
                 return jsonify({"error": f"Error scraping topic '{topic}'"}), status
             aggregated.extend(results)
 
-        filtered = _filter_items_by_date(aggregated, start_date, end_date)
-        if not filtered:
+        filtered_items = _filter_items_by_date(aggregated, start_date, end_date)
+        if not filtered_items:
             return jsonify({"error": "No se encontraron datos para el rango de fechas indicado."}), 404
 
         ai_service = AIAnalysisService()
@@ -161,7 +152,7 @@ def run_analysis():
             "topics": topics,
         }
 
-        analysis_payload, status = ai_service.analyze_sentiment(filtered, context)
+        analysis_payload, status = ai_service.analyze_sentiment(filtered_items, context, data["model"])
         if status != 200:
             return jsonify(analysis_payload), status
 
@@ -178,7 +169,7 @@ def run_analysis():
                 age_range=data["age_range"],
                 topics=topics,
                 communities=communities,
-                post_count=len(filtered),
+                post_count=len(filtered_items),
                 sentiment=analysis.get("sentiment"),
                 stress_level=analysis.get("stress_level"),
                 anxiety_level=analysis.get("anxiety_level"),
