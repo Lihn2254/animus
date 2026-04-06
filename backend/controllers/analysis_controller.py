@@ -125,19 +125,17 @@ def run_analysis():
         post_count = _parse_post_count(data.get("post_count", 15))
 
         scraper = ScrapingService()
-        aggregated = []
-
-        for topic in topics:
-            #If specific communities are included in the request for scraping, then scrape that community (subreddit)
-            if communities:
-                for community in communities:
-                    results, status = scraper.search(topic, user_id=user_id, subreddit_name=community, limit=post_count, include_comments=include_comments, save=save)
-            else:
-                results, status = scraper.search(topic, user_id=user_id, limit=post_count, include_comments=include_comments, save=save)
-
-            if status != 200:
-                return jsonify({"error": f"Error scraping topic '{topic}'"}), status
-            aggregated.extend(results)
+        aggregated, error_message, status = _collect_scraped_items(
+            scraper=scraper,
+            topics=topics,
+            communities=communities,
+            user_id=user_id,
+            post_count=post_count,
+            include_comments=include_comments,
+            save=save,
+        )
+        if error_message:
+            return jsonify({"error": error_message}), status
 
         filtered_items = _filter_items_by_date(aggregated, start_date, end_date)
         if not filtered_items:
@@ -191,6 +189,42 @@ def run_analysis():
 
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500
+
+
+def _collect_scraped_items(scraper, topics, communities, user_id, post_count, include_comments, save):
+    aggregated = []
+    
+    # When topics are not indicated it defaults to mental health related topics
+    search_queries = topics if topics else ["Ansiedad", "Salud mental", "Universidad"]
+    search_communities = communities if communities else [None]
+    base_search_kwargs = {
+        "user_id": user_id,
+        "limit": post_count,
+        "include_comments": include_comments,
+        "save": save,
+    }
+
+    for query in search_queries:
+        for community in search_communities:
+            search_kwargs = {**base_search_kwargs, "query": query}
+            if community is not None:
+                search_kwargs["subreddit_name"] = community
+
+            results, status = scraper.search(**search_kwargs)
+            if status != 200:
+                if query and community:
+                    error_message = f"Error scraping topic '{query}' in community '{community}'"
+                elif query:
+                    error_message = f"Error scraping topic '{query}'"
+                elif community:
+                    error_message = f"Error scraping community '{community}'"
+                else:
+                    error_message = "Error scraping data"
+                return None, error_message, status
+
+            aggregated.extend(results)
+
+    return aggregated, None, 200
 
 
 def _parse_bool(value):

@@ -30,7 +30,6 @@ Analyze the provided Reddit posts and comments and return a single JSON object w
     "stress_level": number,  // 0.0 to 1.0
     "anxiety_level": number, // 0.0 to 1.0
     "keywords": ["string", ...],
-    "model_version": "string" // name of the model [e.g. "gemma-4-e4b"],
     "summary": "string"
 }}
 
