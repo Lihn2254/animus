@@ -18,7 +18,13 @@ def get_analysis_results():
       - date_to    : ISO date string (inclusive) – filters by analysis_date
     """
     try:
-        query = AnalysisResult.query
+        # Get authenticated user
+        user_id = getattr(request, 'current_user_id', None)
+        if not user_id:
+            return jsonify({"error": "Authentication required"}), 401
+
+        # Always filter by authenticated user's ID for security
+        query = AnalysisResult.query.filter(AnalysisResult.user_id == user_id)
 
         # --- filter by sentiment ---
         sentiment = request.args.get("sentiment", "").strip()
@@ -190,7 +196,6 @@ def run_analysis():
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500
 
-
 def _collect_scraped_items(scraper, topics, communities, user_id, post_count, include_comments, save):
     aggregated = []
     
@@ -226,6 +231,27 @@ def _collect_scraped_items(scraper, topics, communities, user_id, post_count, in
 
     return aggregated, None, 200
 
+def get_analysis_by_id(analysis_id):
+    """
+    GET /api/analysis/<analysis_id>
+    """
+    try:
+        # Get authenticated user
+        user_id = getattr(request, 'current_user_id', None)
+        if not user_id:
+            return jsonify({"error": "Authentication required"}), 401
+
+        result = AnalysisResult.query.filter_by(id=analysis_id, user_id=user_id).first()
+        if not result:
+            return jsonify({"error": "Analysis not found"}), 404
+
+        return jsonify(result.to_dict()), 200
+
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
 
 def _parse_bool(value):
     if isinstance(value, bool):
