@@ -2,6 +2,8 @@ import json
 import os
 
 from google import genai
+from ollama import chat
+from ollama import ChatResponse
 
 from services.yars import YARS
 
@@ -28,7 +30,6 @@ Analyze the provided Reddit posts and comments and return a single JSON object w
     "stress_level": number,  // 0.0 to 1.0
     "anxiety_level": number, // 0.0 to 1.0
     "keywords": ["string", ...],
-    "model_version": "gemini-3-flash-preview",
     "summary": "string"
 }}
 
@@ -53,6 +54,7 @@ Reddit content:
 class AIAnalysisService:
     def __init__(self):
         self._yars = YARS()
+        self._model_name = "Gemma-4-e4b"
         api_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
         self._ai = genai.Client(api_key=api_key)
         self._model_name = os.getenv("GEMINI_MODEL", "gemini-3-flash-preview")
@@ -71,12 +73,12 @@ class AIAnalysisService:
             return {"error": f"No comment history found for user '{username}'."}, 404
 
         prompt = _PROMPT_PREFIX + "\n".join(comments)
-        response = self._generate_text(prompt)
+        response = self._generate_response(prompt)
 
         return {"username": username, "analysis": response}, 200
 
-    def analyze_sentiment(self, items, context):
-        """Run Gemini AI sentiment analysis over aggregated Reddit items."""
+    def analyze_sentiment(self, items, context, model):
+        """Run LLM sentiment analysis over aggregated Reddit items."""
         formatted_items = self._format_items(items)
         if not formatted_items:
             return {"error": "No usable content found for analysis."}, 404
@@ -85,7 +87,11 @@ class AIAnalysisService:
             context=json.dumps(context, ensure_ascii=True),
             content="\n\n".join(formatted_items),
         )
-        response = self._generate_text(prompt)
+        
+        try:
+            response = self._generate_response(prompt, model)
+        except ValueError as e:
+            return {"error": str(e)}, 400
 
         parsed = self._extract_json(response)
         if not parsed:
@@ -212,9 +218,21 @@ class AIAnalysisService:
 
         return value
 
-    def _generate_text(self, prompt):
-        response = self._ai.models.generate_content(
-            model=self._model_name,
-            contents=prompt,
-        )
-        return response.text
+    def _generate_response(self, prompt, model):
+        if (model == 'gemma-4-e4b'):
+            response: ChatResponse = chat(model='gemma4:e4b', messages=[
+                {
+                    'role':'user',
+                    'content': prompt
+                }
+            ])
+            return response.message.content
+        elif(model == 'gemini-3-flash-preview'):
+            response = self._ai.models.generate_content(
+                model=self._model_name,
+                contents=prompt,
+            )
+            return response.text
+        else:
+            raise ValueError(f"Modelo inválido: '{model}'. Modelos compatibles: 'gemma-4-e4b', 'gemini-3-flash-preview'")
+        
