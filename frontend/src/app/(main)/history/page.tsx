@@ -16,6 +16,46 @@ export default function HistoryPage() {
   const [filterTopic, setFilterTopic] = useState('');
   const router = useRouter();
 
+  const normalizeDateInput = (value: string) => {
+    const digits = value.replace(/\D/g, '').slice(0, 8);
+
+    if (digits.length <= 2) return digits;
+    if (digits.length <= 4) return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+
+    return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
+  };
+
+  const parseFilterDate = (value: string) => {
+    const match = value.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (!match) return null;
+
+    const [, dayPart, monthPart, yearPart] = match;
+    const day = Number(dayPart);
+    const month = Number(monthPart);
+    const year = Number(yearPart);
+    const parsed = new Date(year, month - 1, day);
+
+    if (
+      parsed.getFullYear() !== year ||
+      parsed.getMonth() !== month - 1 ||
+      parsed.getDate() !== day
+    ) {
+      return null;
+    }
+
+    parsed.setHours(0, 0, 0, 0);
+    return parsed;
+  };
+
+  const formatDate = (dateValue: string) => {
+    const date = new Date(dateValue);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  };
+
   useEffect(() => {
     fetchAllHistory();
   }, []);
@@ -23,10 +63,18 @@ export default function HistoryPage() {
   useEffect(() => {
     if (allAnalyses.length > 0) {
       const query = filterTopic.trim().toLowerCase();
+      const filterFromDate = parseFilterDate(filterDateFrom);
+      const filterToDate = parseFilterDate(filterDateTo);
+      const filterToDateEnd = filterToDate ? new Date(filterToDate) : null;
+
+      if (filterToDateEnd) {
+        filterToDateEnd.setHours(23, 59, 59, 999);
+      }
+
       const filtered = allAnalyses.filter((item) => {
         const analysisDate = new Date(item.analysis_date);
-        const matchesFrom = filterDateFrom ? analysisDate >= new Date(filterDateFrom) : true;
-        const matchesTo = filterDateTo ? analysisDate <= new Date(filterDateTo) : true;
+        const matchesFrom = filterFromDate ? analysisDate >= filterFromDate : true;
+        const matchesTo = filterToDateEnd ? analysisDate <= filterToDateEnd : true;
 
         const keywords = [...(item.topics || []), ...(item.communities || [])];
         const matchesTopic = query
@@ -82,41 +130,70 @@ export default function HistoryPage() {
     return [...topics, ...communities].join(', ') || 'General';
   };
 
+  const isInvalidDateFrom = filterDateFrom.length === 10 && !parseFilterDate(filterDateFrom);
+  const isInvalidDateTo = filterDateTo.length === 10 && !parseFilterDate(filterDateTo);
+
   if (loading) return <div className="p-6">Cargando historial...</div>;
   if (error) return <div className="p-6 text-red-600">Error: {error}</div>;
 
   return (
     <div className="p-6">
-      <div className="rounded-[2rem] border border-slate-200 bg-white/90 p-6 shadow-lg shadow-slate-200/30">
-        <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+      <div className="rounded-4xl border border-slate-200 bg-white/90 p-6 shadow-lg shadow-slate-200/30">
+        <div className="pb-8 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="text-sm uppercase tracking-[0.2em] text-slate-400">Historial</p>
+            <p className="text-sm uppercase tracking-widest text-slate-400">Historial</p>
             <h1 className="mt-2 text-3xl font-bold text-slate-900">Historial de análisis</h1>
           </div>
-          <p className="max-w-xl text-sm text-slate-600">
+          <p className="max-w-xl text-sm text-slate-600 pt-4">
             Aquí puedes revisar tus análisis guardados, filtrar por fechas o tema/comunidad, y ordenar los resultados según la fecha.
           </p>
         </div>
 
-        <div className="mb-6 rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5 shadow-sm">
+        <div className="mb-6 rounded-3xl border border-slate-200 bg-slate-50 p-5 shadow-sm">
           <div className="grid gap-4 md:grid-cols-4">
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">Fecha desde</label>
               <input
-                type="date"
+                type="text"
                 value={filterDateFrom}
-                onChange={(e) => setFilterDateFrom(e.target.value)}
-                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-slate-400"
+                onChange={(e) => setFilterDateFrom(normalizeDateInput(e.target.value))}
+                placeholder="dd/mm/yyyy"
+                inputMode="numeric"
+                maxLength={10}
+                aria-invalid={isInvalidDateFrom}
+                className={`w-full rounded-2xl border bg-white px-4 py-3 text-sm text-slate-800 outline-none transition ${
+                  isInvalidDateFrom
+                    ? 'border-red-400 focus:border-red-500'
+                    : 'border-slate-300 focus:border-slate-400'
+                }`}
               />
+              {isInvalidDateFrom && (
+                <p className="mt-2 text-xs font-medium text-red-600">
+                  Fecha invalida. Usa una fecha real en formato dd/mm/yyyy.
+                </p>
+              )}
             </div>
             <div>
               <label className="block text-sm font-semibold text-slate-700 mb-2">Fecha hasta</label>
               <input
-                type="date"
+                type="text"
                 value={filterDateTo}
-                onChange={(e) => setFilterDateTo(e.target.value)}
-                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-800 outline-none transition focus:border-slate-400"
+                onChange={(e) => setFilterDateTo(normalizeDateInput(e.target.value))}
+                placeholder="dd/mm/yyyy"
+                inputMode="numeric"
+                maxLength={10}
+                aria-invalid={isInvalidDateTo}
+                className={`w-full rounded-2xl border bg-white px-4 py-3 text-sm text-slate-800 outline-none transition ${
+                  isInvalidDateTo
+                    ? 'border-red-400 focus:border-red-500'
+                    : 'border-slate-300 focus:border-slate-400'
+                }`}
               />
+              {isInvalidDateTo && (
+                <p className="mt-2 text-xs font-medium text-red-600">
+                  Fecha invalida. Usa una fecha real en formato dd/mm/yyyy.
+                </p>
+              )}
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-semibold text-slate-700 mb-2">Tema / comunidad</label>
@@ -161,7 +238,7 @@ export default function HistoryPage() {
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div className="flex-1">
                     <div className="mb-3 flex flex-wrap items-center gap-2 text-sm text-slate-500">
-                      <span className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1">{new Date(analysis.analysis_date).toLocaleDateString()}</span>
+                      <span className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1">{formatDate(analysis.analysis_date)}</span>
                       <span className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1">{analysis.post_count} publicaciones</span>
                       <span className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1">{analysis.sentiment}</span>
                     </div>
