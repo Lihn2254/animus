@@ -253,6 +253,29 @@ def get_analysis_by_id(analysis_id):
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500
 
+def get_analysis_by_id(analysis_id):
+    """
+    GET /api/analysis/<analysis_id>
+    """
+    try:
+        # Get authenticated user
+        user_id = getattr(request, 'current_user_id', None)
+        if not user_id:
+            return jsonify({"error": "Authentication required"}), 401
+
+        result = AnalysisResult.query.filter_by(id=analysis_id, user_id=user_id).first()
+        if not result:
+            return jsonify({"error": "Analysis not found"}), 404
+
+        return jsonify(result.to_dict()), 200
+
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+
 def _parse_bool(value):
     if isinstance(value, bool):
         return value

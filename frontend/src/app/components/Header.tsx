@@ -11,7 +11,7 @@ export default function Header() {
   const { user, logout } = useAuth();
 
   const initials = user ? getInitials(user.fullname || user.username) : "U";
-  const displayName = user ? user.fullname || user.username : "Usuario";
+  const displayName = user ? user.username || user.fullname : "Usuario";
 
   const handleLogout = () => {
     logout();
