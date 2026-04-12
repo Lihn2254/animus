@@ -46,7 +46,7 @@ export default function Login() {
       localStorage.setItem('token', response.token);
 
       // Redirigir a la app principal
-      router.push('/');
+      router.push('/dashboard');
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Ocurrió un error inesperado. Inténtalo de nuevo.";
       setServerError(errorMessage);

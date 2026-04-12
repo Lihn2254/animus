@@ -19,19 +19,17 @@ export default function Header() {
   };
 
   const navItems = [
-    { key: "general", label: "General", href: "/" },
-    { key: "tendencias", label: "Tendencias", href: "/tendencias" },
-    { key: "planificacion", label: "Planificación", href: "/planificacion" },
+    { key: "dashboard", label: "Dashboard", href: "/dashboard" },
     { key: "reports", label: "Reportes", href: "/reports" },
+    { key: "settings", label: "Ajustes", href: "/settings" },
   ];
 
   // Map pathname to nav key
   const getActiveKey = () => {
-    if (pathname === "/") return "general";
+    if (pathname === "/dashboard") return "dashboard";
     if (pathname.startsWith("/reports")) return "reports";
-    if (pathname.startsWith("/planificacion")) return "planificacion";
-    if (pathname.startsWith("/tendencias")) return "tendencias";
-    return "general";
+    if (pathname.startsWith("/settings")) return "settings";
+    return "dashboard";
   };
 
   const activeKey = getActiveKey();
