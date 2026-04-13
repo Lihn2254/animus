@@ -20,18 +20,18 @@ export default function Header() {
 
   const navItems = [
     { key: "general", label: "General", href: "/" },
-    { key: "tendencias", label: "Tendencias", href: "/tendencias" },
-    { key: "planificacion", label: "Planificación", href: "/planificacion" },
-    { key: "history", label: "Historial", href: "/history" },
+    { key: "analysis", label: "Análisis", href: "/analysis" },
     { key: "reports", label: "Reportes", href: "/reports" },
+    { key: "planning", label: "Planificación", href: "/planning" },
+    { key: "history", label: "Historial", href: "/history" },
   ];
 
   // Map pathname to nav key
   const getActiveKey = () => {
     if (pathname === "/") return "general";
+    if (pathname.startsWith("/analysis")) return "analysis";
+    if (pathname.startsWith("/planning")) return "planning";
     if (pathname.startsWith("/reports")) return "reports";
-    if (pathname.startsWith("/planificacion")) return "planificacion";
-    if (pathname.startsWith("/tendencias")) return "tendencias";
     if (pathname.startsWith("/history")) return "history";
     return "general";
   };
