@@ -11,7 +11,7 @@ export default function Header() {
   const { user, logout } = useAuth();
 
   const initials = user ? getInitials(user.fullname || user.username) : "U";
-  const displayName = user ? user.fullname || user.username : "Usuario";
+  const displayName = user ? user.username || user.fullname : "Usuario";
 
   const handleLogout = () => {
     logout();
@@ -22,6 +22,7 @@ export default function Header() {
     { key: "general", label: "General", href: "/" },
     { key: "tendencias", label: "Tendencias", href: "/tendencias" },
     { key: "planificacion", label: "Planificación", href: "/planificacion" },
+    { key: "history", label: "Historial", href: "/history" },
     { key: "reports", label: "Reportes", href: "/reports" },
   ];
 
@@ -31,6 +32,7 @@ export default function Header() {
     if (pathname.startsWith("/reports")) return "reports";
     if (pathname.startsWith("/planificacion")) return "planificacion";
     if (pathname.startsWith("/tendencias")) return "tendencias";
+    if (pathname.startsWith("/history")) return "history";
     return "general";
   };
 
