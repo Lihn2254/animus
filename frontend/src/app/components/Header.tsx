@@ -11,7 +11,7 @@ export default function Header() {
   const { user, logout } = useAuth();
 
   const initials = user ? getInitials(user.fullname || user.username) : "U";
-  const displayName = user ? user.fullname || user.username : "Usuario";
+  const displayName = user ? user.username || user.fullname : "Usuario";
 
   const handleLogout = () => {
     logout();
@@ -22,6 +22,11 @@ export default function Header() {
     { key: "dashboard", label: "Dashboard", href: "/dashboard" },
     { key: "reports", label: "Reportes", href: "/reports" },
     { key: "settings", label: "Ajustes", href: "/settings" },
+    { key: "general", label: "General", href: "/" },
+    { key: "analysis", label: "Análisis", href: "/analysis" },
+    { key: "reports", label: "Reportes", href: "/reports" },
+    { key: "planning", label: "Planificación", href: "/planning" },
+    { key: "history", label: "Historial", href: "/history" },
   ];
 
   // Map pathname to nav key
@@ -30,6 +35,12 @@ export default function Header() {
     if (pathname.startsWith("/reports")) return "reports";
     if (pathname.startsWith("/settings")) return "settings";
     return "dashboard";
+    if (pathname === "/") return "general";
+    if (pathname.startsWith("/analysis")) return "analysis";
+    if (pathname.startsWith("/planning")) return "planning";
+    if (pathname.startsWith("/reports")) return "reports";
+    if (pathname.startsWith("/history")) return "history";
+    return "general";
   };
 
   const activeKey = getActiveKey();
