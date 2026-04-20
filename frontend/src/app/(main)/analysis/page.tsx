@@ -101,6 +101,7 @@ export default function Reports() {
       post_count: postCount,
       save: saveToProfile,
       include_comments: includeComments,
+      model: 'gemini-3-flash-preview'
     };
 
     setSubmittedParams({

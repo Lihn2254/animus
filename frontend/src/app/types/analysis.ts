@@ -27,6 +27,7 @@ export type AnalysisRequest = {
   post_count: number;
   save: boolean;
   include_comments: boolean;
+  model: string;
 }
 
 export type AnalysisHistoryItem = {
