@@ -20,9 +20,6 @@ export default function Header() {
 
   const navItems = [
     { key: "dashboard", label: "Dashboard", href: "/dashboard" },
-    { key: "reports", label: "Reportes", href: "/reports" },
-    { key: "settings", label: "Ajustes", href: "/settings" },
-    { key: "general", label: "General", href: "/" },
     { key: "analysis", label: "Análisis", href: "/analysis" },
     { key: "reports", label: "Reportes", href: "/reports" },
     { key: "planning", label: "Planificación", href: "/planning" },
@@ -32,15 +29,11 @@ export default function Header() {
   // Map pathname to nav key
   const getActiveKey = () => {
     if (pathname === "/dashboard") return "dashboard";
-    if (pathname.startsWith("/reports")) return "reports";
-    if (pathname.startsWith("/settings")) return "settings";
-    return "dashboard";
-    if (pathname === "/") return "general";
     if (pathname.startsWith("/analysis")) return "analysis";
-    if (pathname.startsWith("/planning")) return "planning";
     if (pathname.startsWith("/reports")) return "reports";
+    if (pathname.startsWith("/planning")) return "planning";
     if (pathname.startsWith("/history")) return "history";
-    return "general";
+    return "dashboard";
   };
 
   const activeKey = getActiveKey();
