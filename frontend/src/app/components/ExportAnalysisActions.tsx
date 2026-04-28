@@ -1,10 +1,10 @@
 "use client";
 
 import { jsPDF } from "jspdf";
-import { AnalysisOverview } from "@/app/types/analysis";
+import { AnalysisHistoryItem, AnalysisOverview } from "@/app/types/analysis";
 import { useRef } from "react";
 
-type SubmittedParams = {
+export type SubmittedParams = {
   region: string;
   startDate: string;
   endDate: string;
@@ -14,11 +14,18 @@ type SubmittedParams = {
   includeComments: boolean;
 };
 
-type ExportAnalysisActionsProps = {
+export type ExportAnalysisActionsProps = {
   analysisOverview: AnalysisOverview | null;
   analysisGeneratedAt: Date | null;
   submittedParams: SubmittedParams | null;
   analysisMessage: string;
+  showPrint?: boolean;
+};
+
+type ExportActionButtonProps = {
+  onClick: () => void | Promise<void>;
+  disabled?: boolean;
+  className?: string;
 };
 
 type Rgb = [number, number, number];
@@ -78,11 +85,75 @@ const normalizeSentiment = (value: string | null | undefined) =>
     .trim()
     .toLowerCase();
 
+export const buildExportPropsFromHistoryItem = (
+  analysis: AnalysisHistoryItem,
+): ExportAnalysisActionsProps => ({
+  analysisOverview: {
+    id: analysis.id,
+    saved: true,
+    message: "",
+    analysis: {
+      analyzed_posts: analysis.post_count,
+      anxiety_level: analysis.anxiety_level,
+      keywords: analysis.keywords ?? [],
+      model_version: analysis.model_version,
+      sentiment: analysis.sentiment,
+      stress_level: analysis.stress_level,
+      summary: analysis.summary,
+    },
+  },
+  analysisGeneratedAt: analysis.analysis_date ? new Date(analysis.analysis_date) : null,
+  submittedParams: {
+    region: analysis.geographical_region ?? "N/D",
+    startDate: analysis.start_date ?? "N/D",
+    endDate: analysis.end_date ?? "N/D",
+    ageRange: analysis.age_range ?? "N/D",
+    topics: analysis.topics ?? [],
+    communities: analysis.communities ?? [],
+    includeComments: false,
+  },
+  analysisMessage: "",
+});
+
+const ExportPdfIconPath = "M12 16.5v-12m0 12 4-4m-4 4-4-4M6 19.5h12";
+const ExportJsonIconPath = "M12 5.25v13.5m6.75-6.75H5.25";
+const PrintIconPath = "M6 9V2.25h12V9m-12 0h12m-12 0v8.25h12V9m-9 4.5h6";
+
+function ExportActionButton({
+  onClick,
+  disabled = false,
+  className = ACTION_BUTTON_CLASS,
+  iconPath,
+  label,
+}: ExportActionButtonProps & { iconPath: string; label: string }) {
+  return (
+    <button type="button" onClick={onClick} disabled={disabled} className={className}>
+      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d={iconPath} />
+      </svg>
+      {label}
+    </button>
+  );
+}
+
+export function ExportPdfButton(props: ExportActionButtonProps) {
+  return <ExportActionButton {...props} label="Exportar a PDF" iconPath={ExportPdfIconPath} />;
+}
+
+export function ExportJsonButton(props: ExportActionButtonProps) {
+  return <ExportActionButton {...props} label="Exportar a JSON" iconPath={ExportJsonIconPath} />;
+}
+
+export function PrintAnalysisButton(props: ExportActionButtonProps) {
+  return <ExportActionButton {...props} label="Imprimir" iconPath={PrintIconPath} />;
+}
+
 export default function ExportAnalysisActions({
   analysisOverview,
   analysisGeneratedAt,
   submittedParams,
   analysisMessage,
+  showPrint = true,
 }: ExportAnalysisActionsProps) {
   const logoDataUrlCacheRef = useRef<string | null | undefined>(undefined);
   const analysis = analysisOverview?.analysis ?? null;
@@ -456,40 +527,13 @@ export default function ExportAnalysisActions({
     }, 1000);
   };
 
-  const actions = [
-    {
-      label: "Exportar a PDF",
-      onClick: exportPdf,
-      iconPath: "M12 16.5v-12m0 12 4-4m-4 4-4-4M6 19.5h12",
-    },
-    {
-      label: "Exportar a JSON",
-      onClick: exportJson,
-      iconPath: "M12 5.25v13.5m6.75-6.75H5.25",
-    },
-    {
-      label: "Imprimir",
-      onClick: printDocument,
-      iconPath: "M6 9V2.25h12V9m-12 0h12m-12 0v8.25h12V9m-9 4.5h6",
-    },
-  ] as const;
+  const disabled = !analysis;
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      {actions.map((action) => (
-        <button
-          key={action.label}
-          type="button"
-          onClick={action.onClick}
-          disabled={!analysis}
-          className={ACTION_BUTTON_CLASS}
-        >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d={action.iconPath} />
-          </svg>
-          {action.label}
-        </button>
-      ))}
+      <ExportPdfButton onClick={exportPdf} disabled={disabled} />
+      <ExportJsonButton onClick={exportJson} disabled={disabled} />
+      {showPrint && <PrintAnalysisButton onClick={printDocument} disabled={disabled} />}
     </div>
   );
 }

@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { AnalysisHistoryItem } from '../../types/analysis';
 import { getAnalysisHistory } from '../../services/analysis';
+import ExportAnalysisActions, {
+  buildExportPropsFromHistoryItem,
+} from '@/app/components/ExportAnalysisActions';
 
 export default function HistoryPage() {
   const [allAnalyses, setAllAnalyses] = useState<AnalysisHistoryItem[]>([]);
@@ -112,16 +115,6 @@ export default function HistoryPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleExportPDF = (id: number) => {
-    // TODO: Implementar exportación a PDF
-    console.log('Exportar PDF para análisis', id);
-  };
-
-  const handleExportJSON = (id: number) => {
-    // TODO: Implementar exportación a JSON
-    console.log('Exportar JSON para análisis', id);
   };
 
   const getTopicDisplay = (item: AnalysisHistoryItem) => {
@@ -246,27 +239,16 @@ export default function HistoryPage() {
                     <p className="mt-2 text-sm text-slate-600 line-clamp-2">{analysis.summary}</p>
                   </div>
 
-                  <div className="flex flex-wrap gap-2 lg:shrink-0">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleExportPDF(analysis.id);
-                      }}
-                      className="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
-                    >
-                      Exportar PDF
-                    </button>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleExportJSON(analysis.id);
-                      }}
-                      className="rounded-full bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700"
-                    >
-                      Exportar JSON
-                    </button>
+                  <div
+                    className="flex flex-wrap gap-2 lg:shrink-0"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <ExportAnalysisActions
+                      {...buildExportPropsFromHistoryItem(analysis)}
+                      showPrint={false}
+                    />
                   </div>
                 </div>
               </div>
