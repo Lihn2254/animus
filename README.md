@@ -1,245 +1,263 @@
 # Animus
 
-**Animus** es un analizador demográfico de salud mental que recopila y procesa publicaciones de Reddit de comunidades de tecnología y ciencias de la computación para rastrear indicadores de salud mental como niveles de estrés, ansiedad, sentimientos y temas en tendencia. Proporciona información útil para investigación, educación y toma de decisiones en políticas públicas.
+**Animus** is a mental health demographics analyzer that collects and processes Reddit posts from technology and computer science communities to track mental health indicators such as stress levels, anxiety, sentiment, and trending topics. It provides valuable insights for research, education, and public policy decision-making.
 
 ---
 
-## Tabla de contenidos
+## Table of Contents
 
-- [Descripción general](#descripción-general)
-- [Stack tecnológico](#stack-tecnológico)
-- [Estructura del proyecto](#estructura-del-proyecto)
-- [Backend](#backend)
-  - [Arquitectura](#arquitectura)
-  - [Modelos](#modelos)
-  - [Endpoints de la API](#endpoints-de-la-api)
-  - [Configuración del backend](#configuración-del-backend)
-- [Frontend](#frontend)
-  - [Páginas](#páginas)
-  - [Configuración del frontend](#configuración-del-frontend)
+- [Overview](#overview)
+- [Project Architecture](#project-architecture)
+- [Technology Stack](#technology-stack)
+- [Project Structure](#project-structure)
+- [Key Features](#key-features)
+- [Getting Started](#getting-started)
+- [API Documentation](#api-documentation)
 
 ---
 
-## Descripción general
+## Overview
 
-Animus extrae publicaciones de Reddit de comunidades relacionadas con desarrollo de software, operaciones de TI y temas de carrera profesional. Cada publicación se almacena y analiza para generar métricas que incluyen:
+Animus extracts posts from Reddit communities related to software development, IT operations, and career topics. The platform enables users to:
 
-- **Nivel de estrés** (puntuación normalizada 0–1)
-- **Nivel de ansiedad** (puntuación normalizada 0–1)
-- **Sentimiento** (positivo / negativo / neutral)
-- **Palabras clave** extraídas del contenido de la publicación
+- Scrape Reddit posts from specific subreddits, search queries, or user profiles
+- Analyze mental health indicators from collected data using AI
+- Store and retrieve historical analysis results
+- Visualize trends through an interactive web dashboard
 
-El panel de control presenta estas métricas en tarjetas KPI, gráficos de barras, desglose de sentimientos, temas principales y tablas de actividad por subreddit.
-
----
-
-## Stack tecnológico
-
-| Capa          | Tecnología                          |
-|---------------|-------------------------------------|
-| Backend       | Python 3, Flask, Flask-SQLAlchemy   |
-| Base de datos | PostgreSQL 15 (vía Docker)          |
-| ORM           | SQLAlchemy 2                        |
-| Frontend      | Next.js 16, React 19, TypeScript    |
-| Estilos       | Tailwind CSS v4                     |
-| Formularios   | react-hook-form + Zod               |
-| Contenedor    | Docker, Docker Compose              |
+Each analysis generates metrics including:
+- **Stress Level** (normalized score 0–1)
+- **Anxiety Level** (normalized score 0–1)
+- **Sentiment** (positive / negative / neutral)
+- **Keywords** extracted from post content
+- **Summary** of analyzed data
 
 ---
 
-## Estructura del proyecto
+## Project Architecture
+
+Animus follows a modern full-stack architecture with a clear separation between frontend and backend:
+
+### Backend Architecture
+The Flask backend uses a layered architecture pattern:
+
+```
+Client Request → Routes (Blueprint) → Middleware (JWT Auth) → Controllers → Services → Models → Database
+```
+
+- **Routes**: Flask blueprints that map HTTP endpoints to controllers
+- **Middlewares**: JWT authentication and request/response processing
+- **Controllers**: Handle request validation, business logic coordination, and response formatting
+- **Services**: Business logic layer including:
+  - `scraping_service.py` - YARS wrapper for Reddit data collection
+  - `ai_analysis_service.py` - Google Gemini AI integration for mental health analysis
+  - `yars/` - Embedded Reddit scraping engine (no API credentials required)
+- **Models**: SQLAlchemy ORM models mapping to PostgreSQL tables
+- **Infrastructure**: Application factory, configuration, and database setup
+
+### Frontend Architecture
+The Next.js frontend uses React Server Components and App Router:
+
+```
+├── (auth)/          - Authentication pages (login, signup)
+├── (main)/          - Protected dashboard pages
+├── components/      - Reusable UI components
+├── context/         - React Context for auth state management
+├── services/        - API client functions
+├── lib/             - Utilities (fetchWithAuth)
+└── types/           - TypeScript type definitions
+```
+
+---
+
+## Technology Stack
+
+| Layer          | Technology                                      |
+|----------------|-------------------------------------------------|
+| Backend        | Python 3.10+, Flask 3.1, Flask-SQLAlchemy       |
+| Database       | PostgreSQL 15 (via Docker Compose)              |
+| ORM            | SQLAlchemy 2.0                                  |
+| Authentication | JWT (PyJWT)                                     |
+| AI Analysis    | Google Gemini AI (google-genai)                 |
+| Reddit Scraping| YARS (embedded engine, no API keys required)    |
+| Frontend       | Next.js 16, React 19, TypeScript 5              |
+| Styling        | Tailwind CSS v4                                 |
+| Forms          | react-hook-form + Zod validation                |
+| Icons          | react-icons                                     |
+| Containerization | Docker, Docker Compose                        |
+
+---
+
+## Project Structure
 
 ```
 animus/
 ├── backend/
-│   ├── app.py                  # Punto de entrada de la aplicación
-│   ├── init_db.py              # Script de inicialización de la base de datos
-│   ├── insert_mock_data.py     # Script para poblar la base de datos con datos de prueba
-│   ├── requirements.txt
-│   ├── docker-compose.yml      # Definición del contenedor PostgreSQL
-│   ├── .env                    # Variables de entorno (no se incluye en el repositorio)
-│   ├── controllers/            # Lógica de negocio y manejo de solicitudes
-│   │   ├── account_controller.py
-│   │   ├── analysis_controller.py
-│   │   ├── auth_controller.py
-│   │   ├── home_controller.py
-│   │   └── subreddit_controller.py
-│   ├── infrastructure/         # Fábrica de la app, configuración e instancia de la BD
-│   │   ├── app_factory.py
-│   │   ├── config.py
-│   │   └── db.py
-│   ├── models/                 # Modelos ORM de SQLAlchemy
-│   │   ├── analysis_result.py
-│   │   ├── post.py
-│   │   ├── subreddit.py
-│   │   └── user.py
-│   ├── routes/                 # Blueprints de Flask
-│   │   ├── account_routes.py
-│   │   ├── analysis_routes.py
-│   │   ├── auth_routes.py
-│   │   ├── home_routes.py
-│   │   └── subreddit_routes.py
-│   └── schemas/
-│       └── user_schema.py
+│   ├── app.py                      # Application entry point
+│   ├── init_db.py                  # Database initialization script
+│   ├── insert_mock_data.py         # Mock data insertion script
+│   ├── requirements.txt            # Python dependencies
+│   ├── docker-compose.yml          # PostgreSQL container definition
+│   ├── controllers/                # Request handlers and business logic
+│   │   ├── account_controller.py   # User account management
+│   │   ├── analysis_controller.py  # Analysis retrieval and execution
+│   │   ├── auth_controller.py      # Login and registration
+│   │   ├── home_controller.py      # API info endpoint
+│   │   └── scraping_controller.py  # Reddit scraping operations
+│   ├── infrastructure/             # App factory, config, and DB setup
+│   │   ├── app_factory.py          # Flask application factory
+│   │   ├── config.py               # Environment configuration
+│   │   └── db.py                   # SQLAlchemy instance
+│   ├── middlewares/                # Request/response middleware
+│   │   └── jwt_required.py         # JWT authentication decorator
+│   ├── models/                     # SQLAlchemy ORM models
+│   │   ├── analysis_result.py      # Analysis results and parameters
+│   │   └── user.py                 # User accounts
+│   ├── routes/                     # Flask blueprints
+│   │   ├── account_routes.py       # /api/account/* endpoints
+│   │   ├── analysis_routes.py      # /api/analysis/* endpoints
+│   │   ├── auth_routes.py          # /api/register, /api/login
+│   │   ├── home_routes.py          # / endpoint
+│   │   └── scraping_routes.py      # /api/scrape/* endpoints
+│   ├── schemas/                    # Response/request schemas
+│   │   └── user_schema.py
+│   └── services/                   # Business logic services
+│       ├── ai_analysis_service.py  # Google Gemini AI integration
+│       ├── scraping_service.py     # YARS wrapper and DB persistence
+│       └── yars/                   # Embedded Reddit scraping engine
+│           ├── agents.py
+│           ├── sessions.py
+│           └── yars.py
+│
 └── frontend/
-    ├── next.config.ts
-    ├── package.json
-    ├── tsconfig.json
+    ├── next.config.ts              # Next.js configuration
+    ├── package.json                # Node.js dependencies
+    ├── tsconfig.json               # TypeScript configuration
     └── src/
         └── app/
-            ├── globals.css
-            ├── Header.tsx
-            ├── (auth)/             # Páginas de inicio de sesión y registro
-            │   ├── layout.tsx
-            │   ├── login/
-            │   │   └── page.tsx
-            │   └── signup/
-            │       └── page.tsx
-            ├── (dashboard)/        # Panel de control principal
-            │   ├── layout.tsx
-            │   └── page.tsx
-            └── components/
-                └── Footer.tsx
+            ├── globals.css         # Global styles
+            ├── api.ts              # API base URL configuration
+            ├── (auth)/             # Authentication pages
+            │   ├── layout.tsx      # Auth layout wrapper
+            │   ├── login/          # Login page
+            │   └── signup/         # Registration page
+            ├── (main)/             # Protected application pages
+            │   ├── layout.tsx      # Main layout with header/footer
+            │   ├── page.tsx        # Dashboard/home page
+            │   ├── reports/        # Analysis results page
+            │   └── settings/       # User settings page
+            ├── components/         # Reusable UI components
+            │   ├── Footer.tsx
+            │   ├── Header.tsx
+            │   └── RequireAuth.tsx # Auth guard component
+            ├── context/            # React Context providers
+            │   └── AuthContext.tsx # Authentication state management
+            ├── lib/                # Utility functions
+            │   └── fetchWithAuth.ts # Authenticated fetch wrapper
+            ├── services/           # API client functions
+            │   ├── analysis.ts     # Analysis API calls
+            │   ├── auth.ts         # Authentication API calls
+            │   └── userAccount.ts  # Account management API calls
+            └── types/              # TypeScript type definitions
+                ├── analysis.ts
+                └── user.ts
 ```
 
 ---
 
-## Backend
+## Key Features
 
-### Arquitectura
+### User Management
+- Secure user registration and authentication with JWT tokens
+- Account management (update profile, change password, delete account)
+- User profile includes fullname, username, email, country, and region
 
-El backend sigue una arquitectura en capas utilizando el patrón de fábrica de aplicaciones de Flask:
+### Reddit Data Collection
+- **Subreddit Scraping**: Fetch posts from specific subreddits (hot/top/new)
+- **Reddit Search**: Search across all of Reddit or within specific communities
+- **User Profile Analysis**: Retrieve and analyze a Reddit user's post/comment history
+- Built-in YARS scraping engine requires no Reddit API credentials
 
-- **`app.py`** — Crea la aplicación Flask mediante `create_app()` e inicia el servidor en el puerto `5000`.
-- **`infrastructure/app_factory.py`** — Inicializa Flask, carga la configuración, enlaza la base de datos y registra los blueprints.
-- **`infrastructure/config.py`** — Lee `DATABASE_URL` y `SECRET_KEY` desde el archivo `.env`.
-- **`routes/`** — Blueprints de Flask que mapean métodos HTTP y rutas a funciones del controlador.
-- **`controllers/`** — Maneja el análisis de solicitudes, validación y formato de respuestas.
-- **`models/`** — Modelos ORM de SQLAlchemy que se mapean a tablas de PostgreSQL.
+### AI-Powered Analysis
+- Mental health analysis using Google Gemini AI
+- Generates stress levels, anxiety levels, sentiment, keywords, and summaries
+- Configurable analysis parameters (region, date range, age range, topics, communities)
+- Historical analysis storage and retrieval
 
-### Modelos
-
-| Modelo           | Tabla              | Descripción                                                          |
-|------------------|--------------------|----------------------------------------------------------------------|
-| `User`           | `users`            | Usuarios de la aplicación con contraseñas hasheadas                  |
-| `Subreddit`      | `subreddits`       | Subreddits monitoreados con categoría y metadatos de extracción      |
-| `Post`           | `posts`            | Publicaciones de Reddit con título, contenido, autor y fechas        |
-| `AnalysisResult` | `analysis_results` | Puntuaciones de análisis NLP (estrés, ansiedad, sentimiento, palabras clave) |
-
-### Endpoints de la API
-
-| Método | Ruta                       | Descripción                                                        |
-|--------|----------------------------|--------------------------------------------------------------------|
-| GET    | `/`                        | Estado de la API y listado de endpoints                            |
-| POST   | `/api/register`            | Crear una nueva cuenta de usuario                                  |
-| POST   | `/api/login`               | Autenticar a un usuario                                            |
-| PUT    | `/api/account/<user_id>`   | Actualizar nombre de usuario, email o contraseña                   |
-| DELETE | `/api/account/<user_id>`   | Eliminar una cuenta de usuario                                     |
-| GET    | `/api/subreddits`          | Listar subreddits (filtrar por `category`, `is_active`, rango de fechas) |
-| POST   | `/api/subreddits`          | Registrar un nuevo subreddit                                       |
-| GET    | `/api/analysis`            | Obtener resultados de análisis (filtrar por `keywords`, `sentiment`, rango de fechas) |
-| POST   | `/api/analysis/run`        | Ejecutar un nuevo análisis                                         |
-
-### Configuración del backend
-
-**Requisitos previos:** Python 3.10+, Docker Desktop
-
-**1. Iniciar la base de datos PostgreSQL**
-
-```bash
-cd backend
-docker compose up -d
-```
-
-Esto inicia un contenedor PostgreSQL 15 llamado `animus_postgres` en el puerto `5432`.
-
-**2. Crear y activar un entorno virtual**
-
-```bash
-python -m venv venv
-
-# Windows
-venv\Scripts\activate
-
-# macOS / Linux
-source venv/bin/activate
-```
-
-**3. Instalar dependencias**
-
-```bash
-pip install -r requirements.txt
-```
-
-**4. Configurar las variables de entorno**
-
-Crear un archivo `.env` en el directorio `backend/`:
-
-```env
-DATABASE_URL=postgresql://admin:Eva01@localhost:5432/animus_db
-FLASK_ENV=development
-SECRET_KEY=your-secret-key-change-this-in-production
-```
-
-**5. Inicializar la base de datos**
-
-```bash
-python init_db.py
-```
-
-Esto crea todas las tablas (`users`, `subreddits`, `posts`, `analysis_results`).
-
-**6. (Opcional) Poblar con datos de prueba**
-
-```bash
-python insert_mock_data.py
-```
-
-Inserta usuarios, subreddits y publicaciones de ejemplo para desarrollo y pruebas.
-
-**7. Iniciar el servidor de desarrollo**
-
-```bash
-python app.py
-```
-
-La API estará disponible en `http://localhost:5000`.
+### Interactive Dashboard
+- View past analysis results
+- Filter and search through historical data
+- User-friendly forms with validation
 
 ---
 
-## Frontend
+## Getting Started
 
-### Páginas
+### Prerequisites
+- **Python 3.10+**
+- **Node.js 20+**
+- **Docker Desktop** (for PostgreSQL)
 
-| Ruta        | Descripción                                                                              |
-|-------------|------------------------------------------------------------------------------------------|
-| `/login`    | Formulario de inicio de sesión con email, contraseña y "recuérdame" — validado con Zod  |
-| `/signup`   | Formulario de registro con nombre completo, email y confirmación de contraseña           |
-| `/`         | Panel de control principal con tarjetas KPI, gráficos de actividad, desglose de sentimientos y tabla de subreddits |
+### Quick Start
 
-### Configuración del frontend
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd animus
+   ```
 
-**Requisitos previos:** Node.js 20+
+2. **Set up the backend**
 
-**1. Instalar dependencias**
+   See [backend/README.md](backend/README.md) for detailed setup instructions.
 
-```bash
-cd frontend
-npm install
-```
+3. **Set up the frontend**
 
-**2. Iniciar el servidor de desarrollo**
+   See [frontend/README.md](frontend/README.md) for detailed setup instructions.
 
-```bash
-npm run dev
-```
+---
 
-La aplicación estará disponible en `http://localhost:3000`.
+## API Documentation
 
-**Otros scripts**
+### Authentication Endpoints
 
-| Comando         | Descripción                         |
-|-----------------|-------------------------------------|
-| `npm run build` | Crear una compilación de producción |
-| `npm run start` | Iniciar el servidor de producción   |
-| `npm run lint`  | Ejecutar ESLint                     |
+| Method | Endpoint                  | Description                                    | Auth Required |
+|--------|---------------------------|------------------------------------------------|---------------|
+| POST   | `/api/register`           | Create a new user account                      | No            |
+| POST   | `/api/login`              | Authenticate and receive JWT token             | No            |
+
+### Account Management
+
+| Method | Endpoint                  | Description                                    | Auth Required |
+|--------|---------------------------|------------------------------------------------|---------------|
+| PUT    | `/api/account/<user_id>`  | Update user profile (name, email, password)    | Yes           |
+| DELETE | `/api/account/<user_id>`  | Delete user account                            | Yes           |
+
+### Reddit Scraping
+
+| Method | Endpoint                        | Description                                  | Auth Required |
+|--------|---------------------------------|----------------------------------------------|---------------|
+| POST   | `/api/scrape/subreddit/<name>`  | Scrape posts from a subreddit                | Yes           |
+| POST   | `/api/scrape/search`            | Search Reddit posts                          | Yes           |
+| POST   | `/api/scrape/user`              | Fetch a Reddit user's posts/comments         | Yes           |
+| POST   | `/api/scrape/analyze/user`      | AI analysis of a Reddit user's profile       | Yes           |
+
+### Analysis
+
+| Method | Endpoint              | Description                                        | Auth Required |
+|--------|-----------------------|----------------------------------------------------|---------------|
+| GET    | `/api/analysis`       | Retrieve user's historical analysis results        | Yes           |
+| POST   | `/api/analysis/run`   | Execute new mental health analysis                 | Yes           |
+
+---
+
+## Contributing
+
+For setup instructions specific to backend or frontend development, please refer to:
+- [Backend Setup Guide](backend/README.md)
+- [Frontend Setup Guide](frontend/README.md)
+
+---
+
+## License
+
+This project is for educational and research purposes.

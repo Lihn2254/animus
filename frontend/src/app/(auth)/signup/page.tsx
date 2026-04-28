@@ -77,8 +77,7 @@ export default function Singup() {
     localStorage.setItem('token', response.token);
 
     // 4. Ahora sí, vamos a la página principal.
-    // Como ya guardamos 'animus_user', la página principal ya no nos va a rebotar.
-    router.push("/");
+    router.push("/dashboard");
 
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : "Hubo un problema al crear tu cuenta. Intenta con otro correo.";

@@ -27,4 +27,29 @@ export type AnalysisRequest = {
   post_count: number;
   save: boolean;
   include_comments: boolean;
+  model: string;
+}
+
+export type AnalysisHistoryItem = {
+  id: number;
+  user_id: number;
+  geographical_region: string;
+  start_date: string | null;
+  end_date: string | null;
+  age_range: string;
+  topics: string[] | null;
+  communities: string[] | null;
+  post_count: number;
+  sentiment: string;
+  stress_level: number;
+  anxiety_level: number;
+  keywords: string[];
+  summary: string;
+  model_version: string;
+  analysis_date: string;
+}
+
+export type AnalysisHistoryResponse = {
+  count: number;
+  results: AnalysisHistoryItem[];
 }

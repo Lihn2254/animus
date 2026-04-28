@@ -18,7 +18,13 @@ def get_analysis_results():
       - date_to    : ISO date string (inclusive) – filters by analysis_date
     """
     try:
-        query = AnalysisResult.query
+        # Get authenticated user
+        user_id = getattr(request, 'current_user_id', None)
+        if not user_id:
+            return jsonify({"error": "Authentication required"}), 401
+
+        # Always filter by authenticated user's ID for security
+        query = AnalysisResult.query.filter(AnalysisResult.user_id == user_id)
 
         # --- filter by sentiment ---
         sentiment = request.args.get("sentiment", "").strip()
@@ -76,6 +82,7 @@ def run_analysis():
       - age_range           : string  (e.g. "18-35")
       - topics (opt.)       : list of strings (e.g. ["IT", "Software"])
       - communities (opt.)  : list of strings (e.g. ["taquerosprogramadores", "programming"])
+      - model               : string
       - save                : bool
       - post_count          : int
       - include_comments    : bool
@@ -91,7 +98,7 @@ def run_analysis():
             return jsonify({"error": "Se requiere un cuerpo JSON"}), 400
 
         #Check if mandatory fields are present
-        required_fields = ["geographical_region", "start_date", "end_date", "age_range", "save", "post_count", "include_comments"]
+        required_fields = ["geographical_region", "start_date", "end_date", "age_range", "model", "save", "post_count", "include_comments"]
         missing = [f for f in required_fields if f not in data]
         if missing:
             return jsonify({"error": f"Faltan campos requeridos: {', '.join(missing)}"}), 400
@@ -104,22 +111,12 @@ def run_analysis():
             return jsonify({"error": "Formato de fechas inválido. Use ISO 8601 (YYYY-MM-DD)"}), 400
 
         #Validate, parse and store topics in an array
-        # if not isinstance(data["topics"], list) or not data["topics"]:
-        #     return jsonify({"error": "El campo topics debe ser una lista no vacía"}), 400
-
-        # topics = [t.strip() for t in data["topics"] if isinstance(t, str) and t.strip()]
-        # if not topics:
-        #     return jsonify({"error": "El campo topics debe contener al menos un string válido"}), 400
-
         if "topics" in data:
             topics = [t.strip() for t in data["topics"] if isinstance(t, str) and t.strip()]
         else:
             topics = []
 
         #Validate, parse and store communities in an array
-        # if not isinstance(data["communities"], list) or not data["communities"]:
-        #     return jsonify({"error": "El campo communities debe ser una lista no vacía"}), 400
-
         if "communities" in data:
             communities = [c.strip() for c in data["communities"] if isinstance(c, str) and c.strip()]
         else:
@@ -134,22 +131,20 @@ def run_analysis():
         post_count = _parse_post_count(data.get("post_count", 15))
 
         scraper = ScrapingService()
-        aggregated = []
+        aggregated, error_message, status = _collect_scraped_items(
+            scraper=scraper,
+            topics=topics,
+            communities=communities,
+            user_id=user_id,
+            post_count=post_count,
+            include_comments=include_comments,
+            save=save,
+        )
+        if error_message:
+            return jsonify({"error": error_message}), status
 
-        for topic in topics:
-            #If specific communities are included in the request for scraping, then scrape that community (subreddit)
-            if communities:
-                for community in communities:
-                    results, status = scraper.search(topic, user_id=user_id, subreddit_name=community, limit=post_count, include_comments=include_comments, save=save)
-            else:
-                results, status = scraper.search(topic, user_id=user_id, limit=post_count, include_comments=include_comments, save=save)
-
-            if status != 200:
-                return jsonify({"error": f"Error scraping topic '{topic}'"}), status
-            aggregated.extend(results)
-
-        filtered = _filter_items_by_date(aggregated, start_date, end_date)
-        if not filtered:
+        filtered_items = _filter_items_by_date(aggregated, start_date, end_date)
+        if not filtered_items:
             return jsonify({"error": "No se encontraron datos para el rango de fechas indicado."}), 404
 
         ai_service = AIAnalysisService()
@@ -161,7 +156,7 @@ def run_analysis():
             "topics": topics,
         }
 
-        analysis_payload, status = ai_service.analyze_sentiment(filtered, context)
+        analysis_payload, status = ai_service.analyze_sentiment(filtered_items, context, data["model"])
         if status != 200:
             return jsonify(analysis_payload), status
 
@@ -178,7 +173,7 @@ def run_analysis():
                 age_range=data["age_range"],
                 topics=topics,
                 communities=communities,
-                post_count=len(filtered),
+                post_count=len(filtered_items),
                 sentiment=analysis.get("sentiment"),
                 stress_level=analysis.get("stress_level"),
                 anxiety_level=analysis.get("anxiety_level"),
@@ -197,6 +192,85 @@ def run_analysis():
             "saved": save,
             "id": analysis_result_id,
         }), 200
+
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+def _collect_scraped_items(scraper, topics, communities, user_id, post_count, include_comments, save):
+    aggregated = []
+    
+    # When topics are not indicated it defaults to mental health related topics
+    search_queries = topics if topics else ["Ansiedad", "Salud mental", "Universidad"]
+    search_communities = communities if communities else [None]
+    base_search_kwargs = {
+        "user_id": user_id,
+        "limit": post_count,
+        "include_comments": include_comments,
+        "save": save,
+    }
+
+    for query in search_queries:
+        for community in search_communities:
+            search_kwargs = {**base_search_kwargs, "query": query}
+            if community is not None:
+                search_kwargs["subreddit_name"] = community
+
+            results, status = scraper.search(**search_kwargs)
+            if status != 200:
+                if query and community:
+                    error_message = f"Error scraping topic '{query}' in community '{community}'"
+                elif query:
+                    error_message = f"Error scraping topic '{query}'"
+                elif community:
+                    error_message = f"Error scraping community '{community}'"
+                else:
+                    error_message = "Error scraping data"
+                return None, error_message, status
+
+            aggregated.extend(results)
+
+    return aggregated, None, 200
+
+def get_analysis_by_id(analysis_id):
+    """
+    GET /api/analysis/<analysis_id>
+    """
+    try:
+        # Get authenticated user
+        user_id = getattr(request, 'current_user_id', None)
+        if not user_id:
+            return jsonify({"error": "Authentication required"}), 401
+
+        result = AnalysisResult.query.filter_by(id=analysis_id, user_id=user_id).first()
+        if not result:
+            return jsonify({"error": "Analysis not found"}), 404
+
+        return jsonify(result.to_dict()), 200
+
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
+def get_analysis_by_id(analysis_id):
+    """
+    GET /api/analysis/<analysis_id>
+    """
+    try:
+        # Get authenticated user
+        user_id = getattr(request, 'current_user_id', None)
+        if not user_id:
+            return jsonify({"error": "Authentication required"}), 401
+
+        result = AnalysisResult.query.filter_by(id=analysis_id, user_id=user_id).first()
+        if not result:
+            return jsonify({"error": "Analysis not found"}), 404
+
+        return jsonify(result.to_dict()), 200
+
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
 
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500

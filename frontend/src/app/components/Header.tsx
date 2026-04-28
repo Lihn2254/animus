@@ -11,7 +11,7 @@ export default function Header() {
   const { user, logout } = useAuth();
 
   const initials = user ? getInitials(user.fullname || user.username) : "U";
-  const displayName = user ? user.fullname || user.username : "Usuario";
+  const displayName = user ? user.username || user.fullname : "Usuario";
 
   const handleLogout = () => {
     logout();
@@ -19,19 +19,21 @@ export default function Header() {
   };
 
   const navItems = [
-    { key: "general", label: "General", href: "/" },
-    { key: "tendencias", label: "Tendencias", href: "/tendencias" },
-    { key: "planificacion", label: "Planificación", href: "/planificacion" },
+    { key: "dashboard", label: "Dashboard", href: "/dashboard" },
+    { key: "analysis", label: "Análisis", href: "/analysis" },
     { key: "reports", label: "Reportes", href: "/reports" },
+    { key: "planning", label: "Planificación", href: "/planning" },
+    { key: "history", label: "Historial", href: "/history" },
   ];
 
   // Map pathname to nav key
   const getActiveKey = () => {
-    if (pathname === "/") return "general";
+    if (pathname === "/dashboard") return "dashboard";
+    if (pathname.startsWith("/analysis")) return "analysis";
     if (pathname.startsWith("/reports")) return "reports";
-    if (pathname.startsWith("/planificacion")) return "planificacion";
-    if (pathname.startsWith("/tendencias")) return "tendencias";
-    return "general";
+    if (pathname.startsWith("/planning")) return "planning";
+    if (pathname.startsWith("/history")) return "history";
+    return "dashboard";
   };
 
   const activeKey = getActiveKey();
