@@ -4,9 +4,8 @@ import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { AnalysisHistoryItem } from '../../../types/analysis';
 import { getAnalysisById } from '../../../services/analysis';
-import ExportAnalysisActions, {
-  buildExportPropsFromHistoryItem,
-} from '@/app/components/ExportAnalysisActions';
+import { ExportJsonButton } from '@/app/components/export-analysis/ExportJsonButton';
+import { ExportPdfButton } from '@/app/components/export-analysis/ExportPdfButton';
 
 export default function AnalysisDetailPage() {
   const [analysis, setAnalysis] = useState<AnalysisHistoryItem | null>(null);
@@ -55,9 +54,59 @@ export default function AnalysisDetailPage() {
             <h1 className="mt-2 text-3xl font-bold text-slate-900">Detalle del análisis</h1>
           </div>
           <div className="flex flex-wrap gap-3">
-            <ExportAnalysisActions
-              {...buildExportPropsFromHistoryItem(analysis)}
-              showPrint={false}
+            <ExportPdfButton
+              analysisOverview={{
+                id: analysis.id,
+                saved: true,
+                message: '',
+                analysis: {
+                  analyzed_posts: analysis.post_count,
+                  anxiety_level: analysis.anxiety_level,
+                  keywords: analysis.keywords ?? [],
+                  model_version: analysis.model_version,
+                  sentiment: analysis.sentiment,
+                  stress_level: analysis.stress_level,
+                  summary: analysis.summary,
+                },
+              }}
+              analysisGeneratedAt={analysis.analysis_date ? new Date(analysis.analysis_date) : null}
+              submittedParams={{
+                region: analysis.geographical_region ?? 'N/D',
+                startDate: analysis.start_date ?? 'N/D',
+                endDate: analysis.end_date ?? 'N/D',
+                ageRange: analysis.age_range ?? 'N/D',
+                topics: analysis.topics ?? [],
+                communities: analysis.communities ?? [],
+                includeComments: false,
+              }}
+              analysisMessage=""
+            />
+            <ExportJsonButton
+              analysisOverview={{
+                id: analysis.id,
+                saved: true,
+                message: '',
+                analysis: {
+                  analyzed_posts: analysis.post_count,
+                  anxiety_level: analysis.anxiety_level,
+                  keywords: analysis.keywords ?? [],
+                  model_version: analysis.model_version,
+                  sentiment: analysis.sentiment,
+                  stress_level: analysis.stress_level,
+                  summary: analysis.summary,
+                },
+              }}
+              analysisGeneratedAt={analysis.analysis_date ? new Date(analysis.analysis_date) : null}
+              submittedParams={{
+                region: analysis.geographical_region ?? 'N/D',
+                startDate: analysis.start_date ?? 'N/D',
+                endDate: analysis.end_date ?? 'N/D',
+                ageRange: analysis.age_range ?? 'N/D',
+                topics: analysis.topics ?? [],
+                communities: analysis.communities ?? [],
+                includeComments: false,
+              }}
+              analysisMessage=""
             />
           </div>
         </div>

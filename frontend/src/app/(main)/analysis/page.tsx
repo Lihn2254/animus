@@ -1,6 +1,8 @@
 "use client";
 
-import ExportAnalysisActions from "@/app/components/ExportAnalysisActions";
+import { ExportJsonButton } from "@/app/components/export-analysis/ExportJsonButton";
+import { ExportPdfButton } from "@/app/components/export-analysis/ExportPdfButton";
+import { PrintAnalysisButton } from "@/app/components/export-analysis/PrintAnalysisButton";
 import { runAnalysis } from "@/app/services/analysis";
 import {
   AnalysisOverview,
@@ -275,12 +277,26 @@ export default function Reports() {
           </div>
 
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-5">
-            <ExportAnalysisActions
-              analysisOverview={analysisOverview}
-              analysisGeneratedAt={analysisGeneratedAt}
-              submittedParams={submittedParams}
-              analysisMessage={analysisMessage}
-            />
+            <div className="flex flex-wrap items-center gap-3">
+              <ExportPdfButton
+                analysisOverview={analysisOverview}
+                analysisGeneratedAt={analysisGeneratedAt}
+                submittedParams={submittedParams}
+                analysisMessage={analysisMessage}
+              />
+              <ExportJsonButton
+                analysisOverview={analysisOverview}
+                analysisGeneratedAt={analysisGeneratedAt}
+                submittedParams={submittedParams}
+                analysisMessage={analysisMessage}
+              />
+              <PrintAnalysisButton
+                analysisOverview={analysisOverview}
+                analysisGeneratedAt={analysisGeneratedAt}
+                submittedParams={submittedParams}
+                analysisMessage={analysisMessage}
+              />
+            </div>
 
             <button
               onClick={handleNewAnalysis}
