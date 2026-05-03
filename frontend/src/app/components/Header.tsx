@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth, getInitials } from '@/app/context/AuthContext';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { getNotifications } from '@/app/services/notifications';
 
 export default function Header() {
@@ -13,6 +13,8 @@ export default function Header() {
   const { user, logout } = useAuth();
 
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (user) {
@@ -24,6 +26,17 @@ export default function Header() {
         .catch((error) => console.error('Error fetching notifications:', error));
     }
   }, [user]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const initials = user ? getInitials(user.fullname || user.username) : 'U';
   const displayName = user ? user.username || user.fullname : 'Usuario';
@@ -99,24 +112,24 @@ export default function Header() {
           />
         </div> */}
         {renderNotificationsIcon()}
-        <div className="relative group">
-          <button className="flex items-center gap-3 rounded-full border border-slate-200 bg-white/80 px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300">
+        <div className="relative" ref={dropdownRef}>
+          <button 
+            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            className="flex items-center gap-3 rounded-full border border-slate-200 bg-white/80 px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300"
+          >
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-linear-to-br from-slate-900 to-slate-500 text-xs font-semibold text-white">
               {initials}
             </span>
             {displayName}
           </button>
-          <ul className="w-fit whitespace-nowrap pointer-events-none absolute right-0 top-14 rounded-2xl border border-slate-100 bg-white p-3 text-slate-600 opacity-0 shadow-xl transition group-focus-within:pointer-events-auto group-focus-within:opacity-100 group-hover:pointer-events-auto group-hover:opacity-100">
+          <ul className={`w-fit whitespace-nowrap absolute right-0 top-14 rounded-2xl border border-slate-100 bg-white p-3 text-slate-600 shadow-xl transition-all duration-200 ${isDropdownOpen ? 'opacity-100 pointer-events-auto visible' : 'opacity-0 pointer-events-none invisible'}`}>
             <li className="w-full rounded-xl px-3 py-2 text-left hover:bg-slate-50">
-              <Link href="/settings">Perfil</Link>
+              <Link href="/notifications" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>Notificaciones</Link>
             </li>
             <li className="w-full rounded-xl px-3 py-2 text-left hover:bg-slate-50">
-              <Link href="/notifications">Notificaciones</Link>
+              <Link href="/settings" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>Configuración</Link>
             </li>
-            <li className="w-full rounded-xl px-3 py-2 text-left hover:bg-slate-50">
-              <button>Configuración</button>
-            </li>
-            <hr className="my-1" />
+            <hr className="my-2" />
             <li className="w-full rounded-xl px-3 py-2 text-left hover:bg-slate-50">
               <button onClick={handleLogout}>Cerrar sesión</button>
             </li>
