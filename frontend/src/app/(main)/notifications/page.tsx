@@ -30,9 +30,9 @@ export default function NotificationsPage() {
     try {
       await markNotificationAsRead(id);
       // Update local state to reflect change immediately
-      setNotifications((prev) => prev.map((notif) => (notif.id === id ? { ...notif, is_read: true } : notif)));
+      setNotifications((prev) => prev.map((notif) => (notif.id === id ? { ...notif, is_read: !notif.is_read } : notif)));
     } catch (err) {
-      console.error('Error al marcar notificación como leída', err);
+      console.error('Error al actualizar el estado de la notificación', err);
     }
   };
 
@@ -61,7 +61,7 @@ export default function NotificationsPage() {
       <section className="mb-2">
         <h1 className="text-3xl font-semibold text-slate-900">Notificaciones</h1>
         <p className="mt-2 pb-6 text-slate-500">Mantente al tanto de tus análisis y alertas.</p>
-        <hr className='border border-slate-400'/>
+        <hr className='border-b-0 border-slate-400'/>
       </section>
       <section className="grid gap-4">
         {notifications.length === 0 ? (
@@ -89,14 +89,17 @@ export default function NotificationsPage() {
                   <p className="mt-4 text-xs text-slate-400">{formatDate(notif.created_at)}</p>
                 </div>
 
-                {!notif.is_read && (
-                  <button
+                {!notif.is_read ? <button
                     onClick={() => handleMarkAsRead(notif.id)}
                     className="mt-4 sm:mt-0 whitespace-nowrap rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition"
                   >
                     Marcar como leída
-                  </button>
-                )}
+                  </button> : <button
+                    onClick={() => handleMarkAsRead(notif.id)}
+                    className="mt-4 sm:mt-0 whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium border border-slate-300 hover:bg-slate-200 transition"
+                  >
+                    Marcar como no leída
+                  </button>}
               </div>
             </div>
           ))
