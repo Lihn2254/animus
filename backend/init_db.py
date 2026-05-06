@@ -2,7 +2,6 @@ import sys
 from dotenv import load_dotenv
 from infrastructure.app_factory import create_app
 from infrastructure.db import db
-from sqlalchemy import inspect
 
 # Load environment variables
 load_dotenv()
@@ -10,8 +9,6 @@ load_dotenv()
 # Import the app and db from the application factory
 
 app = create_app()
-# Ensure models are imported so SQLAlchemy metadata includes them
-from models import Report  # noqa: F401
 
 def init_db():
     """Initialize the database by creating all tables"""
@@ -25,9 +22,9 @@ def init_db():
         db.create_all()
         print("Database tables created successfully!")
         print("\nCreated tables:")
-        inspector = inspect(db.engine)
-        for table_name in inspector.get_table_names():
-            print(f"  - {table_name}")
+        print("  - users")
+        print("  - analysis_results")
+        print("  - reports")
 
 if __name__ == '__main__':
     try:

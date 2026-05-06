@@ -7,6 +7,7 @@ from infrastructure.app_factory import create_app
 from infrastructure.db import db
 from models.user import User
 from models.analysis_result import AnalysisResult
+from models.report import Report
 
 # Load environment variables
 load_dotenv()
@@ -173,12 +174,60 @@ def insert_analysis_results():
     db.session.commit()
     print(f"  Total analysis results: {AnalysisResult.query.count()}")
 
+def insert_reports():
+    print("\n[Reports]")
+    user = User.query.first()
+    if not user:
+        print("  Warning: No users found, cannot insert reports")
+        return
+        
+    analysis_results = AnalysisResult.query.filter_by(user_id=user.id).all()
+    analysis_ids = [result.id for result in analysis_results]
+    
+    if not analysis_ids:
+        print("  Warning: No analysis results found, cannot insert reports")
+        return
+        
+    mock_reports = [
+        {
+            "user_id": user.id,
+            "title": "Reporte Global Q1 2026",
+            "overall_sentiment": "mixto",
+            "stress_level": 0.56,
+            "anxiety_level": 0.53,
+            "total_posts": 35,
+            "topics": ["programming", "tech", "devops", "automation", "career", "job search"],
+            "included_analysis_ids": analysis_ids,
+            "filename": "reporte_global_q1_2026.pdf",
+            "storage_path": "/storage/reports/user_1/reporte_global_q1_2026.pdf"
+        }
+    ]
+    
+    for report_data in mock_reports:
+        report = Report(
+            user_id=report_data["user_id"],
+            title=report_data["title"],
+            overall_sentiment=report_data["overall_sentiment"],
+            stress_level=report_data["stress_level"],
+            anxiety_level=report_data["anxiety_level"],
+            total_posts=report_data["total_posts"],
+            topics=report_data["topics"],
+            included_analysis_ids=report_data["included_analysis_ids"],
+            filename=report_data["filename"],
+            storage_path=report_data["storage_path"]
+        )
+        db.session.add(report)
+        print(f"  Added report: {report_data['title']}")
+        
+    db.session.commit()
+    print(f"  Total reports: {Report.query.count()}")
 
 def insert_mock_data():
     with app.app_context():
         print("Inserting mock data...")
         insert_users()
         insert_analysis_results()
+        insert_reports()
         print("\nAll mock data inserted successfully!")
 
 
