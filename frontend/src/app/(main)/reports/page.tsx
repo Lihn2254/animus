@@ -180,7 +180,7 @@ export default function ReportsPage() {
     <div className="p-6">
       <section className="rounded-3xl border border-white/70 bg-white/80 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)]">
         <div className="mb-4">
-          <h1 className="text-2xl font-semibold">Reportes</h1>
+          <h1 className="text-3xl font-semibold text-slate-900 mb-1">Reportes</h1>
           <p className="text-sm text-slate-400">Selecciona dos o más análisis para generar un reporte combinado en PDF.</p>
         </div>
 
@@ -210,23 +210,12 @@ export default function ReportsPage() {
           >
             {loading ? 'Generando...' : saveToStorage ? 'Generar PDF y guardar' : 'Generar PDF (solo descarga)'}
           </button>
-
-          <button
-            onClick={fetchAnalyses}
-            disabled={loadingAnalyses}
-            className="rounded-full border border-slate-200 px-4 py-2 text-slate-700 disabled:opacity-50"
-          >
-            {loadingAnalyses ? 'Actualizando...' : 'Refrescar análisis'}
-          </button>
         </div>
       </section>
 
       <section className="mt-8 rounded-3xl border border-white/70 bg-white/80 p-6 shadow-[0_18px_45px_rgba(15,23,42,0.06)]">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="text-xl font-semibold text-slate-800">Reportes guardados</h2>
-          <button onClick={fetchReports} disabled={loadingReports} className="rounded-full border border-slate-200 px-3 py-2 text-slate-700 disabled:opacity-50">
-            {loadingReports ? 'Cargando...' : 'Actualizar reportes'}
-          </button>
+          <h2 className="text-xl font-semibold text-slate-800 mb-1">Reportes guardados</h2>
         </div>
 
         <div className="mt-3 grid gap-3">
