@@ -24,6 +24,7 @@ def init_db():
         print("\nCreated tables:")
         print("  - users")
         print("  - analysis_results")
+        print("  - reports")
 
 if __name__ == '__main__':
     try:
