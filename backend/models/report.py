@@ -18,10 +18,8 @@ class Report(db.Model):
     total_posts = db.Column(db.Integer, nullable=True)
     topics = db.Column(db.JSON, nullable=True)
 
-    # list of included analysis ids and storage info
+    # list of included analysis ids
     included_analysis_ids = db.Column(db.JSON, nullable=False)
-    filename = db.Column(db.String(300), nullable=False)
-    storage_path = db.Column(db.String(500), nullable=False)
 
     # relationships
     user = db.relationship("User", back_populates="reports")
@@ -38,6 +36,4 @@ class Report(db.Model):
             "total_posts": self.total_posts,
             "topics": self.topics,
             "included_analysis_ids": self.included_analysis_ids,
-            "filename": self.filename,
-            "storage_path": self.storage_path,
         }

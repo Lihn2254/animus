@@ -198,8 +198,7 @@ def insert_reports():
             "total_posts": 35,
             "topics": ["programming", "tech", "devops", "automation", "career", "job search"],
             "included_analysis_ids": analysis_ids,
-            "filename": "reporte_global_q1_2026.pdf",
-            "storage_path": "/storage/reports/user_1/reporte_global_q1_2026.pdf"
+            # No file stored on server; only metadata
         }
     ]
     
@@ -213,8 +212,6 @@ def insert_reports():
             total_posts=report_data["total_posts"],
             topics=report_data["topics"],
             included_analysis_ids=report_data["included_analysis_ids"],
-            filename=report_data["filename"],
-            storage_path=report_data["storage_path"]
         )
         db.session.add(report)
         print(f"  Added report: {report_data['title']}")

@@ -1,28 +1,25 @@
-import os
 import json
-from datetime import datetime
-from flask import request, jsonify, current_app, send_file
-from werkzeug.utils import secure_filename
+from flask import request, jsonify
 
 from infrastructure.db import db
 from models.report import Report
 from models.analysis_result import AnalysisResult
 
 
-UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "..", "reports_files")
-
-
-def _ensure_upload_dir():
-    path = os.path.abspath(UPLOAD_DIR)
-    os.makedirs(path, exist_ok=True)
-    return path
-
-
 def _parse_metadata(metadata_raw):
-    try:
-        metadata = json.loads(metadata_raw)
-    except Exception as exc:
-        raise ValueError("Invalid metadata JSON") from exc
+    # Accept either a JSON string or an already-parsed dict
+    if not metadata_raw:
+        raise ValueError("Missing metadata")
+
+    if isinstance(metadata_raw, str):
+        try:
+            metadata = json.loads(metadata_raw)
+        except Exception as exc:
+            raise ValueError("Invalid metadata JSON") from exc
+    elif isinstance(metadata_raw, dict):
+        metadata = metadata_raw
+    else:
+        raise ValueError("Invalid metadata format")
 
     if not isinstance(metadata, dict):
         raise ValueError("Invalid metadata JSON")
@@ -54,46 +51,28 @@ def _normalize_analysis_ids(values):
     return normalized
 
 
-def _save_report_file(file_storage, user_id):
-    upload_dir = _ensure_upload_dir()
-    filename = secure_filename(file_storage.filename)
-    timestamp = datetime.utcnow().strftime('%Y%m%d%H%M%S')
-    stored_name = f"report_{user_id}_{timestamp}_{filename}"
-    storage_path = os.path.join(upload_dir, stored_name)
-    file_storage.save(storage_path)
-    return stored_name, storage_path
-
-
-def _delete_file_if_exists(path):
-    if path and os.path.exists(path):
-        try:
-            os.remove(path)
-        except OSError:
-            pass
-
-
 def create_report():
     """
     POST /api/reports
-    Expects multipart/form-data with fields:
-      - file: PDF file
-      - metadata: JSON string with keys: included_analysis_ids (list), title (opt), overall_sentiment, stress_level, anxiety_level, total_posts, topics
+    Expects JSON body with keys:
+      - included_analysis_ids (list)
+      - title (opt)
+      - overall_sentiment, stress_level, anxiety_level, total_posts, topics (opt)
+
+    IMPORTANT: No PDF file is uploaded. The server stores only metadata. The PDF
+    will be generated on-demand by the frontend using the stored included_analysis_ids.
     """
     try:
         user_id = getattr(request, 'current_user_id', None)
         if not user_id:
             return jsonify({"error": "Authentication required"}), 401
 
-        if 'file' not in request.files:
-            return jsonify({"error": "No file uploaded"}), 400
-
-        file = request.files['file']
-        if file.filename == '':
-            return jsonify({"error": "Empty filename"}), 400
-
-        metadata_raw = request.form.get('metadata')
-        if not metadata_raw:
-            return jsonify({"error": "Missing metadata field"}), 400
+        # Accept JSON body primarily, but also support form 'metadata'
+        metadata_raw = None
+        if request.is_json:
+            metadata_raw = request.get_json()
+        else:
+            metadata_raw = request.form.get('metadata')
 
         try:
             metadata = _parse_metadata(metadata_raw)
@@ -106,36 +85,25 @@ def create_report():
         if len(analyses) != len(included):
             return jsonify({"error": "Algunos análisis no existen o no pertenecen al usuario"}), 400
 
-        stored_name = None
-        storage_path = None
+        # Create DB record with metadata only
+        report = Report(
+            user_id=user_id,
+            title=metadata.get('title'),
+            overall_sentiment=metadata.get('overall_sentiment'),
+            stress_level=metadata.get('stress_level'),
+            anxiety_level=metadata.get('anxiety_level'),
+            total_posts=metadata.get('total_posts'),
+            topics=metadata.get('topics'),
+            included_analysis_ids=included,
+        )
 
-        try:
-            # Save file
-            stored_name, storage_path = _save_report_file(file, user_id)
-
-            # Create DB record
-            report = Report(
-                user_id=user_id,
-                title=metadata.get('title'),
-                overall_sentiment=metadata.get('overall_sentiment'),
-                stress_level=metadata.get('stress_level'),
-                anxiety_level=metadata.get('anxiety_level'),
-                total_posts=metadata.get('total_posts'),
-                topics=metadata.get('topics'),
-                included_analysis_ids=included,
-                filename=stored_name,
-                storage_path=storage_path,
-            )
-            db.session.add(report)
-            db.session.commit()
-        except Exception:
-            db.session.rollback()
-            _delete_file_if_exists(storage_path)
-            raise
+        db.session.add(report)
+        db.session.commit()
 
         return jsonify({"message": "Reporte guardado", "report": report.to_dict()}), 201
 
     except Exception as exc:
+        db.session.rollback()
         return jsonify({"error": str(exc)}), 500
 
 
@@ -154,7 +122,10 @@ def list_reports():
 
 
 def download_report(report_id):
-    """GET /api/reports/<id>/download - download the PDF file"""
+    """GET /api/reports/<id>/download - return report metadata and included analyses.
+
+    The frontend will build the PDF on-demand using this data.
+    """
     try:
         user_id = getattr(request, 'current_user_id', None)
         if not user_id:
@@ -164,10 +135,14 @@ def download_report(report_id):
         if not report:
             return jsonify({"error": "Report not found"}), 404
 
-        if not os.path.exists(report.storage_path):
-            return jsonify({"error": "File not found on server"}), 404
+        # Fetch included analyses owned by user
+        included_ids = report.included_analysis_ids or []
+        analyses = AnalysisResult.query.filter(AnalysisResult.id.in_(included_ids), AnalysisResult.user_id == user_id).all()
 
-        return send_file(report.storage_path, as_attachment=True, download_name=report.filename)
+        return jsonify({
+            "report": report.to_dict(),
+            "analyses": [a.to_dict() for a in analyses],
+        }), 200
 
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500
