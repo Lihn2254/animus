@@ -25,6 +25,7 @@ def init_db():
         print("  - users")
         print("  - analysis_results")
         print("  - reports")
+        print("  - notifications")
 
 if __name__ == '__main__':
     try:

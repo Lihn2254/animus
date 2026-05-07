@@ -30,6 +30,7 @@ class AnalysisResult(db.Model):
 
     # Relationships
     user = db.relationship("User", back_populates="analysis_results")
+    notifications = db.relationship("Notification", back_populates="analysis", cascade="all, delete-orphan")
 
     def to_dict(self):
         return {
