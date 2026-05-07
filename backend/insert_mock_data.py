@@ -74,7 +74,7 @@ def insert_users():
             fullname=user_data["fullname"],
             country=user_data["country"],
             region=user_data["region"],
-            password=user_data["password"]
+            password_hash=user_data["password"]
         )
         db.session.add(user)
         print(f"  Added user: {user_data['username']}")
