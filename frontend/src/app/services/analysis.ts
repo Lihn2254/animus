@@ -1,5 +1,13 @@
 import { fetchWithAuth } from "../lib/fetchWithAuth";
-import { AnalysisOverview, AnalysisRequest, AnalysisHistoryResponse, AnalysisHistoryItem } from "../types/analysis";
+import {
+  AnalysisOverview,
+  AnalysisRequest,
+  AnalysisHistoryResponse,
+  AnalysisHistoryItem,
+  ScheduledAnalysis,
+  ScheduledAnalysisRequest,
+  ScheduledAnalysisResponse,
+} from "../types/analysis";
 
 export async function runAnalysis(req: AnalysisRequest): Promise<AnalysisOverview> {
     const res = await fetchWithAuth('/analysis/run', {
@@ -46,6 +54,35 @@ export async function getAnalysisById(id: number): Promise<AnalysisHistoryItem> 
     if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.error || errorData.message || "Failed to fetch analysis.");
+    }
+
+    return res.json();
+}
+
+export async function createAnalysisSchedule(
+    req: ScheduledAnalysisRequest,
+): Promise<ScheduledAnalysis> {
+    const res = await fetchWithAuth('/analysis/schedules', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(req),
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || errorData.message || 'No se pudo crear la programación.');
+    }
+
+    const payload = await res.json();
+    return payload.schedule;
+}
+
+export async function getAnalysisSchedules(): Promise<ScheduledAnalysisResponse> {
+    const res = await fetchWithAuth('/analysis/schedules');
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || errorData.message || 'No se pudo cargar las programaciones.');
     }
 
     return res.json();

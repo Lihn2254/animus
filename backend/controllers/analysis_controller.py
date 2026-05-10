@@ -1,9 +1,10 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from flask import request, jsonify
 
 from infrastructure.db import db
 from models.analysis_result import AnalysisResult
+from models.analysis_schedule import AnalysisSchedule
 from services.ai_analysis_service import AIAnalysisService
 from services.scraping_service import ScrapingService
 
@@ -250,8 +251,110 @@ def get_analysis_by_id(analysis_id):
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500
 
+
+def create_analysis_schedule():
+    """
+    POST /api/analysis/schedules
+    Body (JSON):
+      - frequency          : string (semanal, bisemanal, mensual, trimestral, semestral)
+      - scheduled_day      : string (día de la semana o día del mes según frecuencia)
+      - scheduled_time     : string (HH:MM)
+      - geographical_region: string
+      - age_range          : string
+      - topics             : list of strings
+      - communities        : list of strings
+      - post_count         : int
+      - include_comments   : bool
+      - model              : string (opcional)
+    """
+    try:
+        user_id = getattr(request, 'current_user_id', None)
+        if not user_id:
+            return jsonify({"error": "Authentication required"}), 401
+
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "Se requiere un cuerpo JSON"}), 400
+
+        required_fields = [
+            "frequency",
+            "scheduled_day",
+            "scheduled_time",
+            "geographical_region",
+            "age_range",
+            "post_count",
+            "include_comments",
+        ]
+        missing = [f for f in required_fields if f not in data]
+        if missing:
+            return jsonify({"error": f"Faltan campos requeridos: {', '.join(missing)}"}), 400
+
+        frequency = data["frequency"].strip().lower()
+        valid_frequencies = {"semanal", "bisemanal", "mensual", "trimestral", "semestral"}
+        if frequency not in valid_frequencies:
+            return jsonify({"error": "Frecuencia inválida. Usa semanal, bisemanal, mensual, trimestral o semestral."}), 400
+
+        scheduled_day = str(data["scheduled_day"]).strip()
+        scheduled_time = str(data["scheduled_time"]).strip()
+        if not _parse_schedule_time(scheduled_time):
+            return jsonify({"error": "scheduled_time inválido. Usa formato HH:MM."}), 400
+
+        topics = [t.strip() for t in data.get("topics", []) if isinstance(t, str) and t.strip()]
+        communities = [c.strip() for c in data.get("communities", []) if isinstance(c, str) and c.strip()]
+        if not topics and not communities:
+            return jsonify({"error": "Por lo menos uno de los campos topics o communities debe contener datos válidos."}), 400
+
+        post_count = _parse_post_count(data.get("post_count", 15))
+        include_comments = _parse_bool(data.get("include_comments", False))
+        model = str(data.get("model", "gemini-3-flash-preview")).strip() or "gemini-3-flash-preview"
+
+        next_run_date = _compute_next_run_date(frequency, scheduled_day, scheduled_time)
+
+        schedule = AnalysisSchedule(
+            user_id=user_id,
+            frequency=frequency,
+            scheduled_day=scheduled_day,
+            scheduled_time=scheduled_time,
+            next_run_date=next_run_date,
+            geographical_region=str(data["geographical_region"]).strip(),
+            age_range=str(data["age_range"]).strip(),
+            topics=topics,
+            communities=communities,
+            post_count=post_count,
+            include_comments=include_comments,
+            model=model,
+        )
+        db.session.add(schedule)
+        db.session.commit()
+        db.session.refresh(schedule)
+
+        return jsonify({
+            "message": "Programación de análisis creada correctamente.",
+            "schedule": schedule.to_dict(),
+        }), 201
+
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500
+
+
+def get_analysis_schedules():
+    """
+    GET /api/analysis/schedules
+    """
+    try:
+        user_id = getattr(request, 'current_user_id', None)
+        if not user_id:
+            return jsonify({"error": "Authentication required"}), 401
+
+        schedules = AnalysisSchedule.query.filter_by(user_id=user_id).order_by(AnalysisSchedule.created_at.desc()).all()
+        return jsonify({
+            "count": len(schedules),
+            "results": [s.to_dict() for s in schedules],
+        }), 200
+
+    except Exception as exc:
+        return jsonify({"error": str(exc)}), 500
+
 
 def get_analysis_by_id(analysis_id):
     """
@@ -272,9 +375,6 @@ def get_analysis_by_id(analysis_id):
     except Exception as exc:
         return jsonify({"error": str(exc)}), 500
 
-    except Exception as exc:
-        return jsonify({"error": str(exc)}), 500
-
 
 def _parse_bool(value):
     if isinstance(value, bool):
@@ -291,6 +391,87 @@ def _parse_post_count(value, default=15, minimum=1, maximum=50):
         return default
 
     return max(minimum, min(parsed, maximum))
+
+
+def _parse_schedule_time(time_str):
+    if not isinstance(time_str, str):
+        return None
+
+    parts = time_str.split(":")
+    if len(parts) != 2:
+        return None
+
+    try:
+        hour = int(parts[0])
+        minute = int(parts[1])
+    except ValueError:
+        return None
+
+    if hour < 0 or hour > 23 or minute < 0 or minute > 59:
+        return None
+
+    return hour, minute
+
+
+def _compute_next_run_date(frequency, scheduled_day, scheduled_time):
+    now = datetime.utcnow()
+    parsed_time = _parse_schedule_time(scheduled_time)
+    if not parsed_time:
+        return now
+
+    hour, minute = parsed_time
+    if frequency in {"semanal", "bisemanal"}:
+        weekday_map = {
+            "lunes": 0,
+            "martes": 1,
+            "miércoles": 2,
+            "miercoles": 2,
+            "jueves": 3,
+            "viernes": 4,
+            "sábado": 5,
+            "sabado": 5,
+            "domingo": 6,
+        }
+        weekday = weekday_map.get(scheduled_day.strip().lower())
+        if weekday is None:
+            return now
+
+        candidate = now.replace(hour=hour, minute=minute, second=0, microsecond=0)
+        days_ahead = (weekday - candidate.weekday()) % 7
+        candidate = candidate + timedelta(days=days_ahead)
+        if candidate <= now:
+            candidate = candidate + timedelta(days=7 if frequency == "semanal" else 14)
+        return candidate
+
+    if frequency in {"mensual", "trimestral", "semestral"}:
+        try:
+            day = int(scheduled_day)
+        except ValueError:
+            day = 1
+        day = max(1, min(day, 28))
+        month_step = 1 if frequency == "mensual" else 3 if frequency == "trimestral" else 6
+        return _get_next_monthly_run(now, day, hour, minute, month_step)
+
+    return now
+
+
+def _get_next_monthly_run(now, day, hour, minute, month_step):
+    year, month = now.year, now.month
+    current_candidate = datetime(year, month, min(day, _days_in_month(year, month)), hour, minute)
+    if current_candidate <= now:
+        month += month_step
+        year += (month - 1) // 12
+        month = ((month - 1) % 12) + 1
+        current_candidate = datetime(year, month, min(day, _days_in_month(year, month)), hour, minute)
+    return current_candidate
+
+
+def _days_in_month(year, month):
+    if month == 12:
+        next_month = datetime(year + 1, 1, 1)
+    else:
+        next_month = datetime(year, month + 1, 1)
+    return (next_month - timedelta(days=1)).day
 
 
 def _filter_items_by_date(items, start_date, end_date):
