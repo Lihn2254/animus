@@ -101,7 +101,7 @@ class AIAnalysisService:
         if not parsed:
             return {"error": "AI response was not valid JSON."}, 502
 
-        normalized = self._normalize_sentiment_response(parsed)
+        normalized = self._normalize_sentiment_response(parsed, model)
         if normalized is None:
             return {"error": "AI response missing required fields."}, 502
 
@@ -178,7 +178,7 @@ class AIAnalysisService:
         except json.JSONDecodeError:
             return None
 
-    def _normalize_sentiment_response(self, parsed):
+    def _normalize_sentiment_response(self, parsed, model):
         sentiment = parsed.get("sentiment")
         if isinstance(sentiment, str):
             sentiment = sentiment.strip().lower()
@@ -191,7 +191,6 @@ class AIAnalysisService:
         else:
             keywords = None
 
-        model_version = parsed.get("model_version") or parsed.get("modelVersion") or self._model_name
         summary = parsed.get("summary")
         if not isinstance(summary, str) or not summary.strip():
             summary = None
@@ -207,7 +206,7 @@ class AIAnalysisService:
             "stress_level": stress_level,
             "anxiety_level": anxiety_level,
             "keywords": keywords,
-            "model_version": str(model_version),
+            "model_version": str(model),
             "summary": summary,
         }
 
@@ -231,12 +230,17 @@ class AIAnalysisService:
                 }
             ])
             return response.message.content
-        elif(model == 'gemini-3-flash-preview'):
+        # elif(model == 'gemini-3-flash-preview'):
+        #     response = self._ai.models.generate_content(
+        #         model=self._model_name,
+        #         contents=prompt,
+        #     )
+        #     return response.text
+        else:
+            # raise ValueError(f"Modelo inválido: '{model}'. Modelos compatibles: 'gemma-4-e4b', 'gemini-3-flash-preview'")
             response = self._ai.models.generate_content(
                 model=self._model_name,
                 contents=prompt,
             )
             return response.text
-        else:
-            raise ValueError(f"Modelo inválido: '{model}'. Modelos compatibles: 'gemma-4-e4b', 'gemini-3-flash-preview'")
         
