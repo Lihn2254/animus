@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { AnalysisHistoryItem } from '../../../types/analysis';
 import { getAnalysisById } from '../../../services/analysis';
+import { ExportJsonButton } from '@/app/components/export-analysis/ExportJsonButton';
+import { ExportPdfButton } from '@/app/components/export-analysis/ExportPdfButton';
 
 export default function AnalysisDetailPage() {
   const [analysis, setAnalysis] = useState<AnalysisHistoryItem | null>(null);
@@ -12,13 +14,7 @@ export default function AnalysisDetailPage() {
   const params = useParams();
   const id = params.id as string;
 
-  useEffect(() => {
-    if (id) {
-      fetchAnalysis();
-    }
-  }, [id]);
-
-  const fetchAnalysis = async () => {
+  const fetchAnalysis = useCallback(async () => {
     try {
       setLoading(true);
       const data = await getAnalysisById(parseInt(id));
@@ -28,17 +24,13 @@ export default function AnalysisDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
-  const handleExportPDF = () => {
-    // TODO: Implement PDF export
-    console.log('Export PDF for analysis', id);
-  };
-
-  const handleExportJSON = () => {
-    // TODO: Implement JSON export
-    console.log('Export JSON for analysis', id);
-  };
+  useEffect(() => {
+    if (id) {
+      fetchAnalysis();
+    }
+  }, [id, fetchAnalysis]);
 
   const formatDate = (dateValue: string) => {
     const date = new Date(dateValue);
@@ -62,20 +54,60 @@ export default function AnalysisDetailPage() {
             <h1 className="mt-2 text-3xl font-bold text-slate-900">Detalle del análisis</h1>
           </div>
           <div className="flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={handleExportPDF}
-              className="rounded-full bg-sky-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-700"
-            >
-              Exportar PDF
-            </button>
-            <button
-              type="button"
-              onClick={handleExportJSON}
-              className="rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-700"
-            >
-              Exportar JSON
-            </button>
+            <ExportPdfButton
+              analysisOverview={{
+                id: analysis.id,
+                saved: true,
+                message: '',
+                analysis: {
+                  analyzed_posts: analysis.post_count,
+                  anxiety_level: analysis.anxiety_level,
+                  keywords: analysis.keywords ?? [],
+                  model_version: analysis.model_version,
+                  sentiment: analysis.sentiment,
+                  stress_level: analysis.stress_level,
+                  summary: analysis.summary,
+                },
+              }}
+              analysisGeneratedAt={analysis.analysis_date ? new Date(analysis.analysis_date) : null}
+              submittedParams={{
+                region: analysis.geographical_region ?? 'N/D',
+                startDate: analysis.start_date ?? 'N/D',
+                endDate: analysis.end_date ?? 'N/D',
+                ageRange: analysis.age_range ?? 'N/D',
+                topics: analysis.topics ?? [],
+                communities: analysis.communities ?? [],
+                includeComments: false,
+              }}
+              analysisMessage=""
+            />
+            <ExportJsonButton
+              analysisOverview={{
+                id: analysis.id,
+                saved: true,
+                message: '',
+                analysis: {
+                  analyzed_posts: analysis.post_count,
+                  anxiety_level: analysis.anxiety_level,
+                  keywords: analysis.keywords ?? [],
+                  model_version: analysis.model_version,
+                  sentiment: analysis.sentiment,
+                  stress_level: analysis.stress_level,
+                  summary: analysis.summary,
+                },
+              }}
+              analysisGeneratedAt={analysis.analysis_date ? new Date(analysis.analysis_date) : null}
+              submittedParams={{
+                region: analysis.geographical_region ?? 'N/D',
+                startDate: analysis.start_date ?? 'N/D',
+                endDate: analysis.end_date ?? 'N/D',
+                ageRange: analysis.age_range ?? 'N/D',
+                topics: analysis.topics ?? [],
+                communities: analysis.communities ?? [],
+                includeComments: false,
+              }}
+              analysisMessage=""
+            />
           </div>
         </div>
 
