@@ -53,3 +53,48 @@ export type AnalysisHistoryResponse = {
   count: number;
   results: AnalysisHistoryItem[];
 }
+
+export type ScheduleFrequency =
+  | "semanal"
+  | "bisemanal"
+  | "mensual"
+  | "trimestral"
+  | "semestral";
+
+export type ScheduledAnalysisRequest = {
+  frequency: ScheduleFrequency;
+  scheduled_day: string;
+  scheduled_time: string;
+  geographical_region: string;
+  start_date: string | null;
+  end_date: string | null;
+  age_range: string;
+  topics: string[] | null;
+  communities: string[] | null;
+  post_count: number;
+  include_comments: boolean;
+  model: string;
+};
+
+export type ScheduledAnalysis = {
+  id: number;
+  user_id: number;
+  frequency: string;
+  scheduled_day: string;
+  scheduled_time: string;
+  next_run_date: string | null;
+  active: boolean;
+  geographical_region: string;
+  age_range: string;
+  topics: string[] | null;
+  communities: string[] | null;
+  post_count: number;
+  include_comments: boolean;
+  model: string;
+  created_at: string;
+};
+
+export type ScheduledAnalysisResponse = {
+  count: number;
+  results: ScheduledAnalysis[];
+};
