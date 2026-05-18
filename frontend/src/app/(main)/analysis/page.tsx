@@ -44,6 +44,7 @@ export default function Reports() {
   const [communities, setCommunities] = useState("");
   const [saveToProfile, setSaveToProfile] = useState(false);
   const [postCount, setPostCount] = useState(50);
+  const [model, setModel] = useState("gemini-3-flash-preview")
   const [includeComments, setIncludeComments] = useState(false);
 
   // Datos devueltos por la API
@@ -103,7 +104,7 @@ export default function Reports() {
       post_count: postCount,
       save: saveToProfile,
       include_comments: includeComments,
-      model: 'gemini-3-flash-preview'
+      model: model,
     };
 
     setSubmittedParams({
@@ -799,6 +800,35 @@ export default function Reports() {
                     <option value={25}>25 posts</option>
                     <option value={50}>50 posts</option>
                     <option value={100}>100 posts</option>
+                  </select>
+                  <svg
+                    className="pointer-events-none absolute right-4 top-3.5 h-4 w-4 text-slate-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-slate-700">
+                  Modelo de análisis (IA)
+                </label>
+                <div className="relative">
+                  <select
+                    className="w-full cursor-pointer appearance-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-slate-400"
+                    value={model}
+                    onChange={(e) => setModel(e.target.value)}
+                  >
+                    <option value={'gemini-3-flash-preview'}>Gemini 3 Flash</option>
+                    <option value={'gemma-4-e4b'}>Gemma 4 e4b (Ejecución Local)</option>
                   </select>
                   <svg
                     className="pointer-events-none absolute right-4 top-3.5 h-4 w-4 text-slate-400"
